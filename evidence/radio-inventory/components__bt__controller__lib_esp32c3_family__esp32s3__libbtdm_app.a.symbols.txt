@@ -1,0 +1,1626 @@
+
+aes_ccm.o:
+0000000c T r_aes_ccm_continue
+00000008 T r_aes_ccm_process_e
+00000000 T r_aes_ccm_xor_128_lsb
+00000000 T r_aes_ccm_xor_128_msb
+00000004 T r_rw_crypto_aes_ccm
+
+aes_cmac.o:
+00000010 T r_aes_cmac_continue
+0000000c T r_aes_cmac_start
+00000004 T r_rw_cryto_aes_cmac
+
+aes_k1.o:
+00000008 T r_aes_k1_continue
+00000004 T r_rw_crypto_aes_k1
+
+aes_k2.o:
+00000024 T r_aes_k2_continue
+0000000c T r_rw_crypto_aes_k2
+
+aes_k3.o:
+00000000 R aes_k3_id64
+0000000c T r_aes_k3_continue
+00000008 T r_rw_crypto_aes_k3
+
+aes_k4.o:
+00000000 R aes_k4_id6
+0000000c T r_aes_k4_continue
+00000008 T r_rw_crypto_aes_k4
+
+aes.o:
+00000004 T r_aes_alloc
+00000000 T r_aes_shift_left_128
+00000008 T r_aes_start
+00000000 T r_aes_xor_128
+0000000c T r_rw_crypto_aes_encrypt
+00000008 T r_rw_crypto_aes_init
+00000008 T r_rw_crypto_aes_rand
+00000008 T r_rw_crypto_aes_result_handler
+00000008 T rw_crypto_aes_encrypt_sync
+
+aes_s1.o:
+00000008 T r_rw_crypto_aes_s1
+
+arch_main.o:
+00000004 T ble_deepsleep_recover_hw_logic
+00000008 T ble_deepsleep_recover_hw_reg
+00000008 T ble_deepsleep_reset_lc_bb_reg
+00000018 T ble_try_turn_on_pll_track
+00000008 T btdm_aa_check_enhance_enable
+00000000 T btdm_app_ref_init
+0000003c T btdm_ble_power_down_dma_copy
+00000010 T btdm_cca_feature_enable
+00000004 T btdm_con_maxevtime_cal
+00000000 T btdm_controller_compile_version_check_impl
+00000018 T btdm_controller_deinit
+0000000c T btdm_controller_disable
+0000000c T btdm_controller_enable
+00000004 T btdm_controller_enable_sleep
+00000004 T btdm_controller_get_compile_version
+00000004 T btdm_controller_get_compile_version_impl
+00000004 T btdm_controller_get_mode
+00000004 T btdm_controller_get_sleep_mode
+000000c8 T btdm_controller_init
+00000004 T btdm_controller_is_enabled
+00000010 T btdm_controller_on_reset
+00000000 T btdm_controller_rom_data_init
+00000004 T btdm_controller_sleep_enable
+00000060 T btdm_controller_task
+00000010 T btdm_deep_sleep_mem_deinit
+00000014 T btdm_deep_sleep_mem_init
+00000004 T btdm_dis_privacy_err_report
+00000004 T btdm_disable_adv_delay
+00000004 T btdm_enable_scan_continue
+00000004 T btdm_enable_scan_forever
+00000004 T btdm_get_power_state
+00000004 T btdm_get_prevent_sleep_flag
+00000018 T btdm_gpio_init
+00000008 T btdm_gpio_set_level
+00000004 T btdm_hci_tl_io_event_post
+0000000c T btdm_in_wakeup_requesting_set
+00000018 T btdm_lpclk_select_src
+00000008 T btdm_lpclk_set_div
+00000004 T btdm_power_state_active
+0000001c T btdm_rom_ref_init
+00000008 T btdm_set_cca_fifo_int_cnt
+0000000c T btdm_set_cca_sw_intr
+00000020 T btdm_sleep_clock_sync
+00000004 T btdm_switch_phy_coded
+00000014 T btdm_wakeup_request
+00000004 T esp_ble_adv_aa_setting
+0000000c T esp_ble_clear_all_rxerr_cnt
+00000004 T esp_ble_clear_rand_addr
+00000004 T esp_ble_dis_privacy_err_report
+00000004 T esp_ble_disable_adv_delay
+00000004 T esp_ble_enable_fixed_aux_chan_index
+00000000 T esp_ble_enable_scan_continue
+00000004 T esp_ble_enable_scan_forever
+00000014 T esp_ble_get_rxerr_cnt
+00000004 T esp_ble_qa_get_adv_txed_cnt
+00000004 T esp_ble_qa_get_scan_rxed_cnt
+00000004 T esp_ble_qa_set_scan_perfer_addr
+00000004 T esp_ble_qa_test_enable
+00000004 T esp_ble_rxerr_record_en
+00000004 T esp_ble_scan_aa_setting
+00000004 T esp_ble_scan_channel_setting
+00000004 T esp_ble_set_aux_chan_index
+00000004 T esp_ble_switch_phy_coded
+00000004 T esp_ble_txpower_lvl_range_get
+00000000 B pll_track_state
+00000004 T pll_track_state_get
+00000004 T r_assert_err
+00000004 T r_assert_param
+00000004 T r_assert_warn
+0000001c T r_btdm_config_cca_sw
+00000010 T r_dump_data
+00000000 T r_get_stack_usage
+00000014 T r_platform_reset
+00000010 T r_rwip_eif_get
+00000000 T r_unloaded_area_init
+000000e4 T rw_em_show
+0000002c T rw_pre_main
+00000014 T rw_schedule
+00000008 T rw_stop
+
+ble_util_buf.o:
+00000010 T ble_util_buf_reset
+00000018 T r_ble_util_buf_acl_tx_alloc
+00000010 T r_ble_util_buf_acl_tx_elt_get
+00000018 T r_ble_util_buf_acl_tx_free
+0000001c T r_ble_util_buf_acl_tx_free_in_isr
+00000010 T r_ble_util_buf_adv_tx_alloc
+00000014 T r_ble_util_buf_adv_tx_free
+00000004 T r_ble_util_buf_adv_tx_free_in_isr
+00000008 T r_ble_util_buf_env_deinit
+00000008 T r_ble_util_buf_env_init
+00000004 T r_ble_util_buf_get_rx_buf_nb
+00000004 T r_ble_util_buf_get_rx_buf_size
+00000020 T r_ble_util_buf_init
+0000000c T r_ble_util_buf_llcp_tx_alloc
+00000018 T r_ble_util_buf_llcp_tx_free
+00000014 T r_ble_util_buf_rx_alloc
+00000014 T r_ble_util_buf_rx_alloc_in_isr
+0000001c T r_ble_util_buf_rx_free
+00000018 T r_ble_util_buf_rx_free_in_isr
+0000000c T r_ble_util_buf_set_rx_buf_nb
+0000000c T r_ble_util_buf_set_rx_buf_size
+00000014 T r_ble_util_data_rx_buf_reset
+
+btdm_env.o:
+
+btdm_log.o:
+00000004 T bt_plf_set_log_level
+
+bt_rw_v9.o:
+0000002c T r_cali_phase_match_p
+00000004 T r_rf_rw_v9_le_disable
+00000004 T r_rf_rw_v9_le_enable
+00000080 T r_rf_rw_v9_le_init
+0000005c T r_rw_v9_init_em_radio_table
+00000030 T rw_rf_le_enter_test_mode
+00000030 T rw_rf_le_exit_test_mode
+
+coex_schm.o:
+0000000c T coex_schm_ble_scan_stop_interval_num_get
+00000008 T coex_schm_btdm_callback
+00000000 B coex_schm_btdm_env
+00000004 T coex_schm_disable_flag_get
+00000004 T coex_schm_phase_end_ts_get
+0000000c T coex_schm_process
+00000028 T coex_schm_process_in_active
+00000004 T coex_schm_wakeup_flag_get
+
+co_list.o:
+00000008 T r_co_list_extract
+00000008 T r_co_list_extract_after
+00000008 T r_co_list_extract_sublist
+00000000 T r_co_list_find
+00000000 T r_co_list_init
+0000000c T r_co_list_insert_after
+0000000c T r_co_list_insert_before
+00000008 T r_co_list_merge
+00000000 T r_co_list_pool_init
+00000000 T r_co_list_pop_front
+00000008 T r_co_list_push_back
+00000008 T r_co_list_push_back_sublist
+00000008 T r_co_list_push_front
+00000000 T r_co_list_size
+
+config_funcs.o:
+
+co_utils.o:
+00000000 T r_co_bdaddr_compare
+00000008 T r_co_ble_pkt_dur_in_us
+00000004 T r_co_nb_good_le_channels
+00000018 T r_co_util_pack
+00000008 T r_co_util_read_array_size
+00000010 T r_co_util_unpack
+
+dbg_trc_mem.o:
+
+dbg_trc.o:
+
+dbg_trc_tl.o:
+
+display.o:
+
+display_task.o:
+
+ecc_p256.o:
+00000000 T r_Add2SelfBigHex256
+00000000 T r_AddBigHex256
+00000008 T r_AddBigHexModP256
+0000000c T r_AddP256
+0000000c T r_AddPdiv2_256
+00000090 T r_GF_Jacobian_Point_Addition256
+0000001c T r_GF_Jacobian_Point_Double256
+00000004 T r_GF_Point_Jacobian_To_Affine256
+00000004 T r_MultiplyBigHexByUint32_256
+00000018 T r_MultiplyBigHexModP256
+00000000 T r_MultiplyByU16ModP256
+00000000 T r_SubtractBigHex256
+00000008 T r_SubtractBigHexMod256
+00000010 T r_SubtractBigHexUint32_256
+00000000 T r_SubtractFromSelfBigHex256
+0000000c T r_SubtractFromSelfBigHexSign256
+00000020 T r_bigHexInversion256
+00000008 T r_ecc_abort_key256_generation
+0000000c T r_ecc_gen_new_public_key
+00000008 T r_ecc_gen_new_secret_key
+00000044 T r_ecc_generate_key256
+0000000c T r_ecc_get_debug_Keys
+00000008 T r_ecc_init
+00000028 T r_ecc_is_valid_point
+0000001c T r_ecc_multiplication_event_handler
+0000005c T r_ecc_point_multiplication_win_256
+00000004 T r_isValidSecretKey_256
+00000000 T r_notEqual256
+0000000c T r_specialModP256
+
+eif.o:
+00000004 T r_h4tl_eif_io_event_post
+00000024 T r_h4tl_eif_register
+
+emi.o:
+00000038 T emi_reset_em_mapping_by_offset
+0000004c T r_emi_alloc_em_mapping_by_offset
+00000010 T r_emi_base_reg_lut_show
+00000004 T r_emi_deinit
+00000024 T r_emi_em_base_deinit
+0000012c T r_emi_em_base_init
+00000018 T r_emi_em_base_reg_show
+0000004c T r_emi_free_em_mapping_by_offset
+0000000c T r_emi_get_em_mapping_idx_by_offset
+00000024 T r_emi_get_mem_addr_by_offset
+00000004 T r_emi_init
+00000030 T r_emi_overwrite_em_mapping_by_offset
+
+flash.o:
+00000008 T r_flash_env_deinit
+00000010 T r_flash_env_init
+0000000c T r_flash_erase
+00000010 T r_flash_identify
+0000001c T r_flash_init
+0000000c T r_flash_read
+00000000 T r_flash_unlock
+00000000 T r_flash_unlocksector
+0000000c T r_flash_write
+00000008 T r_flash_writebyte
+00000000 T r_readbyte
+00000000 T r_writebyte
+00000000 B vflash_mem
+
+h4tl.o:
+00000000 R h4tl_msgtype2hdrlen
+00000014 T r_h4tl_acl_hdr_rx_evt_handler
+00000010 T r_h4tl_cmd_hdr_rx_evt_handler
+0000000c T r_h4tl_cmd_pld_rx_evt_handler
+00000008 T r_h4tl_init
+00000010 T r_h4tl_out_of_sync
+00000020 T r_h4tl_out_of_sync_check
+00000004 T r_h4tl_read_hdr
+00000004 T r_h4tl_read_next_out_of_sync
+00000004 T r_h4tl_read_payl
+00000004 T r_h4tl_read_start
+00000000 T r_h4tl_rx_acl_hdr_extract
+00000000 T r_h4tl_rx_cmd_hdr_extract
+0000001c T r_h4tl_rx_done
+00000004 T r_h4tl_start
+00000004 T r_h4tl_stop
+0000000c T r_h4tl_tx_done
+00000008 T r_h4tl_tx_evt_handler
+00000010 T r_h4tl_write
+
+hci_fc.o:
+00000004 T r_hci_fc_acl_buf_size_set
+0000000c T r_hci_fc_acl_en
+00000004 T r_hci_fc_acl_packet_sent
+00000008 T r_hci_fc_check_host_available_nb_acl_packets
+00000004 T r_hci_fc_host_nb_acl_pkts_complete
+00000008 T r_hci_fc_init
+
+hci_msg.o:
+00000000 R hci_cmd_desc_tab_ctrl_bb
+00000000 R hci_cmd_desc_tab_info_par
+00000000 R hci_cmd_desc_tab_le
+00000000 R hci_cmd_desc_tab_lk_ctrl
+00000000 R hci_cmd_desc_tab_stat_par
+00000000 R hci_cmd_desc_tab_vs
+00000000 D hci_cmd_desc_tab_vs_esp
+00000000 D hci_cmd_desc_tab_vs_esp_eco
+00000000 D hci_cmd_desc_tab_vs_esp_hack
+00000000 R hci_evt_desc_tab
+00000000 R hci_evt_le_desc_tab
+00000000 R hci_evt_le_desc_tab_esp
+00000008 T r_hci_look_for_cmd_desc
+00000004 T r_hci_look_for_evt_desc
+00000004 T r_hci_look_for_le_evt_desc
+00000004 T r_hci_look_for_le_evt_desc_esp
+00000004 T r_hci_pack_bytes
+00000008 T r_hci_register_vendor_desc_tab
+
+hci.o:
+0000000c T r_hci_basic_cmd_send_2_controller
+0000000c T r_hci_ble_conhdl_register
+0000000c T r_hci_ble_conhdl_unregister
+0000000c T r_hci_evt_mask_check
+00000024 T r_hci_evt_mask_set
+0000001c T r_hci_init
+00000020 T r_hci_send_2_controller
+00000020 T r_hci_send_2_host
+
+hci_tl.o:
+00000018 T r_hci_acl_tx_data_alloc
+00000014 T r_hci_acl_tx_data_received
+0000000c T r_hci_ble_adv_report_filter_check
+00000010 T r_hci_ble_adv_report_tx_check
+00000000 T r_hci_build_acl_data
+00000014 T r_hci_build_cc_evt
+00000004 T r_hci_build_cs_evt
+00000010 T r_hci_build_evt
+00000010 T r_hci_build_le_evt
+00000004 T r_hci_cmd_get_max_param_size
+00000024 T r_hci_cmd_received
+00000030 T r_hci_cmd_reject
+00000008 T r_hci_tl_c2h_data_flow_on
+00000014 T r_hci_tl_cmd_hdr_rx_evt_handler
+00000014 T r_hci_tl_cmd_pld_rx_evt_handler
+0000000c T r_hci_tl_env_deinit
+0000000c T r_hci_tl_env_init
+00000004 T r_hci_tl_get_pkt
+00000020 T r_hci_tl_hci_pkt_handler
+00000008 T r_hci_tl_hci_tx_done_evt_handler
+00000004 T r_hci_tl_inc_nb_h2c_cmd_pkts
+00000014 T r_hci_tl_init
+00000010 T r_hci_tl_save_pkt
+00000018 T r_hci_tl_send
+00000028 T r_hci_tx_done
+00000024 T r_hci_tx_start
+00000008 T r_hci_tx_trigger
+
+hl_itf.o:
+00000024 T btdm_hli_funcs_register
+00000004 T btdm_hli_get_funcs
+00000004 T btdm_hli_get_null_funcs
+
+intc.o:
+00000004 T r_bt_bb_get_intr_mask
+00000004 T r_bt_bb_intr_clear
+00000004 T r_bt_bb_intr_mask_set
+00000030 T r_bt_bb_isr
+00000004 T r_bt_bb_recorrect_is_dead
+0000000c T r_bt_bb_restart_hw_recorrect
+00000004 T r_btdm_isr
+0000000c T r_intc_deinit
+0000000c T r_intc_disable
+0000000c T r_intc_enable
+00000018 T r_intc_init
+00000004 T r_rwbtdm_isr_wrapper
+
+ip_funcs.o:
+00000000 R r_cca_funcs_ro
+00000000 R r_ip_funcs_ro
+
+ke_event.o:
+0000000c T r_ke_event_callback_set
+00000010 T r_ke_event_clear
+00000004 T r_ke_event_flush
+00000010 T r_ke_event_get
+00000004 T r_ke_event_get_all
+00000008 T r_ke_event_init
+0000000c T r_ke_event_schedule
+00000010 T r_ke_event_set
+
+ke_mem.o:
+00000014 T r_ke_check_malloc
+00000020 T r_ke_free
+00000004 T r_ke_is_free
+0000001c T r_ke_malloc
+00000008 T r_ke_mem_init
+00000008 T r_ke_mem_is_empty
+00000004 T r_ke_mem_is_in_heap
+
+ke_msg.o:
+00000010 T r_ke_msg_alloc
+00000000 T r_ke_msg_dest_id_get
+00000004 T r_ke_msg_forward
+00000004 T r_ke_msg_forward_new_id
+00000004 T r_ke_msg_free
+00000000 T r_ke_msg_in_queue
+0000000c T r_ke_msg_send
+00000004 T r_ke_msg_send_basic
+00000000 T r_ke_msg_src_id_get
+
+ke.o:
+00000010 T r_ke_flush
+00000014 T r_ke_init
+00000004 T r_ke_sleep_check
+
+ke_queue.o:
+00000000 T r_ke_queue_extract
+00000000 T r_ke_queue_insert
+
+ke_task.o:
+00000000 T r_cmp_dest_id
+0000000c T r_ke_handler_search
+00000000 T r_ke_msg_discard
+00000000 T r_ke_msg_save
+0000000c T r_ke_state_get
+00000010 T r_ke_state_set
+00000004 T r_ke_task_check
+00000010 T r_ke_task_create
+00000008 T r_ke_task_delete
+00000000 T r_ke_task_handler_end
+00000010 T r_ke_task_handler_get
+00000028 T r_ke_task_handler_get_overwrite
+00000004 T r_ke_task_handler_pre
+0000000c T r_ke_task_init
+00000008 T r_ke_task_msg_flush
+00000010 T r_ke_task_saved_update
+00000018 T r_ke_task_schedule
+
+ke_timer.o:
+00000008 T r_cmp_abs_time
+00000000 T r_cmp_timer_id
+0000000c T r_ke_time
+00000008 T r_ke_time_cmp
+00000004 T r_ke_time_past
+00000004 T r_ke_timer_active
+00000004 T r_ke_timer_adjust_all
+0000000c T r_ke_timer_clear
+00000004 T r_ke_timer_init
+0000000c T r_ke_timer_schedule
+0000001c T r_ke_timer_set
+
+led.o:
+00000000 T r_led_init
+00000000 T r_led_set_all
+
+llc_chmap_upd.o:
+0000001c T hci_le_rd_chnl_map_cmd_handler
+00000008 T ll_channel_map_ind_handler
+00000024 T ll_channel_map_ind_handler_hack
+0000000c T ll_min_used_channels_ind_handler
+00000008 T llc_llcp_ch_map_update_ind_pdu_send
+0000000c T llc_op_ch_map_upd_ind_handler
+00000004 T lld_ch_map_upd_cfm_handler
+00000010 T llm_ch_map_update_ind_handler
+0000000c T r_llc_ch_map_up_proc_err_cb
+00000028 T r_llc_loc_ch_map_proc_continue
+00000014 T r_llc_rem_ch_map_proc_continue
+
+llc_con_upd.o:
+00000010 T hci_le_con_upd_cmd_handler
+00000008 T hci_le_con_upd_cmd_pre_handler
+0000000c T hci_le_rem_con_param_req_neg_reply_cmd_handler
+0000000c T hci_le_rem_con_param_req_reply_cmd_handler
+0000000c T ll_connection_param_req_handler
+00000008 T ll_connection_param_req_handler_pre
+00000004 T ll_connection_param_rsp_handler
+00000004 T ll_connection_param_rsp_param_handler_pre
+00000008 T ll_connection_update_ind_handler
+00000020 T ll_connection_update_ind_handler_hack
+00000004 T llc_ll_connection_param_req_pdu_send
+00000004 T llc_ll_connection_param_rsp_pdu_send
+00000004 T llc_ll_connection_update_ind_pdu_send
+00000010 T llc_op_con_upd_ind_handler
+00000008 T lld_con_estab_ind_handler
+00000010 T lld_con_estab_ind_handler_hack
+00000010 T lld_con_offset_upd_ind_handler
+00000010 T lld_con_param_upd_cfm_handler
+0000000c T r_llc_con_conflict_check
+00000014 T r_llc_con_move_cbk
+00000014 T r_llc_con_plan_set_update
+00000008 T r_llc_con_upd_param_in_range
+0000000c T r_llc_hci_con_param_req_evt_send
+00000018 T r_llc_hci_con_upd_info_send
+00000010 T r_llc_hci_con_upd_info_send_eco
+0000001c T r_llc_loc_con_upd_proc_continue
+0000000c T r_llc_loc_con_upd_proc_err_cb
+00000014 T r_llc_pref_param_compute
+0000000c T r_llc_pref_param_compute_eco
+00000020 T r_llc_rem_con_upd_proc_continue
+00000004 T r_llc_rem_con_upd_proc_err_cb
+
+llc_dbg.o:
+
+llc_disconnect.o:
+00000014 T hci_disconnect_cmd_handler
+00000008 T ll_terminate_ind_handler
+00000004 T llc_ll_terminate_ind_pdu_send
+00000010 T llc_op_disconnect_ind_handler
+00000010 T llc_stopped_ind_handler
+00000010 T lld_disc_ind_handler
+00000008 T r_llc_disconnect
+0000000c T r_llc_disconnect_end
+00000014 T r_llc_disconnect_proc_continue
+0000000c T r_llc_disconnect_proc_err_cb
+00000004 T r_llc_hci_disconnected_dis
+00000008 T r_llc_init_term_proc
+00000004 T r_llc_ll_terminate_ind_ack
+
+llc_dl_upd.o:
+00000018 T hci_le_set_data_len_cmd_handler
+00000008 T hci_le_set_data_len_cmd_pre_handler
+0000000c T ll_length_req_handler
+00000004 T ll_length_rsp_handler
+00000004 T llc_ll_length_req_pdu_send
+00000004 T llc_ll_length_rsp_pdu_send
+0000000c T llc_op_dl_upd_ind_handler
+00000010 T r_dl_upd_proc_start
+0000000c T r_llc_dle_proc_err_cb
+0000000c T r_llc_hci_dl_upd_info_send
+00000024 T r_llc_loc_dl_upd_proc_continue
+00000024 T r_llc_rem_dl_upd_proc
+
+llc_encrypt.o:
+0000000c T f_hci_le_ltk_req_neg_reply_cmd_handler
+00000010 T f_hci_le_ltk_req_reply_cmd_handler
+00000018 T f_hci_le_start_enc_cmd_handler
+00000014 T f_ll_enc_req_handler
+0000000c T f_ll_enc_rsp_handler
+0000000c T f_ll_pause_enc_req_handler
+00000008 T f_ll_pause_enc_rsp_handler
+00000008 T f_ll_start_enc_req_handler
+00000008 T f_ll_start_enc_rsp_handler
+00000020 T f_llc_encrypt_ind_handler
+0000000c T f_llc_op_encrypt_ind_handler
+0000000c T hci_le_ltk_req_neg_reply_cmd_handler
+0000000c T hci_le_ltk_req_reply_cmd_handler
+0000000c T hci_le_start_enc_cmd_handler
+00000008 T ll_enc_req_handler
+00000008 T ll_enc_rsp_handler
+00000008 T ll_pause_enc_req_handler
+00000008 T ll_pause_enc_rsp_handler
+00000008 T ll_start_enc_req_handler
+00000008 T ll_start_enc_rsp_handler
+00000008 T llc_encrypt_ind_handler
+0000000c T llc_ll_enc_req_pdu_send
+00000008 T llc_ll_enc_rsp_pdu_send
+00000004 T llc_ll_pause_enc_req_pdu_send
+00000004 T llc_ll_pause_enc_rsp_pdu_send
+00000004 T llc_ll_start_enc_req_pdu_send
+00000004 T llc_ll_start_enc_rsp_pdu_send
+00000008 T llc_op_encrypt_ind_handler
+00000008 T r_llc_aes_res_cb
+0000000c T r_llc_hci_enc_evt_send
+00000010 T r_llc_hci_ltk_request_evt_send
+00000008 T r_llc_iv_skd_rand_gen
+00000004 T r_llc_ll_pause_enc_rsp_ack_handler
+00000004 T r_llc_ll_reject_ind_ack_handler
+00000004 T r_llc_ll_start_enc_rsp_ack_handler
+00000024 T r_llc_loc_encrypt_proc_continue
+00000000 T r_llc_loc_encrypt_proc_continue_hook
+00000010 T r_llc_loc_encrypt_proc_err_cb
+00000024 T r_llc_rem_encrypt_proc_continue
+00000008 T r_llc_rem_encrypt_proc_continue_eco
+00000010 T r_llc_rem_encrypt_proc_err_cb
+00000008 T r_llc_sk_gen
+
+llc_feat_exch.o:
+00000010 T hci_le_rd_rem_feats_cmd_handler
+00000008 T ll_feature_req_handler
+00000008 T ll_feature_rsp_handler
+00000008 T ll_slave_feature_req_handler
+0000000c T llc_ll_feature_req_pdu_send
+0000000c T llc_ll_feature_rsp_pdu_send
+0000000c T llc_op_feats_exch_ind_handler
+0000000c T r_llc_feats_exch_proc_err_cb
+00000010 T r_llc_hci_feats_info_send
+00000014 T r_llc_loc_feats_exch_proc_continue
+
+llc_hci.o:
+00000008 T ble_acl_data_cb_register
+00000000 B ble_acl_data_rx_cb
+00000000 B ble_acl_data_tx_cb
+0000001c T hci_acl_data_handler
+0000001c T hci_rd_rssi_cmd_handler
+0000001c T hci_rd_tx_pwr_lvl_cmd_handler
+0000000c T hci_vs_set_pref_slave_evt_dur_cmd_handler
+0000000c T hci_vs_set_pref_slave_latency_cmd_handler
+00000004 T llc_hci_command_handler_wrapper
+00000008 T lld_acl_rx_ind_handler
+00000024 T lld_acl_rx_ind_handler_hack
+00000004 T lld_acl_tx_cfm_handler
+0000000c T r_llc_cmd_cmp_send
+0000000c T r_llc_cmd_stat_send
+00000004 T r_llc_hci_cmd_handler_tab_p_get
+00000004 T r_llc_hci_command_handler
+00000004 T r_llc_hci_command_handler_get
+00000010 T r_llc_hci_command_handler_pre
+00000004 T r_llc_hci_command_handler_search
+0000000c T r_llc_hci_nb_cmp_pkts_evt_send
+
+llc_le_ping.o:
+00000004 T f_ll_ping_req_handler
+00000004 T f_ll_ping_rsp_handler
+00000010 T f_llc_auth_payl_nearly_to_handler
+00000014 T f_llc_auth_payl_real_to_handler
+0000000c T f_llc_op_le_ping_ind_handler
+00000018 T hci_rd_auth_payl_to_cmd_handler
+00000018 T hci_wr_auth_payl_to_cmd_handler
+00000008 T ll_ping_req_handler
+00000008 T ll_ping_rsp_handler
+00000008 T llc_auth_payl_nearly_to_handler
+00000008 T llc_auth_payl_real_to_handler
+00000004 T llc_ll_ping_req_pdu_send
+00000004 T llc_ll_ping_rsp_pdu_send
+00000008 T llc_op_le_ping_ind_handler
+00000010 T r_llc_le_ping_proc_continue
+0000000c T r_llc_le_ping_proc_err_cb
+0000000c T r_llc_le_ping_restart
+00000010 T r_llc_le_ping_set
+
+llc_llcp.o:
+00000000 B llc_enc_state
+00000004 T llc_ll_unknown_rsp_pdu_send
+00000008 T llc_llcp_conn_update_ind_ack
+00000008 T llc_llcp_phy_update_ind_ack
+00000004 T lld_llcp_rx_ind_handler_wrapper
+00000014 T lld_llcp_tx_cfm_handler
+00000004 T r_llc_enc_state_get
+0000000c T r_llc_ll_reject_ind_pdu_send
+00000004 T r_llc_ll_unknown_ind_handler
+00000008 T r_llc_llcp_channel_map_ind_ack
+00000000 T r_llc_llcp_pdu_handler_end
+00000010 T r_llc_llcp_pdu_handler_get_overwrite
+00000008 T r_llc_llcp_pdu_handler_pre
+0000001c T r_llc_llcp_send
+00000018 T r_llc_llcp_send_eco
+0000001c T r_llc_llcp_tx_check
+00000004 T r_llcp_pdu_handler_tab_p_get
+00000018 T r_lld_llcp_rx_ind_handler
+
+llc.o:
+0000000c T r_llc_cleanup
+00000018 T r_llc_init
+00000010 T r_llc_llcp_state_set
+00000010 T r_llc_llcp_trans_timer_set
+00000004 T r_llc_proc_collision_check
+0000000c T r_llc_proc_err_ind
+0000000c T r_llc_proc_get
+0000000c T r_llc_proc_id_get
+00000010 T r_llc_proc_reg
+00000000 T r_llc_proc_state_get
+00000000 T r_llc_proc_state_set
+00000010 T r_llc_proc_timer_pause_set
+00000010 T r_llc_proc_timer_set
+00000014 T r_llc_proc_unreg
+00000008 T r_llc_role_get
+0000002c T r_llc_start
+0000000c T r_llc_start_eco
+0000000c T r_llc_stop
+
+llc_phy_upd.o:
+00000010 T f_hci_le_set_phy_cmd_handler
+00000010 T f_ll_phy_req_handler
+0000000c T f_ll_phy_rsp_handler
+00000018 T f_ll_phy_update_ind_handler
+00000010 T f_llc_op_phy_upd_ind_handler
+00000004 T f_lld_phy_upd_cfm_handler
+00000014 T hci_le_rd_phy_cmd_handler
+0000000c T hci_le_set_phy_cmd_handler
+00000008 T ll_phy_req_handler
+00000008 T ll_phy_rsp_handler
+00000008 T ll_phy_update_ind_handler
+00000008 T ll_phy_update_ind_handler_hack
+00000004 T llc_ll_phy_req_pdu_send
+00000004 T llc_ll_phy_rsp_pdu_send
+00000004 T llc_llcp_phy_upd_ind_pdu_send
+0000000c T llc_op_phy_upd_ind_handler
+0000000c T lld_phy_upd_cfm_handler
+00000010 T r_llc_dl_chg_check
+00000014 T r_llc_hci_le_phy_upd_cmp_evt_send
+00000028 T r_llc_loc_phy_upd_proc_continue
+00000000 T r_llc_loc_phy_upd_proc_continue_hook
+0000000c T r_llc_loc_phy_upd_proc_err_cb
+00000020 T r_llc_rem_phy_upd_proc_continue
+0000000c T r_llc_rem_phy_upd_proc_continue_eco
+00000000 T r_llc_rem_phy_upd_proc_continue_hook
+0000000c T r_llc_rem_phy_upd_proc_err_cb
+0000000c T r_phy_upd_proc_start
+
+llc_task.o:
+00000004 T r_llc_msg_handler_tab_p_get
+
+llc_ver_exch.o:
+00000010 T hci_rd_rem_ver_info_cmd_handler
+0000000c T ll_version_ind_handler
+00000008 T llc_llcp_version_ind_pdu_send
+0000000c T llc_op_ver_exch_ind_handler
+0000000c T r_llc_hci_version_info_send
+00000014 T r_llc_ver_exch_loc_proc_continue
+0000000c T r_llc_ver_proc_err_cb
+
+lld_adv.o:
+00000000 B adv_adv_data_need_to_set
+00000000 B adv_scan_rsp_data_need_to_set
+00000004 T ble_ll_adv_aa_setting
+00000004 T ble_ll_get_adv_txed_cnt
+00000004 T ble_ll_qa_test_enable
+00000004 T btdm_disable_adv_delay_impl
+00000000 D g_direct_adv_use_peer_rpa_addr
+00000000 B g_qa_test_config
+00000008 T lld_adv_aux_offset_set
+00000004 T r_ble_ll_qa_config_get
+0000003c T r_lld_adv_adv_data_set
+00000014 T r_lld_adv_adv_data_update
+00000010 T r_lld_adv_adv_data_update_hack
+0000001c T r_lld_adv_aux_ch_idx_set
+00000024 T r_lld_adv_aux_evt_canceled_cbk
+0000001c T r_lld_adv_aux_evt_start_cbk
+00000000 T r_lld_adv_aux_evt_start_cbk_hook
+00000014 T r_lld_adv_coex_check_ext_adv_synced
+00000004 T r_lld_adv_coex_env_reset
+00000004 T r_lld_adv_direct_adv_use_rpa_addr_state_get
+00000004 T r_lld_adv_direct_adv_use_rpa_addr_state_set
+00000018 T r_lld_adv_duration_update
+00000010 T r_lld_adv_dynamic_pti_process
+0000000c T r_lld_adv_end
+00000014 T r_lld_adv_end_hack
+0000002c T r_lld_adv_evt_canceled_cbk
+00000008 T r_lld_adv_evt_canceled_cbk_hack
+00000038 T r_lld_adv_evt_start_cbk
+00000000 T r_lld_adv_evt_start_cbk_hook
+00000020 T r_lld_adv_ext_chain_connectable_construct
+00000014 T r_lld_adv_ext_chain_construct
+0000001c T r_lld_adv_ext_chain_none_construct
+00000020 T r_lld_adv_ext_chain_scannable_construct
+0000002c T r_lld_adv_ext_pkt_prepare
+00000040 T r_lld_adv_ext_pkt_prepare_set
+00000010 T r_lld_adv_frm_cbk
+00000040 T r_lld_adv_frm_isr
+00000020 T r_lld_adv_frm_isr_eco
+00000000 T r_lld_adv_frm_isr_hook
+00000028 T r_lld_adv_frm_skip_isr
+00000010 T r_lld_adv_init
+00000018 T r_lld_adv_pkt_rx
+00000044 T r_lld_adv_pkt_rx_connect_ind
+00000018 T r_lld_adv_pkt_rx_connect_ind_hack
+00000034 T r_lld_adv_pkt_rx_connect_post
+00000030 T r_lld_adv_pkt_rx_send_scan_req_evt
+00000014 T r_lld_adv_rand_addr_update
+00000018 T r_lld_adv_restart
+00000038 T r_lld_adv_scan_rsp_data_set
+00000014 T r_lld_adv_scan_rsp_data_update
+00000010 T r_lld_adv_scan_rsp_data_update_hack
+00000008 T r_lld_adv_set_tx_power
+00000034 T r_lld_adv_start
+00000008 T r_lld_adv_start_eco
+00000020 T r_lld_adv_start_hook
+00000070 T r_lld_adv_start_init_evt_param
+00000000 T r_lld_adv_start_init_evt_param_hook
+00000020 T r_lld_adv_start_schedule_asap
+00000008 T r_lld_adv_start_schedule_asap_hack
+00000088 T r_lld_adv_start_set_cs
+00000018 T r_lld_adv_start_update_filter_policy
+0000001c T r_lld_adv_stop
+00000038 T r_lld_adv_sync_info_set
+00000014 T r_lld_adv_sync_info_update
+00000010 T r_lld_adv_utils_verify_aa
+00000014 T r_lld_ext_adv_dynamic_aux_pti_process
+00000018 T r_lld_ext_adv_dynamic_aux_pti_process_eco
+00000010 T r_lld_ext_adv_dynamic_pti_get
+00000048 T r_lld_ext_adv_dynamic_pti_process
+00000004 T r_lld_legacy_adv_dynamic_pti_get
+0000004c T r_lld_legacy_adv_dynamic_pti_process
+
+lld_cca.o:
+00000000 D ble_2_rf_chan_tab
+00000000 B p_lld_cca
+00000008 T r_lld_cca_bb_sync_found_handle
+00000014 T r_lld_cca_busy_mode_handle
+0000000c T r_lld_cca_chan_avl_timeout_check
+00000004 T r_lld_cca_chan_handle
+00000000 T r_lld_cca_chan_mam
+00000004 T r_lld_cca_chan_perm
+00000004 T r_lld_cca_chan_prn_e
+00000004 T r_lld_cca_chan_prn_s
+00000008 T r_lld_cca_chan_rev_8
+00000004 T r_lld_cca_chan_rssi_cal
+00000008 T r_lld_cca_chan_sel_1
+00000008 T r_lld_cca_chan_sel_2
+00000000 T r_lld_cca_chan_sel_remap
+00000004 T r_lld_cca_chan_unused_check
+0000000c T r_lld_cca_chm_restore
+0000000c T r_lld_cca_chm_update_check
+0000000c T r_lld_cca_con_end
+00000004 T r_lld_cca_con_evt_end_handle
+00000010 T r_lld_cca_con_start
+00000014 T r_lld_cca_config_init
+00000004 T r_lld_cca_data_handle_daa
+0000000c T r_lld_cca_data_handle_lbt
+0000000c T r_lld_cca_evt_cbk
+0000000c T r_lld_cca_force_tx
+00000004 T r_lld_cca_get_cca_env
+0000000c T r_lld_cca_hw_handle
+0000000c T r_lld_cca_idle_mode_handle
+00000014 T r_lld_cca_lbt_handle
+00000010 T r_lld_cca_scst_timeout_check
+00000008 T r_lld_cca_send_empty_packet
+00000008 T r_lld_cca_send_packet_header
+00000004 T r_lld_cca_set_thresh
+00000010 T r_lld_cca_short_control_signal_trans
+00000010 T r_lld_cca_sw_alloc
+00000008 T r_lld_cca_sw_chan_check
+00000008 T r_lld_cca_sw_free
+00000014 T r_lld_cca_sw_handle
+00000018 T r_lld_cca_sw_init
+00000000 D rf_2_ble_chan_tab
+
+lld_con.o:
+00000004 T ble_con_evt_cb_register
+00000004 T ble_con_evt_status_update
+00000004 T btdm_con_maxevtime_cal_impl
+00000000 D con_evt_func_cb
+00000000 B lld_con_cntl_pkt_info
+0000000c T lld_con_evt_sd_evt_time_set
+00000004 T lld_con_llcp_proc_type_get
+00000018 T r_lld_cca_con_evt_start_handle
+00000020 T r_lld_con_activity_act_offset_compute
+00000018 T r_lld_con_activity_offset_compute
+00000018 T r_lld_con_ch_map_update
+00000020 T r_lld_con_cleanup
+00000004 T r_lld_con_cntl_pkt_info_get
+00000008 T r_lld_con_count_get
+00000018 T r_lld_con_current_tx_power_get
+0000001c T r_lld_con_data_flow_set
+0000000c T r_lld_con_data_len_update
+00000020 T r_lld_con_data_tx
+00000008 T r_lld_con_enc_key_load
+00000008 T r_lld_con_event_counter_get
+0000001c T r_lld_con_evt_canceled_cbk
+0000000c T r_lld_con_evt_canceled_cbk_eco
+00000000 T r_lld_con_evt_canceled_cbk_hook
+00000008 T r_lld_con_evt_duration_min_get
+00000004 T r_lld_con_evt_max_eff_time_cal
+00000008 T r_lld_con_evt_sd_evt_time_get
+0000002c T r_lld_con_evt_start_cbk
+00000028 T r_lld_con_evt_start_cbk_eco
+00000000 T r_lld_con_evt_start_cbk_hook
+00000030 T r_lld_con_evt_time_update
+0000001c T r_lld_con_evt_time_update_eco
+00000010 T r_lld_con_free_all_tx_buf
+00000014 T r_lld_con_frm_cbk
+0000002c T r_lld_con_frm_isr
+00000014 T r_lld_con_frm_isr_eco
+00000000 T r_lld_con_frm_isr_hook
+00000020 T r_lld_con_frm_skip_isr
+0000000c T r_lld_con_frm_skip_isr_hack
+00000010 T r_lld_con_init
+00000004 T r_lld_con_llcp_ind_info_clear
+00000020 T r_lld_con_llcp_tx
+00000018 T r_lld_con_max_lat_calc
+00000014 T r_lld_con_offset_get
+00000018 T r_lld_con_param_update
+0000001c T r_lld_con_phys_update
+0000001c T r_lld_con_pref_slave_evt_dur_set
+00000014 T r_lld_con_pref_slave_latency_set
+00000014 T r_lld_con_rssi_get
+00000014 T r_lld_con_rx
+0000001c T r_lld_con_rx_channel_assess
+00000008 T r_lld_con_rx_enc
+00000000 T r_lld_con_rx_hook
+00000014 T r_lld_con_rx_isr
+00000014 T r_lld_con_rx_link_info_check
+00000018 T r_lld_con_rx_llcp_check
+00000028 T r_lld_con_rx_sync_time_update
+00000030 T r_lld_con_sched
+00000008 T r_lld_con_set_tx_power
+000000c8 T r_lld_con_start
+0000000c T r_lld_con_start_eco
+00000004 T r_lld_con_start_hook
+00000014 T r_lld_con_stop
+00000008 T r_lld_con_terminate_max_evt_update
+00000024 T r_lld_con_tx
+0000000c T r_lld_con_tx_eco
+00000008 T r_lld_con_tx_enc
+00000000 T r_lld_con_tx_hook
+00000014 T r_lld_con_tx_isr
+00000010 T r_lld_con_tx_len_update
+0000000c T r_lld_con_tx_len_update_for_intv
+00000010 T r_lld_con_tx_len_update_for_rate
+00000010 T r_lld_con_tx_prog
+00000038 T r_lld_con_tx_prog_new_packet
+00000028 T r_lld_con_tx_prog_new_packet_coex
+00000000 T r_lld_con_tx_prog_new_packet_hook
+00000004 T r_lld_con_update_last_clock
+00000004 T r_lld_con_update_terminte_info_init
+0000004c T r_lld_conn_dynamic_pti_process
+00000018 T r_lld_instant_proc_end
+0000000c T r_lld_update_con_offset
+
+lld_init.o:
+00000000 B g_initor_evt_end_abort
+00000000 D g_initor_evt_end_type_check
+00000004 T r_lld_init_cal_anchor_point
+00000008 T r_lld_init_compute_winoffset
+00000000 T r_lld_init_connect_req_pack
+0000001c T r_lld_init_end
+00000014 T r_lld_init_evt_canceled_cbk
+00000004 T r_lld_init_evt_end_type_check_state_get
+00000004 T r_lld_init_evt_end_type_check_state_set
+00000008 T r_lld_init_evt_end_type_get
+00000004 T r_lld_init_evt_end_type_set
+00000018 T r_lld_init_evt_start_cbk
+00000000 T r_lld_init_evt_start_cbk_hook
+0000000c T r_lld_init_frm_cbk
+00000010 T r_lld_init_frm_eof_isr
+00000000 T r_lld_init_frm_eof_isr_hook
+00000018 T r_lld_init_frm_skip_isr
+00000008 T r_lld_init_init
+0000001c T r_lld_init_process_pkt_rx
+00000024 T r_lld_init_process_pkt_rx_adv_ext_ind
+0000002c T r_lld_init_process_pkt_rx_adv_ind_or_direct_ind
+00000028 T r_lld_init_process_pkt_rx_aux_connect_rsp
+0000003c T r_lld_init_process_pkt_tx
+0000001c T r_lld_init_process_pkt_tx_cal_con_timestamp
+00000000 T r_lld_init_process_pkt_tx_hook
+00000040 T r_lld_init_sched
+00000000 T r_lld_init_sched_hook
+00000008 T r_lld_init_set_tx_power
+00000114 T r_lld_init_start
+00000008 T r_lld_init_start_hack
+00000014 T r_lld_init_start_hook
+0000000c T r_lld_init_stop
+
+lld.o:
+00000004 T btdm_dis_privacy_err_report_impl
+00000004 T btdm_enable_scan_continue_impl
+00000004 T btdm_switch_phy_coded_impl
+00000010 T lld_aux_ptr_thr_set
+00000004 T lld_ch_idx_set
+00000004 T lld_enable_fixed_ch_idx
+00000004 T lld_fixed_ch_idx_state_check
+00000000 B lld_le_pkt_env
+00000004 T lld_le_pkt_err_clear
+00000010 T lld_le_pkt_err_en
+0000000c T lld_le_pkt_err_get
+00000010 T lld_le_pkt_err_set
+00000004 T lld_le_pkt_err_state_check
+00000014 T lld_peer_rpa_to_id
+00000004 T lld_phy_coded_500k_get
+0000002c T lld_priv_rpa_res
+00000008 T lld_ral_valid_count
+0000001c T lld_rpa_renew_start
+00000000 B lld_rpa_res_list
+00000008 T lld_rpa_res_list_init
+00000048 T lld_update_rxbuf_handler
+00000000 B lld_wl_res_list
+00000010 T lld_wl_res_rem
+0000000c T lld_wl_rpa_res
+00000018 T lld_wl_search
+00000014 T r_lld_aa_gen
+00000034 T r_lld_calc_aux_rx
+00000008 T r_lld_cca_alloc
+00000018 T r_lld_cca_data_reset
+00000008 T r_lld_cca_free
+00000004 T r_lld_ch_assess_data_get
+00000010 T r_lld_ch_idx_get
+0000000c T r_lld_ch_idx_get_hack
+00000008 T r_lld_ch_map_set
+00000010 T r_lld_channel_assess
+000000ec T r_lld_core_init
+00000004 T r_lld_deinit
+00000014 T r_lld_env_deinit
+00000014 T r_lld_env_init
+00000000 T r_lld_hw_cca_end_isr
+00000008 T r_lld_hw_cca_evt_handler
+00000008 T r_lld_hw_cca_isr
+0000000c T r_lld_hw_cca_isr_eco
+00000034 T r_lld_init
+00000030 T r_lld_per_adv_list_add
+00000018 T r_lld_per_adv_list_rem
+0000000c T r_lld_process_cca_data
+00000014 T r_lld_ral_search
+00000004 T r_lld_read_clock
+0000003c T r_lld_res_list_add
+00000010 T r_lld_res_list_clear
+00000008 T r_lld_res_list_is_empty
+00000014 T r_lld_res_list_local_rpa_get
+00000014 T r_lld_res_list_peer_rpa_get
+00000010 T r_lld_res_list_peer_update
+00000010 T r_lld_res_list_priv_mode_update
+00000034 T r_lld_res_list_rem
+00000024 T r_lld_reset_reg
+00000020 T r_lld_rpa_renew
+00000014 T r_lld_rpa_renew_evt_canceled_cbk
+0000002c T r_lld_rpa_renew_evt_start_cbk
+00000018 T r_lld_rpa_renew_instant_cbk
+00000018 T r_lld_rxdesc_check
+00000010 T r_lld_rxdesc_check_hack
+0000001c T r_lld_rxdesc_free
+00000008 T r_lld_sw_cca_evt_handler
+00000008 T r_lld_sw_cca_isr
+0000000c T r_lld_sw_cca_isr_eco
+00000044 T r_lld_update_rxbuf
+0000001c T r_lld_update_rxbuf_isr
+00000030 T r_lld_white_list_add
+00000018 T r_lld_white_list_rem
+
+lld_per_adv.o:
+00000000 B periodic_adv_data_need_to_set
+0000000c T r_lld_per_adv_ch_map_update
+00000020 T r_lld_per_adv_chain_construct
+00000008 T r_lld_per_adv_cleanup
+00000004 T r_lld_per_adv_coex_env_reset
+00000010 T r_lld_per_adv_data_set
+00000014 T r_lld_per_adv_data_update
+00000010 T r_lld_per_adv_data_update_hack
+00000014 T r_lld_per_adv_dynamic_pti_get
+0000004c T r_lld_per_adv_dynamic_pti_process
+00000010 T r_lld_per_adv_evt_canceled_cbk
+00000010 T r_lld_per_adv_evt_start_cbk
+00000000 T r_lld_per_adv_evt_start_cbk_hook
+00000018 T r_lld_per_adv_evt_start_chm_upd
+00000044 T r_lld_per_adv_ext_pkt_prepare
+0000000c T r_lld_per_adv_frm_cbk
+00000028 T r_lld_per_adv_frm_isr
+00000010 T r_lld_per_adv_frm_isr_hack
+00000000 T r_lld_per_adv_frm_isr_hook
+00000018 T r_lld_per_adv_frm_skip_isr
+00000010 T r_lld_per_adv_init
+0000000c T r_lld_per_adv_init_info_get
+0000001c T r_lld_per_adv_sched
+00000008 T r_lld_per_adv_set_tx_power
+000000b0 T r_lld_per_adv_start
+00000000 T r_lld_per_adv_start_hook
+00000020 T r_lld_per_adv_stop
+0000000c T r_lld_per_adv_sync_info_get
+
+lld_scan.o:
+00000004 T ble_ll_scan_aa_setting
+00000008 T ble_ll_scan_channel_setting
+00000004 T btdm_enable_scan_forever_impl
+00000024 T coex_lld_scan_stop
+00000010 T coex_schm_ble_scan_stop
+00000010 T r_lld_continue_scan_rx_isr_end_process
+00000018 T r_lld_ext_scan_dynamic_pti_get
+00000054 T r_lld_ext_scan_dynamic_pti_process
+0000000c T r_lld_ext_scan_dynamic_pti_process_eco
+00000008 T r_lld_ext_scan_dynamic_pti_reset
+0000001c T r_lld_scan_create_sync
+0000000c T r_lld_scan_create_sync_cancel
+00000020 T r_lld_scan_end
+00000028 T r_lld_scan_evt_canceled_cbk
+0000001c T r_lld_scan_evt_start_cbk
+00000018 T r_lld_scan_evt_start_cbk_eco
+00000000 T r_lld_scan_evt_start_cbk_hook
+00000014 T r_lld_scan_frm_cbk
+0000001c T r_lld_scan_frm_eof_isr
+0000000c T r_lld_scan_frm_eof_isr_eco
+00000000 T r_lld_scan_frm_eof_isr_hook
+00000014 T r_lld_scan_frm_rx_isr
+00000028 T r_lld_scan_frm_skip_isr
+0000000c T r_lld_scan_frm_skip_isr_eco
+0000000c T r_lld_scan_init
+00000010 T r_lld_scan_params_update
+00000028 T r_lld_scan_process_pkt_rx
+00000024 T r_lld_scan_process_pkt_rx_adv_rep
+0000003c T r_lld_scan_process_pkt_rx_aux_adv_ind
+00000014 T r_lld_scan_process_pkt_rx_aux_chain_ind
+00000018 T r_lld_scan_process_pkt_rx_aux_scan_rsp
+0000001c T r_lld_scan_process_pkt_rx_ext_adv
+00000000 T r_lld_scan_process_pkt_rx_ext_adv_hook
+0000001c T r_lld_scan_process_pkt_rx_ext_adv_ind
+00000020 T r_lld_scan_process_pkt_rx_legacy_adv
+00000010 T r_lld_scan_restart
+00000034 T r_lld_scan_sched
+00000000 T r_lld_scan_sched_hook
+00000008 T r_lld_scan_set_tx_power
+00000104 T r_lld_scan_start
+00000028 T r_lld_scan_start_eco
+00000014 T r_lld_scan_start_hook
+0000000c T r_lld_scan_stop
+0000004c T r_lld_scan_sync_accept
+0000000c T r_lld_scan_sync_info_unpack
+00000010 T r_lld_scan_trunc_ind
+00000058 T r_lld_scan_try_sched
+0000001c T r_lld_scan_try_sched_eco
+
+lld_sync.o:
+0000000c T r_lld_sync_ch_map_update
+0000000c T r_lld_sync_cleanup
+0000000c T r_lld_sync_evt_canceled_cbk
+00000010 T r_lld_sync_evt_start_cbk
+00000000 T r_lld_sync_evt_start_cbk_hook
+0000000c T r_lld_sync_frm_cbk
+00000010 T r_lld_sync_frm_eof_isr
+00000000 T r_lld_sync_frm_eof_isr_hook
+00000010 T r_lld_sync_frm_rx_isr
+00000010 T r_lld_sync_frm_skip_isr
+00000010 T r_lld_sync_init
+00000038 T r_lld_sync_insert
+0000000c T r_lld_sync_insert_eco
+00000008 T r_lld_sync_process_pkt_rx
+00000024 T r_lld_sync_process_pkt_rx_aux_sync_ind
+0000002c T r_lld_sync_process_pkt_rx_pkt_check
+00000000 T r_lld_sync_process_pkt_rx_pkt_check_hook
+0000004c T r_lld_sync_scan_dynamic_pti_process
+00000044 T r_lld_sync_sched
+000000a0 T r_lld_sync_start
+0000000c T r_lld_sync_start_eco
+00000000 T r_lld_sync_start_hook
+0000000c T r_lld_sync_stop
+0000000c T r_lld_sync_trunc_ind
+
+lld_test.o:
+00000004 T lld_dtm_is_ongoing
+0000000c T r_lld_test_cleanup
+00000014 T r_lld_test_evt_canceled_cbk
+00000014 T r_lld_test_evt_start_cbk
+00000000 T r_lld_test_freq2chnl
+0000000c T r_lld_test_frm_cbk
+0000001c T r_lld_test_frm_isr
+0000001c T r_lld_test_frm_isr_hack
+00000008 T r_lld_test_init
+00000010 T r_lld_test_rx_isr
+00000008 T r_lld_test_set_tx_power
+00000074 T r_lld_test_start
+00000028 T r_lld_test_stop
+
+llm_adv.o:
+00000004 T adv_itf_version_is_legacy
+0000000c T f_hci_le_clear_adv_sets_cmd_handler
+00000010 T f_hci_le_rd_max_adv_data_len_cmd_handler
+00000014 T f_hci_le_rd_nb_supp_adv_sets_cmd_handler
+0000000c T f_hci_le_rmv_adv_set_cmd_handler
+00000010 T f_hci_le_set_adv_set_rand_addr_cmd_handler
+0000001c T f_hci_le_set_ext_adv_data_cmd_handler
+00000024 T f_hci_le_set_ext_adv_en_cmd_handler
+00000030 T f_hci_le_set_ext_adv_param_cmd_handler
+0000001c T f_hci_le_set_ext_scan_rsp_data_cmd_handler
+0000001c T f_hci_le_set_per_adv_data_cmd_handler
+00000010 T f_hci_le_set_per_adv_en_cmd_handler
+00000018 T f_hci_le_set_per_adv_param_cmd_handler
+0000000c T hci_le_clear_adv_sets_cmd_handler
+00000014 T hci_le_rd_adv_ch_tx_pw_cmd_handler
+00000014 T hci_le_rd_max_adv_data_len_cmd_handler
+00000014 T hci_le_rd_nb_supp_adv_sets_cmd_handler
+0000000c T hci_le_rmv_adv_set_cmd_handler
+00000010 T hci_le_set_adv_data_cmd_handler
+00000020 T hci_le_set_adv_en_cmd_handler
+0000002c T hci_le_set_adv_param_cmd_handler
+0000000c T hci_le_set_adv_set_rand_addr_cmd_handler
+0000000c T hci_le_set_ext_adv_data_cmd_handler
+0000000c T hci_le_set_ext_adv_en_cmd_handler
+00000014 T hci_le_set_ext_adv_param_cmd_handler
+0000000c T hci_le_set_ext_scan_rsp_data_cmd_handler
+0000000c T hci_le_set_per_adv_data_cmd_handler
+0000000c T hci_le_set_per_adv_en_cmd_handler
+0000000c T hci_le_set_per_adv_param_cmd_handler
+00000010 T hci_le_set_scan_rsp_data_cmd_handler
+0000000c T lld_adv_end_ind_handler
+00000070 T lld_adv_end_ind_handler_hack
+0000000c T lld_per_adv_end_ind_handler
+00000020 T lld_scan_req_ind_handler
+0000000c T llm_clear_adv
+00000008 T llm_ext_adv_get_own_addr
+00000010 T r_llm_adv_con_len_check
+00000010 T r_llm_adv_hdl_to_id
+00000010 T r_llm_adv_set_all_release
+00000020 T r_llm_adv_set_dft_params
+00000010 T r_llm_adv_set_release
+0000000c T r_llm_adv_set_release_hack
+00000018 T r_llm_per_adv_slot_dur
+
+llm_hci.o:
+0000000c T ble_ll_rand_addr_check
+00000010 T ble_ll_reset_rand_addr
+00000008 T f_hci_le_enc_cmd_handler
+00000008 T f_hci_le_enh_rx_test_cmd_handler
+00000008 T f_hci_le_enh_tx_test_cmd_handler
+0000000c T f_hci_le_generate_dhkey_cmd_handler
+00000010 T f_hci_le_rd_local_p256_public_key_cmd_handler
+00000008 T f_hci_le_rx_test_cmd_handler
+00000014 T f_hci_le_test_end_cmd_handler
+00000008 T f_hci_le_tx_test_cmd_handler
+00000008 T hci_le_enc_cmd_handler
+0000000c T hci_le_enh_rx_test_cmd_handler
+0000000c T hci_le_enh_tx_test_cmd_handler
+0000000c T hci_le_generate_dhkey_cmd_handler
+0000000c T hci_le_rd_local_p256_public_key_cmd_handler
+0000000c T hci_le_rx_test_cmd_handler
+00000018 T hci_le_test_end_cmd_handler
+0000000c T hci_le_tx_test_cmd_handler
+00000000 B llm_hci_command_handler_tab
+00000004 T llm_hci_command_handler_wrapper
+00000008 T llm_hci_env_deinit
+00000010 T llm_hci_env_init
+00000000 R llm_local_le_states
+00000008 T r_llm_aes_res_cb
+00000004 T r_llm_hci_cmd_handler_tab_p_get
+00000004 T r_llm_hci_command_handler
+0000000c T r_llm_is_non_con_act_ongoing_check
+00000008 T r_llm_is_wl_accessible
+00000008 T r_llm_no_activity
+
+llm_init.o:
+0000001c T f_hci_le_create_con_cancel_cmd_handler
+00000038 T f_hci_le_create_con_cmd_handler
+00000038 T f_hci_le_ext_create_con_cmd_handler
+0000000c T hci_le_create_con_cancel_cmd_handler
+0000000c T hci_le_create_con_cmd_handler
+0000000c T hci_le_ext_create_con_cmd_handler
+0000004c T lld_init_end_ind_handler
+00000010 T lld_init_end_ind_pre_handler
+
+llm_iso.o:
+
+llm.o:
+00000070 T esp_ble_controller_status_check
+00000000 B le_scan_duplicate_option
+00000018 T llm_adv_is_in_duplicate_scan_duplicate_exceptional_list
+00000004 T llm_csa_get
+00000004 T llm_csa_set
+00000018 T llm_duplicate_list_init
+00000008 T llm_exception_list_init
+00000010 T llm_hdl_to_id
+00000000 R llm_local_le_feats_42
+00000008 T llm_rpa_renew_timer_start
+0000000c T llm_rpa_renew_to_handler_hack
+00000004 T llm_util_flush_list
+00000014 T r_llm_activity_free_get
+0000000c T r_llm_activity_free_set
+0000001c T r_llm_ch_map_update
+00000010 T r_llm_ch_map_update_hack
+00000010 T r_llm_cmd_cmp_send
+0000000c T r_llm_cmd_stat_send
+00000004 T r_llm_deinit
+00000004 T r_llm_dev_list_empty_entry
+00000008 T r_llm_dev_list_search
+0000000c T r_llm_duplicate_list_clear
+00000014 T r_llm_env_deinit
+00000018 T r_llm_env_init
+00000004 T r_llm_get_preferred_phys
+00000040 T r_llm_init
+0000000c T r_llm_is_dev_connected
+0000000c T r_llm_is_dev_synced
+00000004 T r_llm_le_evt_mask_check
+0000000c T r_llm_le_features_get
+00000004 T r_llm_le_scan_duplicate_opt_get
+00000010 T r_llm_link_disc
+00000004 T r_llm_master_ch_map_get
+00000004 T r_llm_plan_elt_get
+00000004 T r_llm_rx_path_comp_get
+00000004 T r_llm_tx_path_comp_get
+00000024 T r_llm_update_duplicate_scan_exceptional_list
+
+llm_scan.o:
+00000004 T ble_ll_get_scan_rxed_cnt
+00000008 T ble_ll_scan_set_perfer_addr
+00000010 T f_hci_le_add_dev_to_per_adv_list_cmd_handler
+00000010 T f_hci_le_clear_per_adv_list_cmd_handler
+0000001c T f_hci_le_per_adv_create_sync_cancel_cmd_handler
+0000001c T f_hci_le_per_adv_create_sync_cmd_handler
+00000010 T f_hci_le_per_adv_term_sync_cmd_handler
+00000010 T f_hci_le_rd_per_adv_list_size_cmd_handler
+0000000c T f_hci_le_rmv_dev_from_per_adv_list_cmd_handler
+00000020 T f_hci_le_set_ext_scan_en_cmd_handler
+00000010 T f_hci_le_set_ext_scan_param_cmd_handler
+00000020 T f_hci_le_set_scan_en_cmd_handler
+00000014 T f_hci_le_set_scan_param_cmd_handler
+00000084 T f_lld_adv_rep_ind_handler_hack
+00000034 T f_lld_per_adv_rep_ind_handler
+00000030 T f_lld_per_adv_rx_end_ind_handler_hack
+00000028 T f_lld_scan_end_ind_handler_hack
+00000028 T f_lld_sync_start_req_handler
+00000010 T f_llm_scan_period_to_handler_hack
+0000000c T hci_le_add_dev_to_per_adv_list_cmd_handler
+0000000c T hci_le_clear_per_adv_list_cmd_handler
+0000000c T hci_le_per_adv_create_sync_cancel_cmd_handler
+0000000c T hci_le_per_adv_create_sync_cmd_handler
+0000000c T hci_le_per_adv_term_sync_cmd_handler
+00000014 T hci_le_rd_per_adv_list_size_cmd_handler
+0000000c T hci_le_rmv_dev_from_per_adv_list_cmd_handler
+0000000c T hci_le_set_ext_scan_en_cmd_handler
+0000000c T hci_le_set_ext_scan_param_cmd_handler
+0000000c T hci_le_set_scan_en_cmd_handler
+0000000c T hci_le_set_scan_param_cmd_handler
+0000000c T lld_adv_rep_ind_handler
+00000008 T lld_adv_rep_ind_handler_hack
+00000008 T lld_per_adv_rep_ind_handler
+0000000c T lld_per_adv_rx_end_ind_handler
+00000008 T lld_per_adv_rx_end_ind_handler_hack
+0000000c T lld_scan_end_ind_handler
+00000008 T lld_scan_end_ind_handler_hack
+0000000c T lld_sync_start_req_handler
+00000008 T lld_sync_start_req_handler_hack
+0000000c T llm_adv_reports_list_remove
+0000000c T llm_cal_duplicate_scan_defer_count
+00000004 T llm_is_pal_empty
+00000008 T llm_scan_check_mesh_adv_data
+0000000c T llm_scan_period_to_handler
+00000008 T llm_scan_period_to_handler_hack
+00000010 T llm_util_check_adv_report_list_by_hash
+00000010 T llm_util_check_mesh_adv_report_list
+00000008 T r_llm_activity_syncing_get
+0000000c T r_llm_adv_rep_flow_control_check
+00000010 T r_llm_adv_rep_flow_control_check_eco
+00000008 T r_llm_adv_rep_flow_control_update
+0000000c T r_llm_adv_rep_flow_control_update_eco
+0000000c T r_llm_adv_reports_list_check
+00000004 T r_llm_ble_update_adv_flow_control
+00000008 T r_llm_env_adv_dup_filt_deinit
+00000014 T r_llm_env_adv_dup_filt_deinit_eco
+00000018 T r_llm_env_adv_dup_filt_init
+00000010 T r_llm_env_adv_dup_filt_init_eco
+00000004 T r_llm_init_ble_adv_report_flow_contol
+00000038 T r_llm_le_adv_report_ind_duplicate_check
+00000018 T r_llm_scan_start
+00000008 T r_llm_scan_start_eco
+00000008 T r_llm_scan_sync_acad_attach
+00000008 T r_llm_scan_sync_acad_detach
+00000010 T r_llm_send_adv_lost_event_to_host
+00000010 T r_llm_update_duplicate_scan_count
+
+llm_task.o:
+00000010 T lld_test_end_ind_handler
+00000004 T r_llm_msg_handler_tab_p_get
+
+misc.o:
+00000000 R TASK_DESC_MISC
+00000000 T r_misc_deinit
+00000010 T r_misc_free_em_buf_in_isr
+00000008 T r_misc_init
+00000004 T r_misc_msg_handler_tab_p_get
+
+modules_funcs.o:
+00000000 R r_modules_funcs_ro
+
+nvds.o:
+0000000c T f_nvds_del
+0000000c T f_nvds_get
+00000008 T f_nvds_put
+00000004 T r_nvds_browse_tag
+00000008 T r_nvds_del
+00000008 T r_nvds_erase
+00000008 T r_nvds_get
+00000020 T r_nvds_init
+00000008 T r_nvds_init_memory
+0000000c T r_nvds_is_magic_number_ok
+0000000c T r_nvds_lock
+00000014 T r_nvds_null_init
+00000010 T r_nvds_purge
+00000008 T r_nvds_put
+0000000c T r_nvds_read
+0000000c T r_nvds_walk_tag
+0000000c T r_nvds_write
+
+osi.o:
+00000024 T btdm_osi_funcs_register
+
+plf_funcs.o:
+00000000 R r_plf_funcs_ro
+
+rf_coexist_hook.o:
+00000014 T bt_rf_coex_hook_register
+00000004 T bt_rf_coex_hooks_p_set
+
+rf_coexist.o:
+00000010 T bt_rf_coex_cfg_overwrite
+00000004 T btdm_coex_dynamic_pti_enable
+0000000c T r_bt_rf_coex_cfg_set
+00000004 T r_bt_rf_coex_conn_dynamic_pti_en_get
+00000008 T r_bt_rf_coex_conn_phy_coded_data_time_limit_en_get
+00000004 T r_bt_rf_coex_ext_adv_dynamic_pti_en_get
+00000004 T r_bt_rf_coex_ext_scan_dynamic_pti_en_get
+00000004 T r_bt_rf_coex_legacy_adv_dynamic_pti_en_get
+00000004 T r_bt_rf_coex_per_adv_dynamic_pti_en_get
+00000004 T r_bt_rf_coex_pti_table_get
+00000004 T r_bt_rf_coex_st_param_get
+00000004 T r_bt_rf_coex_st_param_set
+00000004 T r_bt_rf_coex_sync_scan_dynamic_pti_en_get
+
+rf_espressif.o:
+00000014 T r_rf_em_init
+00000000 T r_rf_force_agc_enable
+00000000 T r_rf_reg_rd
+00000000 T r_rf_reg_wr
+00000000 T r_rf_reset
+00000000 T r_rf_rssi_convert
+00000004 T r_rf_sleep
+00000008 T r_rf_sleep_hack
+00000008 T r_rf_txpwr_cs_get
+00000004 T r_rf_txpwr_dbm_get
+00000020 T r_rw_rf_init
+
+rf_multi_antena.o:
+00000008 T r_bt_rma_apply_rule_cs_fmt
+00000004 T r_bt_rma_apply_rule_cs_idx
+00000004 T r_bt_rma_configure
+0000000c T r_bt_rma_deregister_rule_cs_fmt
+00000008 T r_bt_rma_deregister_rule_cs_idx
+00000008 T r_bt_rma_get_ant_by_act
+00000008 T r_bt_rma_init
+0000000c T r_bt_rma_register_rule_cs_fmt
+00000008 T r_bt_rma_register_rule_cs_idx
+
+rf_txpwr.o:
+00000014 T ble_txpwr_get
+00000004 T ble_txpwr_lvl_range_get
+0000000c T ble_txpwr_set
+0000000c T ble_txpwr_set_inter
+0000000c T bt_controller_txpwr_index_2_level
+0000000c T bt_controller_txpwr_level_2_index
+00000000 B g_rf_pwr_tbl_desc
+00000008 T r_bt_rtp_apply_rule_cs_fmt
+00000004 T r_bt_rtp_apply_rule_cs_idx
+0000000c T r_bt_rtp_deregister_rule_cs_fmt
+00000008 T r_bt_rtp_deregister_rule_cs_idx
+00000008 T r_bt_rtp_get_txpwr_idx_by_act
+00000008 T r_bt_rtp_init
+0000000c T r_bt_rtp_register_rule_cs_fmt
+00000008 T r_bt_rtp_register_rule_cs_idx
+00000004 T r_rf_pwr_tbl_get
+00000014 T rtp_pwr_tbl_desc_init
+
+rf_util.o:
+00000004 T r_rf_util_cs_fmt_convert
+
+rwble.o:
+00000004 T bb_hw_intr_set
+0000001c T bb_int_init
+00000000 B ble_isr_state
+00000008 T esp_get_ble_isr_err_counter
+00000004 T r_ble_isr_error_state_get
+00000010 T r_ble_sw_cca_check_isr
+00000008 T r_cca_hw_intr_set
+00000018 T r_cca_init
+0000001c T r_rwble_hw_disable
+0000000c T r_rwble_init
+000000b0 T r_rwble_isr
+00000010 T r_rwble_isr_hw_fixed
+00000018 T r_rwble_sleep_enter
+0000000c T r_rwble_sleep_wakeup_end
+
+rwip_driver.o:
+00000000 T r_rwip_active_check
+00000038 T r_rwip_aes_encrypt
+0000000c T r_rwip_crypt_evt_handler
+00000014 T r_rwip_crypt_isr_handler
+00000050 T r_rwip_driver_init
+00000010 T r_rwip_half_slot_2_lpcycles
+0000000c T r_rwip_hus_2_lpcycles
+00000020 T r_rwip_isr
+00000010 T r_rwip_lpcycles_2_hus
+00000008 T r_rwip_prevent_sleep_clear
+00000008 T r_rwip_prevent_sleep_set
+00000040 T r_rwip_sleep
+00000018 T r_rwip_sw_int_handler
+00000024 T r_rwip_sw_int_req
+00000018 T r_rwip_time_get
+00000014 T r_rwip_timer_10ms_handler
+0000002c T r_rwip_timer_10ms_set
+00000014 T r_rwip_timer_hs_handler
+00000028 T r_rwip_timer_hs_set
+0000001c T r_rwip_timer_hus_handler
+00000008 T r_rwip_timer_hus_handler_hack
+00000038 T r_rwip_timer_hus_set
+00000048 T r_rwip_wakeup
+00000030 T r_rwip_wakeup_end
+0000000c T r_rwip_wakeup_hack
+0000003c T rwip_aes_encrypt_sync
+
+rwip.o:
+00000004 T btdm_get_power_state_impl
+00000004 T btdm_get_prevent_sleep_flag_impl
+00000004 T btdm_power_state_active_impl
+00000000 B g_waking_sleeping_sem
+0000000c T r_rwip_assert
+00000034 T r_rwip_init
+00000028 T r_rwip_reset
+00000008 T r_rwip_schedule
+00000010 T r_rwip_wlcoex_set
+
+sch_alarm.o:
+00000010 T r_sch_alarm_clear
+00000008 T r_sch_alarm_init
+00000010 T r_sch_alarm_prog
+00000018 T r_sch_alarm_set
+0000001c T r_sch_alarm_timer_isr
+
+sch_arb.o:
+0000000c T r_sch_arb_conflict_check
+0000001c T r_sch_arb_elt_cancel
+00000024 T r_sch_arb_event_start_isr
+0000000c T r_sch_arb_init
+00000034 T r_sch_arb_insert
+00000000 T r_sch_arb_insert_hook
+00000014 T r_sch_arb_prog_timer
+00000014 T r_sch_arb_remove
+00000010 T r_sch_arb_sw_isr
+
+sch_plan.o:
+00000004 T r_sch_plan_chk
+00000008 T r_sch_plan_clock_wrap_offset_update
+00000010 T r_sch_plan_conflict_check
+0000000c T r_sch_plan_init
+00000004 T r_sch_plan_interval_req
+0000000c T r_sch_plan_offset_max_calc
+00000020 T r_sch_plan_offset_req
+00000000 T r_sch_plan_offset_req_hook
+00000004 T r_sch_plan_position_range_compute
+00000008 T r_sch_plan_rem
+00000004 T r_sch_plan_req
+00000008 T r_sch_plan_set
+
+sch_prog.o:
+00000004 T ble_evt_kick_delay_get
+00000004 T ble_evt_kick_delay_update
+00000038 T r_sch_prog_ble_push
+00000000 T r_sch_prog_bt_push
+00000004 T r_sch_prog_end_isr
+00000010 T r_sch_prog_end_isr_handler
+00000020 T r_sch_prog_et_state_reset
+00000028 T r_sch_prog_hw_reset_try
+00000010 T r_sch_prog_init
+00000024 T r_sch_prog_push
+0000000c T r_sch_prog_rx_isr
+00000010 T r_sch_prog_skip_isr
+00000004 T r_sch_prog_state_get
+0000000c T r_sch_prog_tx_isr
+00000000 D sch_prog_state
+
+sch_slice.o:
+00000008 T r_sch_slice_bg_add
+00000008 T r_sch_slice_bg_remove
+00000020 T r_sch_slice_compute
+00000010 T r_sch_slice_fg_add
+00000014 T r_sch_slice_fg_remove
+00000018 T r_sch_slice_init
+00000010 T r_sch_slice_per_add
+00000010 T r_sch_slice_per_remove
+
+sdk_config_hl.o:
+00000004 T r_sdk_config_get_hl_derived_opts
+00000004 T r_sdk_config_set_hl_derived_opts
+
+sdk_config.o:
+00000004 T btdm_enable_irq_fifo
+00000004 T r_sdk_cfg_priv_opts_ext_get
+00000004 T r_sdk_config_get_bt_sleep_enable
+00000004 T r_sdk_config_get_opts
+00000004 T r_sdk_config_get_opts_ext
+00000004 T r_sdk_config_get_priv_opts
+00000004 T r_sdk_config_set_bt_sleep_enable
+00000008 T r_sdk_config_set_opts
+00000000 D sdk_cfg_priv_opts_extend
+00000004 T sdk_config_extend_set_pll_track
+00000004 T sdk_config_get_mask
+00000008 T sdk_config_overwrite_priv_opts
+00000004 T sdk_config_priv_update_prog_delay
+00000008 T sdk_config_set_derived_opts
+00000004 T sdk_config_set_mask
+00000008 T sdk_config_set_opts_ext
+
+task.o:
+00000000 B btdm_ol_task_env
+00000004 T btdm_vnd_offload_task_deregister
+00000004 T btdm_vnd_offload_task_register
+00000004 T r_btdm_task_post
+00000004 T r_btdm_task_post_from_isr
+00000014 T r_btdm_task_post_from_isr_impl
+00000024 T r_btdm_task_post_impl
+00000004 T r_btdm_task_recycle
+00000004 T r_btdm_vnd_offload_post
+00000004 T r_btdm_vnd_offload_post_from_isr
+00000004 T r_btdm_vnd_offload_process
+00000004 T r_btdm_vnd_ol_task_env_get
+
+timer.o:
+
+vhci.o:
+00000008 T API_vhci_host_check_send_available
+00000004 T API_vhci_host_register_callback
+00000010 T API_vhci_host_send_packet
+00000014 T r_vhci_check_packet_allow
+0000000c T r_vhci_deinit
+00000008 T r_vhci_flow_off
+00000008 T r_vhci_flow_on
+0000001c T r_vhci_init
+00000008 T r_vhci_notify_host_send_available
+00000018 T r_vhci_send_to_host
+
+vshci.o:
+00000008 T r_vshci_init
+
+vshci_task.o:
+00000010 T f_hci_vendor_ble_init_adv_flow_control_cmd_handler
+00000004 T f_hci_vendor_ble_qa_test_cmd_handler
+00000010 T f_hci_vendor_ble_update_adv_report_flow_control_cmd_handler
+00000014 T f_hci_vendor_ble_update_duplicate_exceptional_list_cmd_handler
+00000000 D hci_command_handler_tab_esp_eco
+00000000 D hci_command_handler_tab_esp_hack
+00000010 T hci_dbg_common_echo_cmd_handler
+00000014 T hci_vendor_ble_clear_adv_cmd_handler
+00000018 T hci_vendor_ble_init_adv_flow_control_cmd_handler
+00000008 T hci_vendor_ble_qa_test_cmd_handler
+00000018 T hci_vendor_ble_update_adv_report_flow_control_cmd_handler
+00000018 T hci_vendor_ble_update_duplicate_exceptional_list_cmd_handler
+00000004 T r_esp_vendor_hci_command_handler
+00000008 T r_register_esp_vendor_cmd_handler
+00000004 T r_vnd_hci_command_handler
+00000004 T vnd_hci_command_handler_wrapper

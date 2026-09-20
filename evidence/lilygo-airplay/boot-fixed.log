@@ -1,0 +1,118 @@
+[0;32mI (122) esp_image: segment 1: paddr=0002eea0 vaddr=3fc998ESP-ROM:esp32s3-20210327
+Build:Mar 27 2021
+rst:0x15 (USB_UART_CHIP_RESET),boot:0x8 (SPI_FAST_FLASH_BOOT)
+Saved PC:0x4037ad76
+SPIWP:0xee
+mode:DIO, clock div:1
+load:0x3fce3818,len:0x1750
+load:0x403c9700,len:0x4
+load:0x403c9704,len:0xbe4
+load:0x403cc700,len:0x2d34
+entry 0x403c9908
+[0;32mI (26) boot: ESP-IDF 5.1.6 2nd stage bootloader[0m
+[0;32mI (27) boot: compile time Sep 20 2026 15:07:35[0m
+[0;32mI (27) boot: Multicore bootloader[0m
+[0;32mI (30) boot: chip revision: v0.2[0m
+[0;32mI (33) boot.esp32s3: Boot SPI Speed : 80MHz[0m
+[0;32mI (38) boot.esp32s3: SPI Mode       : DIO[0m
+[0;32mI (43) boot.esp32s3: SPI Flash Size : 16MB[0m
+[0;32mI (48) boot: Enabling RNG early entropy source...[0m
+[0;32mI (53) boot: Partition Table:[0m
+[0;32mI (57) boot: ## Label            Usage          Type ST Offset   Length[0m
+[0;32mI (64) boot:  0 nvs              WiFi data        01 02 00009000 00006000[0m
+[0;32mI (71) boot:  1 phy_init         RF data          01 01 0000f000 00001000[0m
+[0;32mI (79) boot:  2 factory          factory app      00 00 00010000 00177000[0m
+[0;32mI (86) boot: End of partition table[0m
+[0;32mI (91) esp_image: segment 0: paddr=00010020 vaddr=3c0a0020 size=1ee78h (126584) map[0m
+[0;32mI (122) esp_image: segment 1: paddr=0002eea0 vaddr=3fc99800 size=01178h (  4472) load[0m
+[0;32mI (123) esp_image: segment 2: paddr=00030020 vaddr=42000020 size=9ec34h (650292) map[0m
+[0;32mI (244) esp_image: segment 3: paddr=000cec5c vaddr=3fc9a978 size=037c8h ( 14280) load[0m
+[0;32mI (248) esp_image: segment 4: paddr=000d242c vaddr=40374000 size=1572ch ( 87852) load[0m
+[0;32mI (278) boot: Loaded app from partition at offset 0x10000[0m
+[0;32mI (279) boot: Disabling RNG early entropy source...[0m
+[0;32mI (279) cpu_start: Multicore app[0m
+[0;32mI (283) octal_psram: vendor id    : 0x0d (AP)[0m
+[0;32mI (288) octal_psram: dev id       : 0x02 (generation 3)[0m
+[0;32mI (293) octal_psram: density      : 0x03 (64 Mbit)[0m
+[0;32mI (299) octal_psram: good-die     : 0x01 (Pass)[0m
+[0;32mI (304) octal_psram: Latency      : 0x01 (Fixed)[0m
+[0;32mI (309) octal_psram: VCC          : 0x01 (3V)[0m
+[0;32mI (315) octal_psram: SRF          : 0x01 (Fast Refresh)[0m
+[0;32mI (320) octal_psram: BurstType    : 0x01 (Hybrid Wrap)[0m
+[0;32mI (326) octal_psram: BurstLen     : 0x01 (32 Byte)[0m
+[0;32mI (332) octal_psram: Readlatency  : 0x02 (10 cycles@Fixed)[0m
+[0;32mI (338) octal_psram: DriveStrength: 0x00 (1/1)[0m
+[0;32mI (344) MSPI Timing: PSRAM timing tuning index: 4[0m
+[0;32mI (348) esp_psram: Found 8MB PSRAM device[0m
+[0;32mI (353) esp_psram: Speed: 80MHz[0m
+[0;32mI (357) cpu_start: Pro cpu up.[0m
+[0;32mI (361) cpu_start: Starting app cpu, entry point is 0x40375600[0m
+[0;32mI (0) cpu_start: App cpu up.[0m
+[0;32mI (813) esp_psram: SPI SRAM memory test OK[0m
+[0;32mI (822) cpu_start: Pro cpu start user code[0m
+[0;32mI (822) cpu_start: cpu freq: 240000000 Hz[0m
+[0;32mI (822) cpu_start: Application information:[0m
+[0;32mI (822) cpu_start: Project name:     volvo_airplay[0m
+[0;32mI (822) cpu_start: App version:      1[0m
+[0;32mI (822) cpu_start: Compile time:     Sep 20 2026 15:07:26[0m
+[0;32mI (823) cpu_start: ELF file SHA256:  c9dd817f6fec6f4c...[0m
+[0;32mI (823) cpu_start: ESP-IDF:          5.1.6[0m
+[0;32mI (823) cpu_start: Min chip rev:     v0.0[0m
+[0;32mI (823) cpu_start: Max chip rev:     v0.99 [0m
+[0;32mI (823) cpu_start: Chip rev:         v0.2[0m
+[0;32mI (824) heap_init: Initializing. RAM available for dynamic allocation:[0m
+[0;32mI (824) heap_init: At 3FCA28F0 len 00046E20 (283 KiB): DRAM[0m
+[0;32mI (824) heap_init: At 3FCE9710 len 00005724 (21 KiB): STACK/DRAM[0m
+[0;32mI (824) heap_init: At 3FCF0000 len 00008000 (32 KiB): DRAM[0m
+[0;32mI (825) heap_init: At 600FE010 len 00001FD8 (7 KiB): RTCRAM[0m
+[0;32mI (825) esp_psram: Adding pool of 8192K of PSRAM memory to heap allocator[0m
+[0;32mI (826) spi_flash: detected chip: generic[0m
+[0;32mI (826) spi_flash: flash io: dio[0m
+[0;32mI (827) sleep: Configure to isolate all GPIO pins in sleep state[0m
+[0;32mI (827) sleep: Enable automatic switching of GPIO sleep configuration[0m
+[0;32mI (828) app_start: Starting scheduler on CPU0[0m
+[0;32mI (828) app_start: Starting scheduler on CPU1[0m
+[0;32mI (828) main_task: Started on CPU0[0m
+[0;32mI (838) esp_psram: Reserving pool of 32K of internal memory for DMA/internal allocations[0m
+[0;32mI (838) main_task: Calling app_main()[0m
+[0;32mI (838) AIRPLAY: PSRAM detected: 8388608 bytes[0m
+[0;32mI (848) pp: pp rom version: e7ae62f[0m
+[0;32mI (848) net80211: net80211 rom version: e7ae62f[0m
+I (858) wifi:wifi driver task: 3fcb6394, prio:23, stack:6656, core=0
+I (858) wifi:wifi firmware version: 02461b5
+I (858) wifi:wifi certification version: v7.0
+I (858) wifi:config NVS flash: enabled
+I (858) wifi:config nano formating: disabled
+I (858) wifi:Init data frame dynamic rx buffer num: 32
+I (858) wifi:Init static rx mgmt buffer num: 5
+I (858) wifi:Init management short buffer num: 32
+I (858) wifi:Init dynamic tx buffer num: 32
+I (858) wifi:Init static tx FG buffer num: 2
+I (858) wifi:Init static rx buffer size: 1600
+I (858) wifi:Init static rx buffer num: 10
+I (858) wifi:Init dynamic rx buffer num: 32
+[0;32mI (858) wifi_init: rx ba win: 6[0m
+[0;32mI (858) wifi_init: tcpip mbox: 32[0m
+[0;32mI (858) wifi_init: udp mbox: 6[0m
+[0;32mI (858) wifi_init: tcp mbox: 6[0m
+[0;32mI (858) wifi_init: tcp tx win: 5760[0m
+[0;32mI (858) wifi_init: tcp rx win: 5760[0m
+[0;32mI (858) wifi_init: tcp mss: 1440[0m
+[0;32mI (858) wifi_init: WiFi IRAM OP enabled[0m
+[0;32mI (858) wifi_init: WiFi RX IRAM OP enabled[0m
+[0;32mI (868) phy_init: phy_version 680,a6008b2,Jun  4 2024,16:41:10[0m
+I (898) wifi:mode : softAP (68:ee:8f:5b:3d:35)
+I (898) wifi:Total power save buffer number: 16
+I (898) wifi:Init max length of beacon: 752/752
+I (898) wifi:Init max length of beacon: 752/752
+[0;32mI (908) esp_netif_lwip: DHCP server started on interface WIFI_AP_DEF with IP: 192.168.4.1[0m
+[0;32mI (908) mdns_mem: mDNS task will be created from internal RAM[0m
+RAOP raop_create:209 starting mDNS with 68EE8F5B3D35@Volvo AirPlay
+[0;32mI (908) AIRPLAY: READY ssid=Volvo-AirPlay ip=192.168.4.1 AirPlay=Volvo AirPlay[0m
+[0;32mI (5908) AIRPLAY: PCM bytes=0 nonzero=0 callbacks=0 free_internal=245171[0m
+[0;32mI (10908) AIRPLAY: PCM bytes=0 nonzero=0 callbacks=0 free_internal=245179[0m
+[0;32mI (15908) AIRPLAY: PCM bytes=0 nonzero=0 callbacks=0 free_internal=245179[0m
+[0;32mI (20908) AIRPLAY: PCM bytes=0 nonzero=0 callbacks=0 free_internal=245179[0m
+[0;32mI (25908) AIRPLAY: PCM bytes=0 nonzero=0 callbacks=0 free_internal=245179[0m
+[0;32mI (30908) AIRPLAY: PCM bytes=0 nonzero=0 callbacks=0 free_internal=245179[0m
+[0;32mI (35908) AIRPLAY: PCM bytes=0 nonzero=0 callbacks=0 free_internal=245179[0m

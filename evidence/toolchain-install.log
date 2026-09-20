@@ -1,0 +1,201 @@
+Detecting the Python interpreter
+Checking "python3" ...
+Python 3.9.6
+"python3" has been detected
+Checking Python compatibility
+Installing ESP-IDF tools
+Updating /Users/lojaws/Documents/ESP32-S3-Car-Adapter/.tools/idf-env.json
+Selected targets are: esp32s3
+Current system platform: macos-arm64
+Installing tools: xtensa-esp-elf-gdb, xtensa-esp32s3-elf, riscv32-esp-elf, esp32ulp-elf, openocd-esp32, esp-rom-elfs
+Installing xtensa-esp-elf-gdb@12.1_20231023
+Downloading https://github.com/espressif/binutils-gdb/releases/download/esp-gdb-v12.1_20231023/xtensa-esp-elf-gdb-12.1_20231023-aarch64-apple-darwin21.1.tar.gz
+Destination: /Users/lojaws/Documents/ESP32-S3-Car-Adapter/.tools/dist/xtensa-esp-elf-gdb-12.1_20231023-aarch64-apple-darwin21.1.tar.gz.tmp
+Done
+Extracting /Users/lojaws/Documents/ESP32-S3-Car-Adapter/.tools/dist/xtensa-esp-elf-gdb-12.1_20231023-aarch64-apple-darwin21.1.tar.gz to /Users/lojaws/Documents/ESP32-S3-Car-Adapter/.tools/tools/xtensa-esp-elf-gdb/12.1_20231023
+Installing xtensa-esp32s3-elf@esp-12.2.0_20230208
+Downloading https://github.com/espressif/crosstool-NG/releases/download/esp-12.2.0_20230208/xtensa-esp32s3-elf-12.2.0_20230208-aarch64-apple-darwin.tar.xz
+Destination: /Users/lojaws/Documents/ESP32-S3-Car-Adapter/.tools/dist/xtensa-esp32s3-elf-12.2.0_20230208-aarch64-apple-darwin.tar.xz.tmp
+Done
+Extracting /Users/lojaws/Documents/ESP32-S3-Car-Adapter/.tools/dist/xtensa-esp32s3-elf-12.2.0_20230208-aarch64-apple-darwin.tar.xz to /Users/lojaws/Documents/ESP32-S3-Car-Adapter/.tools/tools/xtensa-esp32s3-elf/esp-12.2.0_20230208
+Installing riscv32-esp-elf@esp-12.2.0_20230208
+Downloading https://github.com/espressif/crosstool-NG/releases/download/esp-12.2.0_20230208/riscv32-esp-elf-12.2.0_20230208-aarch64-apple-darwin.tar.xz
+Destination: /Users/lojaws/Documents/ESP32-S3-Car-Adapter/.tools/dist/riscv32-esp-elf-12.2.0_20230208-aarch64-apple-darwin.tar.xz.tmp
+Done
+Extracting /Users/lojaws/Documents/ESP32-S3-Car-Adapter/.tools/dist/riscv32-esp-elf-12.2.0_20230208-aarch64-apple-darwin.tar.xz to /Users/lojaws/Documents/ESP32-S3-Car-Adapter/.tools/tools/riscv32-esp-elf/esp-12.2.0_20230208
+Installing esp32ulp-elf@2.35_20220830
+Downloading https://github.com/espressif/binutils-gdb/releases/download/esp32ulp-elf-v2.35_20220830/esp32ulp-elf-2.35_20220830-macos-arm64.tar.gz
+Destination: /Users/lojaws/Documents/ESP32-S3-Car-Adapter/.tools/dist/esp32ulp-elf-2.35_20220830-macos-arm64.tar.gz.tmp
+Done
+Extracting /Users/lojaws/Documents/ESP32-S3-Car-Adapter/.tools/dist/esp32ulp-elf-2.35_20220830-macos-arm64.tar.gz to /Users/lojaws/Documents/ESP32-S3-Car-Adapter/.tools/tools/esp32ulp-elf/2.35_20220830
+Installing openocd-esp32@v0.12.0-esp32-20241016
+Downloading https://github.com/espressif/openocd-esp32/releases/download/v0.12.0-esp32-20241016/openocd-esp32-macos-arm64-0.12.0-esp32-20241016.tar.gz
+Destination: /Users/lojaws/Documents/ESP32-S3-Car-Adapter/.tools/dist/openocd-esp32-macos-arm64-0.12.0-esp32-20241016.tar.gz.tmp
+Done
+Extracting /Users/lojaws/Documents/ESP32-S3-Car-Adapter/.tools/dist/openocd-esp32-macos-arm64-0.12.0-esp32-20241016.tar.gz to /Users/lojaws/Documents/ESP32-S3-Car-Adapter/.tools/tools/openocd-esp32/v0.12.0-esp32-20241016
+Installing esp-rom-elfs@20230320
+Downloading https://github.com/espressif/esp-rom-elfs/releases/download/20230320/esp-rom-elfs-20230320.tar.gz
+Destination: /Users/lojaws/Documents/ESP32-S3-Car-Adapter/.tools/dist/esp-rom-elfs-20230320.tar.gz.tmp
+Done
+Extracting /Users/lojaws/Documents/ESP32-S3-Car-Adapter/.tools/dist/esp-rom-elfs-20230320.tar.gz to /Users/lojaws/Documents/ESP32-S3-Car-Adapter/.tools/tools/esp-rom-elfs/20230320
+Installing Python environment and packages
+Creating a new Python environment in /Users/lojaws/Documents/ESP32-S3-Car-Adapter/.tools/python_env/idf5.1_py3.9_env
+Downloading https://dl.espressif.com/dl/esp-idf/espidf.constraints.v5.1.txt
+Destination: /Users/lojaws/Documents/ESP32-S3-Car-Adapter/.tools/espidf.constraints.v5.1.txt.tmp
+Done
+Requirement already satisfied: pip in ./Documents/ESP32-S3-Car-Adapter/.tools/python_env/idf5.1_py3.9_env/lib/python3.9/site-packages (21.2.4)
+Collecting pip
+  Using cached pip-26.0.1-py3-none-any.whl (1.8 MB)
+Installing collected packages: pip
+  Attempting uninstall: pip
+    Found existing installation: pip 21.2.4
+    Uninstalling pip-21.2.4:
+      Successfully uninstalled pip-21.2.4
+Successfully installed pip-26.0.1
+Collecting setuptools
+  Using cached setuptools-82.0.1-py3-none-any.whl.metadata (6.5 kB)
+Using cached setuptools-82.0.1-py3-none-any.whl (1.0 MB)
+Installing collected packages: setuptools
+  Attempting uninstall: setuptools
+    Found existing installation: setuptools 58.0.4
+    Uninstalling setuptools-58.0.4:
+      Successfully uninstalled setuptools-58.0.4
+Successfully installed setuptools-82.0.1
+Looking in indexes: https://pypi.org/simple, https://dl.espressif.com/pypi
+Ignoring importlib_metadata: markers 'python_version < "3.8"' don't match your environment
+Requirement already satisfied: setuptools in ./Documents/ESP32-S3-Car-Adapter/.tools/python_env/idf5.1_py3.9_env/lib/python3.9/site-packages (from -r /Users/lojaws/.platformio/packages/framework-espidf/tools/requirements/requirements.core.txt (line 3)) (82.0.1)
+Collecting packaging (from -r /Users/lojaws/.platformio/packages/framework-espidf/tools/requirements/requirements.core.txt (line 4))
+  Downloading https://dl.espressif.com/pypi/packaging/packaging-26.3-py3-none-any.whl (129 kB)
+Collecting click (from -r /Users/lojaws/.platformio/packages/framework-espidf/tools/requirements/requirements.core.txt (line 7))
+  Using cached https://dl.espressif.com/pypi/click/click-8.1.8-py3-none-any.whl (98 kB)
+Collecting pyserial (from -r /Users/lojaws/.platformio/packages/framework-espidf/tools/requirements/requirements.core.txt (line 8))
+  Using cached https://dl.espressif.com/pypi/pyserial/pyserial-3.5-py2.py3-none-any.whl (90 kB)
+Collecting cryptography (from -r /Users/lojaws/.platformio/packages/framework-espidf/tools/requirements/requirements.core.txt (line 9))
+  Downloading https://dl.espressif.com/pypi/cryptography/cryptography-39.0.2-cp36-abi3-macosx_10_12_universal2.whl (5.4 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 5.4/5.4 MB 6.6 MB/s  0:00:01
+Collecting pyparsing (from -r /Users/lojaws/.platformio/packages/framework-espidf/tools/requirements/requirements.core.txt (line 10))
+  Downloading https://dl.espressif.com/pypi/pyparsing/pyparsing-3.0.9-py3-none-any.whl (98 kB)
+Collecting pyelftools (from -r /Users/lojaws/.platformio/packages/framework-espidf/tools/requirements/requirements.core.txt (line 11))
+  Downloading https://dl.espressif.com/pypi/pyelftools/pyelftools-0.29-py2.py3-none-any.whl (174 kB)
+Collecting idf-component-manager (from -r /Users/lojaws/.platformio/packages/framework-espidf/tools/requirements/requirements.core.txt (line 12))
+  Downloading https://dl.espressif.com/pypi/idf-component-manager/idf_component_manager-2.5.2-py3-none-any.whl (184 kB)
+Collecting esp-coredump (from -r /Users/lojaws/.platformio/packages/framework-espidf/tools/requirements/requirements.core.txt (line 13))
+  Downloading esp_coredump-1.17.2-py3-none-any.whl.metadata (5.3 kB)
+Collecting esptool (from -r /Users/lojaws/.platformio/packages/framework-espidf/tools/requirements/requirements.core.txt (line 14))
+  Using cached esptool-4.12.0-py3-none-any.whl
+Collecting esp-idf-kconfig (from -r /Users/lojaws/.platformio/packages/framework-espidf/tools/requirements/requirements.core.txt (line 15))
+  Downloading https://dl.espressif.com/pypi/esp-idf-kconfig/esp_idf_kconfig-1.5.0-py3-none-any.whl (44 kB)
+Collecting esp-idf-monitor (from -r /Users/lojaws/.platformio/packages/framework-espidf/tools/requirements/requirements.core.txt (line 16))
+  Downloading https://dl.espressif.com/pypi/esp-idf-monitor/esp_idf_monitor-1.10.0-py3-none-any.whl (73 kB)
+Collecting esp-idf-size (from -r /Users/lojaws/.platformio/packages/framework-espidf/tools/requirements/requirements.core.txt (line 17))
+  Using cached https://dl.espressif.com/pypi/esp-idf-size/esp_idf_size-1.7.1-py3-none-any.whl (82 kB)
+Collecting esp-idf-panic-decoder (from -r /Users/lojaws/.platformio/packages/framework-espidf/tools/requirements/requirements.core.txt (line 18))
+  Using cached https://dl.espressif.com/pypi/esp-idf-panic-decoder/esp_idf_panic_decoder-1.5.0-py3-none-any.whl (21 kB)
+Collecting pyclang (from -r /Users/lojaws/.platformio/packages/framework-espidf/tools/requirements/requirements.core.txt (line 19))
+  Using cached https://dl.espressif.com/pypi/pyclang/pyclang-0.7.0-py3-none-any.whl (13 kB)
+Collecting freertos_gdb (from -r /Users/lojaws/.platformio/packages/framework-espidf/tools/requirements/requirements.core.txt (line 22))
+  Using cached https://dl.espressif.com/pypi/freertos-gdb/freertos_gdb-1.0.4-py3-none-any.whl (14 kB)
+Collecting cffi>=1.12 (from cryptography->-r /Users/lojaws/.platformio/packages/framework-espidf/tools/requirements/requirements.core.txt (line 9))
+  Downloading https://dl.espressif.com/pypi/cffi/cffi-2.0.0-cp39-cp39-macosx_11_0_arm64.whl (180 kB)
+WARNING: Cache entry deserialization failed, entry ignored
+Collecting psutil (from idf-component-manager->-r /Users/lojaws/.platformio/packages/framework-espidf/tools/requirements/requirements.core.txt (line 12))
+  Downloading https://dl.espressif.com/pypi/psutil/psutil-7.2.2-cp36-abi3-macosx_11_0_arm64.whl (129 kB)
+Collecting colorama (from idf-component-manager->-r /Users/lojaws/.platformio/packages/framework-espidf/tools/requirements/requirements.core.txt (line 12))
+  Using cached https://dl.espressif.com/pypi/colorama/colorama-0.4.6-py2.py3-none-any.whl (25 kB)
+Collecting ruamel.yaml (from idf-component-manager->-r /Users/lojaws/.platformio/packages/framework-espidf/tools/requirements/requirements.core.txt (line 12))
+  Using cached https://dl.espressif.com/pypi/ruamel-yaml/ruamel_yaml-0.19.1-py3-none-any.whl (118 kB)
+Collecting requests (from idf-component-manager->-r /Users/lojaws/.platformio/packages/framework-espidf/tools/requirements/requirements.core.txt (line 12))
+  Using cached https://dl.espressif.com/pypi/requests/requests-2.32.5-py3-none-any.whl (64 kB)
+Collecting requests-file (from idf-component-manager->-r /Users/lojaws/.platformio/packages/framework-espidf/tools/requirements/requirements.core.txt (line 12))
+  Using cached https://dl.espressif.com/pypi/requests-file/requests_file-3.0.1-py2.py3-none-any.whl (4.5 kB)
+Collecting requests-toolbelt (from idf-component-manager->-r /Users/lojaws/.platformio/packages/framework-espidf/tools/requirements/requirements.core.txt (line 12))
+  Using cached https://dl.espressif.com/pypi/requests-toolbelt/requests_toolbelt-1.0.0-py2.py3-none-any.whl (54 kB)
+Collecting tqdm (from idf-component-manager->-r /Users/lojaws/.platformio/packages/framework-espidf/tools/requirements/requirements.core.txt (line 12))
+  Downloading https://dl.espressif.com/pypi/tqdm/tqdm-4.70.1-py3-none-any.whl (80 kB)
+Collecting jsonref (from idf-component-manager->-r /Users/lojaws/.platformio/packages/framework-espidf/tools/requirements/requirements.core.txt (line 12))
+  Using cached https://dl.espressif.com/pypi/jsonref/jsonref-1.1.0-py3-none-any.whl (9.4 kB)
+Collecting pydantic!=2.12.0 (from idf-component-manager->-r /Users/lojaws/.platformio/packages/framework-espidf/tools/requirements/requirements.core.txt (line 12))
+  Using cached pydantic-2.13.5-py3-none-any.whl.metadata (110 kB)
+Collecting pydantic-core (from idf-component-manager->-r /Users/lojaws/.platformio/packages/framework-espidf/tools/requirements/requirements.core.txt (line 12))
+  Downloading pydantic_core-2.46.5-cp39-cp39-macosx_11_0_arm64.whl.metadata (6.6 kB)
+Collecting pydantic-settings (from idf-component-manager->-r /Users/lojaws/.platformio/packages/framework-espidf/tools/requirements/requirements.core.txt (line 12))
+  Using cached https://dl.espressif.com/pypi/pydantic-settings/pydantic_settings-2.11.0-py3-none-any.whl (48 kB)
+Collecting pathvalidate (from idf-component-manager->-r /Users/lojaws/.platformio/packages/framework-espidf/tools/requirements/requirements.core.txt (line 12))
+  Using cached pathvalidate-3.3.1-py3-none-any.whl.metadata (12 kB)
+Collecting typing-extensions (from idf-component-manager->-r /Users/lojaws/.platformio/packages/framework-espidf/tools/requirements/requirements.core.txt (line 12))
+  Using cached https://dl.espressif.com/pypi/typing-extensions/typing_extensions-4.16.0-py3-none-any.whl (45 kB)
+Collecting construct~=2.10 (from esp-coredump->-r /Users/lojaws/.platformio/packages/framework-espidf/tools/requirements/requirements.core.txt (line 13))
+  Using cached https://dl.espressif.com/pypi/construct/construct-2.10.70-py3-none-any.whl (63 kB)
+Collecting pygdbmi>=0.9.0.2 (from esp-coredump->-r /Users/lojaws/.platformio/packages/framework-espidf/tools/requirements/requirements.core.txt (line 13))
+  Using cached https://dl.espressif.com/pypi/pygdbmi/pygdbmi-0.11.0.0-py3-none-any.whl (21 kB)
+Collecting esp-pylib>=1.1.4 (from esp-pylib[cli]>=1.1.4->esp-coredump->-r /Users/lojaws/.platformio/packages/framework-espidf/tools/requirements/requirements.core.txt (line 13))
+  Downloading https://dl.espressif.com/pypi/esp-pylib/esp_pylib-1.1.5-py3-none-any.whl (59 kB)
+Collecting rich-click (from esp-coredump->-r /Users/lojaws/.platformio/packages/framework-espidf/tools/requirements/requirements.core.txt (line 13))
+  Downloading https://dl.espressif.com/pypi/rich-click/rich_click-1.9.9-py3-none-any.whl (71 kB)
+Collecting rich (from esp-coredump->-r /Users/lojaws/.platformio/packages/framework-espidf/tools/requirements/requirements.core.txt (line 13))
+  Using cached https://dl.espressif.com/pypi/rich/rich-15.0.0-py3-none-any.whl (310 kB)
+Collecting bitstring!=4.2.0,>=3.1.6 (from esptool->-r /Users/lojaws/.platformio/packages/framework-espidf/tools/requirements/requirements.core.txt (line 14))
+  Using cached https://dl.espressif.com/pypi/bitstring/bitstring-4.4.0-py3-none-any.whl (76 kB)
+Collecting ecdsa>=0.16.0 (from esptool->-r /Users/lojaws/.platformio/packages/framework-espidf/tools/requirements/requirements.core.txt (line 14))
+  Using cached https://dl.espressif.com/pypi/ecdsa/ecdsa-0.19.2-py2.py3-none-any.whl (150 kB)
+Collecting reedsolo<1.8,>=1.5.3 (from esptool->-r /Users/lojaws/.platformio/packages/framework-espidf/tools/requirements/requirements.core.txt (line 14))
+  Using cached https://dl.espressif.com/pypi/reedsolo/reedsolo-1.7.0-py3-none-any.whl (32 kB)
+Collecting PyYAML>=5.1 (from esptool->-r /Users/lojaws/.platformio/packages/framework-espidf/tools/requirements/requirements.core.txt (line 14))
+  Using cached https://dl.espressif.com/pypi/pyyaml/pyyaml-6.0.3-cp39-cp39-macosx_11_0_arm64.whl (174 kB)
+Collecting intelhex (from esptool->-r /Users/lojaws/.platformio/packages/framework-espidf/tools/requirements/requirements.core.txt (line 14))
+  Using cached https://dl.espressif.com/pypi/intelhex/intelhex-2.3.0-py2.py3-none-any.whl (50 kB)
+Collecting argcomplete>=3 (from esptool->-r /Users/lojaws/.platformio/packages/framework-espidf/tools/requirements/requirements.core.txt (line 14))
+  Downloading https://dl.espressif.com/pypi/argcomplete/argcomplete-3.7.0-py3-none-any.whl (42 kB)
+Collecting kconfiglib>=13.7.1 (from esp-idf-kconfig->-r /Users/lojaws/.platformio/packages/framework-espidf/tools/requirements/requirements.core.txt (line 15))
+  Downloading https://dl.espressif.com/pypi/kconfiglib/kconfiglib-14.1.0-py2.py3-none-any.whl (145 kB)
+Collecting bitarray<4.0,>=3.0.0 (from bitstring!=4.2.0,>=3.1.6->esptool->-r /Users/lojaws/.platformio/packages/framework-espidf/tools/requirements/requirements.core.txt (line 14))
+  Downloading bitarray-3.11.0-cp39-cp39-macosx_11_0_arm64.whl.metadata (38 kB)
+Collecting tibs<0.6,>=0.5.6 (from bitstring!=4.2.0,>=3.1.6->esptool->-r /Users/lojaws/.platformio/packages/framework-espidf/tools/requirements/requirements.core.txt (line 14))
+  Downloading https://dl.espressif.com/pypi/tibs/tibs-0.5.7-cp38-abi3-macosx_11_0_arm64.whl (383 kB)
+Collecting pycparser (from cffi>=1.12->cryptography->-r /Users/lojaws/.platformio/packages/framework-espidf/tools/requirements/requirements.core.txt (line 9))
+  Using cached https://dl.espressif.com/pypi/pycparser/pycparser-2.23-py3-none-any.whl (118 kB)
+Collecting six>=1.9.0 (from ecdsa>=0.16.0->esptool->-r /Users/lojaws/.platformio/packages/framework-espidf/tools/requirements/requirements.core.txt (line 14))
+  Using cached https://dl.espressif.com/pypi/six/six-1.17.0-py2.py3-none-any.whl (11 kB)
+Collecting annotated-types>=0.6.0 (from pydantic!=2.12.0->idf-component-manager->-r /Users/lojaws/.platformio/packages/framework-espidf/tools/requirements/requirements.core.txt (line 12))
+  Using cached https://dl.espressif.com/pypi/annotated-types/annotated_types-0.7.0-py3-none-any.whl (13 kB)
+Collecting typing-inspection>=0.4.2 (from pydantic!=2.12.0->idf-component-manager->-r /Users/lojaws/.platformio/packages/framework-espidf/tools/requirements/requirements.core.txt (line 12))
+  Using cached https://dl.espressif.com/pypi/typing-inspection/typing_inspection-0.4.2-py3-none-any.whl (14 kB)
+Collecting markdown-it-py>=2.2.0 (from rich->esp-coredump->-r /Users/lojaws/.platformio/packages/framework-espidf/tools/requirements/requirements.core.txt (line 13))
+  Using cached https://dl.espressif.com/pypi/markdown-it-py/markdown_it_py-3.0.0-py3-none-any.whl (87 kB)
+WARNING: Cache entry deserialization failed, entry ignored
+Collecting pygments<3.0.0,>=2.13.0 (from rich->esp-coredump->-r /Users/lojaws/.platformio/packages/framework-espidf/tools/requirements/requirements.core.txt (line 13))
+  Downloading https://dl.espressif.com/pypi/pygments/pygments-2.21.0-py3-none-any.whl (1.3 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.3/1.3 MB 75.9 MB/s  0:00:00
+Collecting mdurl~=0.1 (from markdown-it-py>=2.2.0->rich->esp-coredump->-r /Users/lojaws/.platformio/packages/framework-espidf/tools/requirements/requirements.core.txt (line 13))
+  Using cached https://dl.espressif.com/pypi/mdurl/mdurl-0.1.2-py3-none-any.whl (10.0 kB)
+Collecting python-dotenv>=0.21.0 (from pydantic-settings->idf-component-manager->-r /Users/lojaws/.platformio/packages/framework-espidf/tools/requirements/requirements.core.txt (line 12))
+  Using cached https://dl.espressif.com/pypi/python-dotenv/python_dotenv-1.2.1-py3-none-any.whl (21 kB)
+Collecting charset_normalizer<4,>=2 (from requests->idf-component-manager->-r /Users/lojaws/.platformio/packages/framework-espidf/tools/requirements/requirements.core.txt (line 12))
+  Using cached charset_normalizer-3.5.1-cp39-cp39-macosx_10_9_universal2.whl.metadata (45 kB)
+Collecting idna<4,>=2.5 (from requests->idf-component-manager->-r /Users/lojaws/.platformio/packages/framework-espidf/tools/requirements/requirements.core.txt (line 12))
+  Downloading idna-3.20-py3-none-any.whl.metadata (7.2 kB)
+Collecting urllib3<3,>=1.21.1 (from requests->idf-component-manager->-r /Users/lojaws/.platformio/packages/framework-espidf/tools/requirements/requirements.core.txt (line 12))
+  Using cached https://dl.espressif.com/pypi/urllib3/urllib3-1.26.20-py2.py3-none-any.whl (144 kB)
+Collecting certifi>=2017.4.17 (from requests->idf-component-manager->-r /Users/lojaws/.platformio/packages/framework-espidf/tools/requirements/requirements.core.txt (line 12))
+  Using cached https://dl.espressif.com/pypi/certifi/certifi-2026.7.22-py3-none-any.whl (136 kB)
+Downloading esp_coredump-1.17.2-py3-none-any.whl (42 kB)
+Downloading bitarray-3.11.0-cp39-cp39-macosx_11_0_arm64.whl (166 kB)
+Using cached pydantic-2.13.5-py3-none-any.whl (472 kB)
+Downloading pydantic_core-2.46.5-cp39-cp39-macosx_11_0_arm64.whl (1.9 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.9/1.9 MB 75.3 MB/s  0:00:00
+Using cached pathvalidate-3.3.1-py3-none-any.whl (24 kB)
+Using cached charset_normalizer-3.5.1-cp39-cp39-macosx_10_9_universal2.whl (368 kB)
+Downloading idna-3.20-py3-none-any.whl (69 kB)
+Installing collected packages: reedsolo, pyserial, pygdbmi, pyelftools, intelhex, urllib3, typing-extensions, tqdm, tibs, six, ruamel.yaml, PyYAML, python-dotenv, pyparsing, pygments, pycparser, psutil, pathvalidate, packaging, mdurl, kconfiglib, jsonref, idna, freertos_gdb, construct, colorama, click, charset_normalizer, certifi, bitarray, argcomplete, annotated-types, typing-inspection, requests, pydantic-core, markdown-it-py, esp-idf-panic-decoder, esp-idf-kconfig, ecdsa, cffi, bitstring, rich, requests-toolbelt, requests-file, pydantic, cryptography, rich-click, pydantic-settings, esptool, esp-pylib, esp-idf-size, idf-component-manager, pyclang, esp-coredump, esp-idf-monitor
+
+Successfully installed PyYAML-6.0.3 annotated-types-0.7.0 argcomplete-3.7.0 bitarray-3.11.0 bitstring-4.4.0 certifi-2026.7.22 cffi-2.0.0 charset_normalizer-3.5.1 click-8.1.8 colorama-0.4.6 construct-2.10.70 cryptography-39.0.2 ecdsa-0.19.2 esp-coredump-1.17.2 esp-idf-kconfig-1.5.0 esp-idf-monitor-1.10.0 esp-idf-panic-decoder-1.5.0 esp-idf-size-1.7.1 esp-pylib-1.1.5 esptool-4.12.0 freertos_gdb-1.0.4 idf-component-manager-2.5.2 idna-3.20 intelhex-2.3.0 jsonref-1.1.0 kconfiglib-14.1.0 markdown-it-py-3.0.0 mdurl-0.1.2 packaging-26.3 pathvalidate-3.3.1 psutil-7.2.2 pyclang-0.7.0 pycparser-2.23 pydantic-2.13.5 pydantic-core-2.46.5 pydantic-settings-2.11.0 pyelftools-0.29 pygdbmi-0.11.0.0 pygments-2.21.0 pyparsing-3.0.9 pyserial-3.5 python-dotenv-1.2.1 reedsolo-1.7.0 requests-2.32.5 requests-file-3.0.1 requests-toolbelt-1.0.0 rich-15.0.0 rich-click-1.9.9 ruamel.yaml-0.19.1 six-1.17.0 tibs-0.5.7 tqdm-4.70.1 typing-extensions-4.16.0 typing-inspection-0.4.2 urllib3-1.26.20
+Upgrading pip...
+Upgrading setuptools...
+Installing Python packages
+ Constraint file: /Users/lojaws/Documents/ESP32-S3-Car-Adapter/.tools/espidf.constraints.v5.1.txt
+ Requirement files:
+  - /Users/lojaws/.platformio/packages/framework-espidf/tools/requirements/requirements.core.txt
+All done! You can now run:
+
+  . /Users/lojaws/.platformio/packages/framework-espidf/export.sh
+

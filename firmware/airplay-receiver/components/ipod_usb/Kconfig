@@ -1,0 +1,12 @@
+menu "Volvo iPod USB device"
+
+    config IPOD_USB_ENABLE
+        bool "Enable iPod USB device (UAC1 + HID iAP)"
+        default y
+        help
+            Present as an iPod (05AC:1261) with UAC1 audio streaming
+            (device->host) and HID iAP transport. Takes over the native
+            USB port (GPIO19/20); the USB-Serial/JTAG console goes quiet
+            while enabled. Disable for AirPlay-only bench testing.
+
+endmenu

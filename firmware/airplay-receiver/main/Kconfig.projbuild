@@ -1,0 +1,19 @@
+menu "AirPlay iPod bridge identity"
+
+    config ADAPTER_NAME
+        string "AirPlay device name (shown on iPhone + car)"
+        default "Volvo AirPlay"
+
+    config ADAPTER_SSID
+        string "Wi-Fi access point SSID"
+        default "Volvo-AirPlay"
+
+    config ADAPTER_PASSWORD
+        string "Wi-Fi access point password (min 8 chars, empty = open)"
+        default "volvoaudio"
+
+    config ADAPTER_HOSTNAME
+        string "mDNS hostname (without .local)"
+        default "volvo-airplay"
+
+endmenu

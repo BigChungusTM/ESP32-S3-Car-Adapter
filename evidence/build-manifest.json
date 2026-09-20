@@ -1,0 +1,97 @@
+{
+  "idf": "5.1.6 local PlatformIO package",
+  "target": "esp32s3",
+  "hardware_tested": false,
+  "builds": [
+    {
+      "case": 0,
+      "files": {
+        "s3_controller_probe.bin": {
+          "bytes": 391136,
+          "sha256": "36323a7ed186666cbda051700e626bf67b613553019d3b350fa39f5431f8dd9e"
+        },
+        "bootloader/bootloader.bin": {
+          "bytes": 20944,
+          "sha256": "c61bde27989954abdaf34e89510eafb03c5f4e0add17b91de5e3819f62a866fe"
+        },
+        "partition_table/partition-table.bin": {
+          "bytes": 3072,
+          "sha256": "7f00b6c042a89b15b0cac534f82ed988caf29278ff5700b0c511eb1b5bb7c820"
+        }
+      },
+      "compile_case_verified": true
+    },
+    {
+      "case": 1,
+      "files": {
+        "s3_controller_probe.bin": {
+          "bytes": 391136,
+          "sha256": "887749f4accd682900afdaa4aa409c0d85556c2a803a109dad728ff6d5513425"
+        },
+        "bootloader/bootloader.bin": {
+          "bytes": 20944,
+          "sha256": "bb75141b0cd5dd5beab5b5daa955dd2c3db65ecf67cb324661cf87b04cb4b3e5"
+        },
+        "partition_table/partition-table.bin": {
+          "bytes": 3072,
+          "sha256": "7f00b6c042a89b15b0cac534f82ed988caf29278ff5700b0c511eb1b5bb7c820"
+        }
+      },
+      "compile_case_verified": true
+    },
+    {
+      "case": 2,
+      "files": {
+        "s3_controller_probe.bin": {
+          "bytes": 391136,
+          "sha256": "36213aa626077bd333d0e1d309e75e40353adac5eab5991f5f43a9cab35aa24a"
+        },
+        "bootloader/bootloader.bin": {
+          "bytes": 20944,
+          "sha256": "b926f4db641982ec0f86b7030e3dbc1925c1df5b492d1a8c734b774fc2a6eaee"
+        },
+        "partition_table/partition-table.bin": {
+          "bytes": 3072,
+          "sha256": "7f00b6c042a89b15b0cac534f82ed988caf29278ff5700b0c511eb1b5bb7c820"
+        }
+      },
+      "compile_case_verified": true
+    },
+    {
+      "case": 3,
+      "files": {
+        "s3_controller_probe.bin": {
+          "bytes": 391136,
+          "sha256": "951aecbbb046f9e76156066ea4d5ce23c9d0d1d11203ff2e3dc36ea440590455"
+        },
+        "bootloader/bootloader.bin": {
+          "bytes": 20944,
+          "sha256": "847d417883fce757e2702735396eedabf1fffdd579fb806cc715e0d57802baaf"
+        },
+        "partition_table/partition-table.bin": {
+          "bytes": 3072,
+          "sha256": "7f00b6c042a89b15b0cac534f82ed988caf29278ff5700b0c511eb1b5bb7c820"
+        }
+      },
+      "compile_case_verified": true
+    },
+    {
+      "case": 4,
+      "files": {
+        "s3_controller_probe.bin": {
+          "bytes": 391136,
+          "sha256": "4f3ec30f0deb95735af85ad6577e6603762ad5e50318b117b89a66c8c043fcc1"
+        },
+        "bootloader/bootloader.bin": {
+          "bytes": 20944,
+          "sha256": "2dd669de89b10c0dccb878a18ea28ce74dc142798013310ac8c1f189edad31fc"
+        },
+        "partition_table/partition-table.bin": {
+          "bytes": 3072,
+          "sha256": "7f00b6c042a89b15b0cac534f82ed988caf29278ff5700b0c511eb1b5bb7c820"
+        }
+      },
+      "compile_case_verified": true
+    }
+  ]
+}

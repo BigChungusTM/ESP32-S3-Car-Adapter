@@ -1,0 +1,8 @@
+idf_component_register(SRCS "probe.c" INCLUDE_DIRS "." REQUIRES bt nvs_flash esp_system)
+if(NOT DEFINED PROBE_CASE)
+    set(PROBE_CASE 0)
+endif()
+if(NOT PROBE_CASE MATCHES "^[0-4]$")
+    message(FATAL_ERROR "PROBE_CASE must be 0..4")
+endif()
+target_compile_definitions(${COMPONENT_LIB} PRIVATE PROBE_CASE=${PROBE_CASE})

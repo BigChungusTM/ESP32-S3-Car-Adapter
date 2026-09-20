@@ -1,0 +1,18 @@
+Collecting ruamel.yaml.clib==0.2.8
+  Downloading ruamel.yaml.clib-0.2.8-cp39-cp39-macosx_12_0_arm64.whl.metadata (2.2 kB)
+Collecting setuptools==70.3.0
+  Downloading setuptools-70.3.0-py3-none-any.whl.metadata (5.8 kB)
+Downloading ruamel.yaml.clib-0.2.8-cp39-cp39-macosx_12_0_arm64.whl (134 kB)
+Downloading setuptools-70.3.0-py3-none-any.whl (931 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 931.1/931.1 kB 51.0 MB/s  0:00:00
+Installing collected packages: setuptools, ruamel.yaml.clib
+  Attempting uninstall: setuptools
+    Found existing installation: setuptools 82.0.1
+    Uninstalling setuptools-82.0.1:
+      Successfully uninstalled setuptools-82.0.1
+  Attempting uninstall: ruamel.yaml.clib
+    Found existing installation: ruamel.yaml.clib 0.2.15
+    Uninstalling ruamel.yaml.clib-0.2.15:
+      Successfully uninstalled ruamel.yaml.clib-0.2.15
+
+Successfully installed ruamel.yaml.clib-0.2.8 setuptools-70.3.0

@@ -1,0 +1,14 @@
+.tools/
+**/build-*/
+**/build/
+**/managed_components/
+**/sdkconfig
+**/sdkconfig.old
+**/sdkconfig.*.old
+**/__pycache__/
+evidence/**/original-flash.bin
+.DS_Store
+firmware/airplay-receiver/host-test/test_iap
+*.bin
+!research/**/**/*.bin
+research/squeezelite-esp32/

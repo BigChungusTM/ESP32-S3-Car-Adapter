@@ -1,0 +1,28 @@
+
+bt_bb_v2.o:
+00000034 T bt_bb_corr_set
+00000038 T bt_bb_detect_set
+00000028 T bt_bb_dpo_set
+00000004 T bt_bb_filter_sel
+00000064 T bt_bb_gain_set
+00000064 T bt_bb_restart_set
+00000060 T bt_bb_target_set
+00000038 T bt_bb_tx_cca_set
+00000028 T bt_bb_v2_init_cmplx
+00000038 T bt_bb_v2_recorrect
+0000001c T bt_bb_v2_rx_rssi_thresh
+00000044 T bt_bb_v2_rx_set
+00000024 T bt_bb_v2_tx_set
+00000014 T bt_bb_v2_version
+00000004 T bt_get_channel_pwr
+00000018 T bt_get_channel_pwr_set
+00000010 T bt_get_channel_pwr_unset
+0000000c T bt_set_chn
+00000048 T coex_pti_print
+00000038 T coex_pti_v2
+00000008 T force_coex_timer0_wifi_pti_v2
+00000008 T force_coex_timer0_wifi_v2
+00000008 T force_coex_timer11_bt_pti_v2
+00000008 T force_coex_timer11_bt_v2
+00000008 T force_coex_timer1_bt_pti_v2
+00000008 T force_coex_timer1_bt_v2

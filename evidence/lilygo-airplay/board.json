@@ -1,0 +1,10 @@
+{
+  "chip": "ESP32-S3",
+  "revision": "v0.2",
+  "module": "LilyGO, user reports S3 WROOM 1U; exact board model unconfirmed",
+  "flash_bytes": 16777216,
+  "embedded_psram_bytes": 8388608,
+  "mac": "68:ee:8f:5b:3d:34",
+  "port": "/dev/cu.usbmodem101",
+  "original_flash_sha256": "0ada8018ccaa36e448d3eeb42198b0ee99ae5c5f1fb634508152d8fc0ea389b4"
+}

@@ -1,0 +1,108 @@
+
+bt_bb.o:
+000000b8 T BT_init_rx_filters
+00000018 T BT_tx_8m_enable
+00000014 T BT_tx_if_init
+0000006c T bt_bb_init_cmplx
+00000028 T bt_bb_init_cmplx_reg
+00000004 T bt_cmplx_hq_re
+00000004 T bt_cmplx_hq_wr
+00000004 T bt_cmplx_lq_re
+00000004 T bt_cmplx_lq_wr
+0000000c T bt_dgmixer_fstep_250k
+0000000c T bt_rfoffset_en
+00000004 T bt_rxfilt
+00000004 T bt_txfilt
+0000003c T coex_bt_high_prio
+00000038 T force_bt_mode
+00000024 T force_wifi_mode
+00000000 B force_wifi_mode_on
+00000024 T rw_coex_on
+00000020 T unforce_wifi_mode
+
+pm.o:
+00000000 B SDIO_slp_reject
+00000000 D chip_version
+00000004 T get_chip_version
+00000001 C hardware_reject
+00000000 B periodic_cal_sat
+00000000 T pm_check_mac_idle
+00000018 T pm_goto_sleep
+00000004 T pm_mac_deinit
+00000008 T pm_mac_init
+00000000 T pm_prepare_to_sleep
+00000004 T pm_rtc_clock_cali
+00000000 T pm_sdio_nidle
+00000000 T pm_set_sleep_btco
+00000010 T pm_set_sleep_cycles
+00000064 T pm_set_sleep_mode_full
+00000000 T pm_set_wakeup_btco
+00000008 T pm_set_wakeup_mac
+00000018 T pm_sleep_set_mac
+00000000 T pm_unmask_bt
+0000000c T pm_wakeup_opt
+00000000 B pptask_busy
+00000004 C sleep_mode_flag
+00000000 B software_slp_reject
+00000004 C tsf_delay_us
+00000000 B wakeup_tsfearly_fix
+
+rtc_analog.o:
+00000008 T adc1_amp_read
+0000005c T adc1_amp_read_full
+0000001c T adc1_pad_init
+00000008 T adc1_read
+00000054 T adc1_read_test
+0000001c T adc2_pad_init
+00000008 T adc2_read
+00000044 T adc2_read_test
+00000044 T adc_pad_init
+00000030 T adc_pad_int
+0000005c T dac_out
+00000024 T dac_pad_init
+00000024 T get_vdd33
+00000008 T hall_sens_amp_read
+00000030 T hall_sens_amp_read_full
+0000000c T hall_sens_read
+00000038 T hall_sens_read_full
+00000034 T temprature_sens_read
+00000028 T touch_init
+00000020 T touch_read
+00000044 T vdd33_init
+
+rtc.o:
+00000020 T cfg_sdio_volt
+00000008 T rtc_apbbridge_sel
+00000034 T rtc_cmd_ext_wakeup
+00000010 T rtc_cmd_wakeup_conf
+00000004 T rtc_get_st
+000000a4 T rtc_init_full
+00000008 T rtc_is_st_idle
+00000034 T rtc_pad_ext_wakeup
+00000028 T rtc_pad_gpio_wakeup
+0000004c T rtc_pads_funie
+0000004c T rtc_pads_funsel
+00000048 T rtc_pads_hold
+00000058 T rtc_pads_muxsel
+00000034 T rtc_pads_pd
+00000034 T rtc_pads_pu
+00000048 T rtc_pads_slpie
+00000034 T rtc_pads_slpoe
+0000004c T rtc_pads_slpsel
+00000008 T rtc_powerdown_rf
+00000008 T rtc_powerup_rf
+00000010 T rtc_sdreg_off
+00000004 T rtc_slp_prep_lite_12M
+00000018 T rtc_soc_clk_ck12m
+00000018 T rtc_wifi_force_pd
+
+rtc_cntl.o:
+00000038 T rtc_digital_lp_mode_off_stg1
+00000004 T rtc_digital_lp_mode_off_stg2
+00000008 T rtc_sar_sleep_timer_start
+00000018 T rtc_wifi_force_pd_off
+
+rtc_mac.o:
+0000001c T rtc_mac_tx
+00000098 T rtc_mac_tx_init
+0000000c C tx_link

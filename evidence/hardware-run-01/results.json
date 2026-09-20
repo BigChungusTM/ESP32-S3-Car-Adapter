@@ -1,0 +1,54 @@
+[
+  {
+    "case": 0,
+    "operations": {
+      "nvs_init": "ESP_OK",
+      "controller_init": "ESP_OK",
+      "controller_enable": "ESP_OK",
+      "controller_disable": "ESP_OK",
+      "controller_deinit": "ESP_OK"
+    },
+    "serial_log_sha256": "171384e1cc55f7be9096431f48161f9c7c9831a5daed915305b8707c89e04288",
+    "matches_expected": true
+  },
+  {
+    "case": 1,
+    "operations": {
+      "nvs_init": "ESP_OK",
+      "controller_init": "ESP_ERR_NOT_SUPPORTED"
+    },
+    "serial_log_sha256": "b4642815f44edee2c3242c4ca66e65e1736bc703ee0d0720901db9b1e23310cb",
+    "matches_expected": true
+  },
+  {
+    "case": 2,
+    "operations": {
+      "nvs_init": "ESP_OK",
+      "controller_init": "ESP_ERR_NOT_SUPPORTED"
+    },
+    "serial_log_sha256": "8d563f8ce5c577112b0544e64d573dfa994b06a5bbd42cced32217ccd9048f1b",
+    "matches_expected": true
+  },
+  {
+    "case": 3,
+    "operations": {
+      "nvs_init": "ESP_OK",
+      "controller_init": "ESP_OK",
+      "controller_enable": "ESP_ERR_INVALID_ARG",
+      "controller_deinit": "ESP_OK"
+    },
+    "serial_log_sha256": "7ae842bd6af68f8a8d57ec0ef281ce06db5d7d25934404fcbdb3a9e1166384d9",
+    "matches_expected": true
+  },
+  {
+    "case": 4,
+    "operations": {
+      "nvs_init": "ESP_OK",
+      "controller_init": "ESP_OK",
+      "controller_enable": "ESP_ERR_INVALID_ARG",
+      "controller_deinit": "ESP_OK"
+    },
+    "serial_log_sha256": "01a9655a3644de3bf16ccbc1b67513d05574f45101b0ecafc6d2899dbb4bd91e",
+    "matches_expected": true
+  }
+]

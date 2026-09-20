@@ -1,0 +1,1924 @@
+In archive /Users/lojaws/.platformio/packages/framework-espidf/components/esp_phy/lib/esp32s3/libbtbb.a:
+
+bt_bb_v2.o:     file format elf32-xtensa-le
+
+
+Disassembly of section .iram1:
+
+00000000 <coex_pti_v2-0x38>:
+   0:	6001c080 	
+   4:	60031530 	
+   8:	60031150 	
+   c:	60035084 	
+  10:	fff000ff 	
+  14:	00003c00 	
+  18:	6003509c 	
+  1c:	00140000 	
+  20:	60035098 	
+  24:	06400000 	
+  28:	ffff0000 	
+  2c:	f0ffffff 	
+  30:	0c000000 	
+  34:	60031048 	
+
+00000038 <coex_pti_v2>:
+  38:	004136        	entry	a1, 32
+  3b:	fff191        	l32r	a9, 0 <coex_pti_v2-0x38> (6001c080 <bt_bb_gain_set+0x6001c01c>)
+			3b: R_XTENSA_SLOT0_OP	.iram1
+  3e:	3faf82        	movi	a8, -193
+  41:	0020c0        	memw
+  44:	09a8      	l32i.n	a10, a9, 0
+  46:	ffefc1        	l32r	a12, 4 <coex_pti_v2-0x34> (60031530 <bt_bb_gain_set+0x600314cc>)
+			46: R_XTENSA_SLOT0_OP	.iram1+0x4
+  49:	108a80        	and	a8, a10, a8
+  4c:	0020c0        	memw
+  4f:	0989      	s32i.n	a8, a9, 0
+  51:	0020c0        	memw
+  54:	0c88      	l32i.n	a8, a12, 0
+  56:	f0a092        	movi	a9, 240
+  59:	ffebb1        	l32r	a11, 8 <coex_pti_v2-0x30> (60031150 <bt_bb_gain_set+0x600310ec>)
+			59: R_XTENSA_SLOT0_OP	.iram1+0x8
+  5c:	208890        	or	a8, a8, a9
+  5f:	0020c0        	memw
+  62:	0c89      	s32i.n	a8, a12, 0
+  64:	0020c0        	memw
+  67:	0b88      	l32i.n	a8, a11, 0
+  69:	ffe9a1        	l32r	a10, 10 <coex_pti_v2-0x28> (fff000ff <bt_bb_gain_set+0xfff0009b>)
+			69: R_XTENSA_SLOT0_OP	.iram1+0x10
+  6c:	208890        	or	a8, a8, a9
+  6f:	0020c0        	memw
+  72:	0b89      	s32i.n	a8, a11, 0
+  74:	ffe681        	l32r	a8, c <coex_pti_v2-0x2c> (60035084 <bt_bb_gain_set+0x60035020>)
+			74: R_XTENSA_SLOT0_OP	.iram1+0xc
+  77:	ffeaf1        	l32r	a15, 20 <coex_pti_v2-0x18> (60035098 <bt_bb_gain_set+0x60035034>)
+			77: R_XTENSA_SLOT0_OP	.iram1+0x20
+  7a:	0020c0        	memw
+  7d:	08d8      	l32i.n	a13, a8, 0
+  7f:	10dda0        	and	a13, a13, a10
+  82:	ffe4a1        	l32r	a10, 14 <coex_pti_v2-0x24> (3c00 <bt_bb_gain_set+0x3b9c>)
+			82: R_XTENSA_SLOT0_OP	.iram1+0x14
+  85:	20ada0        	or	a10, a13, a10
+  88:	0020c0        	memw
+  8b:	08a9      	s32i.n	a10, a8, 0
+  8d:	ffe2a1        	l32r	a10, 18 <coex_pti_v2-0x20> (6003509c <bt_bb_gain_set+0x60035038>)
+			8d: R_XTENSA_SLOT0_OP	.iram1+0x18
+  90:	0020c0        	memw
+  93:	0ad8      	l32i.n	a13, a10, 0
+  95:	f4e0d0        	extui	a14, a13, 0, 16
+  98:	ffe1d1        	l32r	a13, 1c <coex_pti_v2-0x1c> (140000 <bt_bb_gain_set+0x13ff9c>)
+			98: R_XTENSA_SLOT0_OP	.iram1+0x1c
+  9b:	20ded0        	or	a13, a14, a13
+  9e:	0020c0        	memw
+  a1:	0ad9      	s32i.n	a13, a10, 0
+  a3:	0020c0        	memw
+  a6:	0fd8      	l32i.n	a13, a15, 0
+  a8:	f4e0d0        	extui	a14, a13, 0, 16
+  ab:	ffded1        	l32r	a13, 24 <coex_pti_v2-0x14> (6400000 <bt_bb_gain_set+0x63fff9c>)
+			ab: R_XTENSA_SLOT0_OP	.iram1+0x24
+  ae:	20ded0        	or	a13, a14, a13
+  b1:	0020c0        	memw
+  b4:	0fd9      	s32i.n	a13, a15, 0
+  b6:	0020c0        	memw
+  b9:	0ae8      	l32i.n	a14, a10, 0
+  bb:	ffdbd1        	l32r	a13, 28 <coex_pti_v2-0x10> (ffff0000 <bt_bb_gain_set+0xfffeff9c>)
+			bb: R_XTENSA_SLOT0_OP	.iram1+0x28
+  be:	10eed0        	and	a14, a14, a13
+  c1:	64a0d2        	movi	a13, 100
+  c4:	20ded0        	or	a13, a14, a13
+  c7:	0020c0        	memw
+  ca:	0ad9      	s32i.n	a13, a10, 0
+  cc:	0020c0        	memw
+  cf:	08d8      	l32i.n	a13, a8, 0
+  d1:	1a0c      	movi.n	a10, 1
+  d3:	20dda0        	or	a13, a13, a10
+  d6:	0020c0        	memw
+  d9:	08d9      	s32i.n	a13, a8, 0
+  db:	0020c0        	memw
+  de:	08e8      	l32i.n	a14, a8, 0
+  e0:	ffd3d1        	l32r	a13, 2c <coex_pti_v2-0xc> (f0ffffff <bt_bb_gain_set+0xf0ffff9b>)
+			e0: R_XTENSA_SLOT0_OP	.iram1+0x2c
+  e3:	10eed0        	and	a14, a14, a13
+  e6:	ffd2d1        	l32r	a13, 30 <coex_pti_v2-0x8> (c000000 <bt_bb_gain_set+0xbffff9c>)
+			e6: R_XTENSA_SLOT0_OP	.iram1+0x30
+  e9:	20ded0        	or	a13, a14, a13
+  ec:	0020c0        	memw
+  ef:	08d9      	s32i.n	a13, a8, 0
+  f1:	0020c0        	memw
+  f4:	0c88      	l32i.n	a8, a12, 0
+  f6:	2088a0        	or	a8, a8, a10
+  f9:	0020c0        	memw
+  fc:	0c89      	s32i.n	a8, a12, 0
+  fe:	0020c0        	memw
+ 101:	0b88      	l32i.n	a8, a11, 0
+ 103:	20a8a0        	or	a10, a8, a10
+ 106:	ffcb81        	l32r	a8, 34 <coex_pti_v2-0x4> (60031048 <bt_bb_gain_set+0x60030fe4>)
+			106: R_XTENSA_SLOT0_OP	.iram1+0x34
+ 109:	0020c0        	memw
+ 10c:	0ba9      	s32i.n	a10, a11, 0
+ 10e:	0020c0        	memw
+ 111:	08b8      	l32i.n	a11, a8, 0
+ 113:	00a1a2        	movi	a10, 0x100
+ 116:	20aba0        	or	a10, a11, a10
+ 119:	0020c0        	memw
+ 11c:	08a9      	s32i.n	a10, a8, 0
+ 11e:	0020c0        	memw
+ 121:	08a8      	l32i.n	a10, a8, 0
+ 123:	209a90        	or	a9, a10, a9
+ 126:	0020c0        	memw
+ 129:	0899      	s32i.n	a9, a8, 0
+ 12b:	f01d      	retw.n
+
+Disassembly of section .text.bt_bb_filter_sel:
+
+00000000 <bt_bb_filter_sel-0x4>:
+   0:	6001104c 	
+
+00000004 <bt_bb_filter_sel>:
+   4:	004136        	entry	a1, 32
+   7:	fffe91        	l32r	a9, 0 <bt_bb_filter_sel-0x4> (6001104c <bt_bb_gain_set+0x60010fe8>)
+			7: R_XTENSA_SLOT0_OP	.text.bt_bb_filter_sel
+   a:	081c      	movi.n	a8, 16
+   c:	0020c0        	memw
+   f:	09a8      	l32i.n	a10, a9, 0
+  11:	208a80        	or	a8, a10, a8
+  14:	0020c0        	memw
+  17:	0989      	s32i.n	a8, a9, 0
+  19:	f01d      	retw.n
+
+Disassembly of section .text.bt_bb_v2_recorrect:
+
+00000000 <bt_bb_v2_recorrect-0x38>:
+   0:	6001c080 	
+   4:	1fffffff 	
+   8:	40000000 	
+   c:	60011840 	
+  10:	ffffe3ff 	
+  14:	00000800 	
+  18:	6001c084 	
+  1c:	bfffffff 	
+  20:	60011868 	
+  24:	00002000 	
+  28:	00001000 	
+  2c:	600118b0 	
+  30:	ffffc1ff 	
+  34:	00001400 	
+
+00000038 <bt_bb_v2_recorrect>:
+  38:	004136        	entry	a1, 32
+  3b:	fff1a1        	l32r	a10, 0 <bt_bb_v2_recorrect-0x38> (6001c080 <bt_bb_gain_set+0x6001c01c>)
+			3b: R_XTENSA_SLOT0_OP	.text.bt_bb_v2_recorrect
+  3e:	fff181        	l32r	a8, 4 <bt_bb_v2_recorrect-0x34> (1fffffff <bt_bb_gain_set+0x1fffff9b>)
+			3e: R_XTENSA_SLOT0_OP	.text.bt_bb_v2_recorrect+0x4
+  41:	0020c0        	memw
+  44:	0a98      	l32i.n	a9, a10, 0
+  46:	109980        	and	a9, a9, a8
+  49:	ffef81        	l32r	a8, 8 <bt_bb_v2_recorrect-0x30> (40000000 <bt_bb_gain_set+0x3fffff9c>)
+			49: R_XTENSA_SLOT0_OP	.text.bt_bb_v2_recorrect+0x8
+  4c:	208980        	or	a8, a9, a8
+  4f:	0020c0        	memw
+  52:	0a89      	s32i.n	a8, a10, 0
+  54:	ffeea1        	l32r	a10, c <bt_bb_v2_recorrect-0x2c> (60011840 <bt_bb_gain_set+0x600117dc>)
+			54: R_XTENSA_SLOT0_OP	.text.bt_bb_v2_recorrect+0xc
+  57:	ffee81        	l32r	a8, 10 <bt_bb_v2_recorrect-0x28> (ffffe3ff <bt_bb_gain_set+0xffffe39b>)
+			57: R_XTENSA_SLOT0_OP	.text.bt_bb_v2_recorrect+0x10
+  5a:	0020c0        	memw
+  5d:	0a98      	l32i.n	a9, a10, 0
+  5f:	109980        	and	a9, a9, a8
+  62:	ffec81        	l32r	a8, 14 <bt_bb_v2_recorrect-0x24> (800 <bt_bb_gain_set+0x79c>)
+			62: R_XTENSA_SLOT0_OP	.text.bt_bb_v2_recorrect+0x14
+  65:	208980        	or	a8, a9, a8
+  68:	ffec91        	l32r	a9, 18 <bt_bb_v2_recorrect-0x20> (6001c084 <bt_bb_gain_set+0x6001c020>)
+			68: R_XTENSA_SLOT0_OP	.text.bt_bb_v2_recorrect+0x18
+  6b:	0020c0        	memw
+  6e:	0a89      	s32i.n	a8, a10, 0
+  70:	0020c0        	memw
+  73:	09a8      	l32i.n	a10, a9, 0
+  75:	ffe981        	l32r	a8, 1c <bt_bb_v2_recorrect-0x1c> (bfffffff <bt_bb_gain_set+0xbfffff9b>)
+			75: R_XTENSA_SLOT0_OP	.text.bt_bb_v2_recorrect+0x1c
+  78:	108a80        	and	a8, a10, a8
+  7b:	0020c0        	memw
+  7e:	0989      	s32i.n	a8, a9, 0
+  80:	ffe881        	l32r	a8, 20 <bt_bb_v2_recorrect-0x18> (60011868 <bt_bb_gain_set+0x60011804>)
+			80: R_XTENSA_SLOT0_OP	.text.bt_bb_v2_recorrect+0x20
+  83:	ffe891        	l32r	a9, 24 <bt_bb_v2_recorrect-0x14> (2000 <bt_bb_gain_set+0x1f9c>)
+			83: R_XTENSA_SLOT0_OP	.text.bt_bb_v2_recorrect+0x24
+  86:	0020c0        	memw
+  89:	08a8      	l32i.n	a10, a8, 0
+  8b:	209a90        	or	a9, a10, a9
+  8e:	0020c0        	memw
+  91:	0899      	s32i.n	a9, a8, 0
+  93:	0020c0        	memw
+  96:	08a8      	l32i.n	a10, a8, 0
+  98:	092c      	movi.n	a9, 32
+  9a:	209a90        	or	a9, a10, a9
+  9d:	0020c0        	memw
+  a0:	0899      	s32i.n	a9, a8, 0
+  a2:	0020c0        	memw
+  a5:	08a8      	l32i.n	a10, a8, 0
+  a7:	ffe091        	l32r	a9, 28 <bt_bb_v2_recorrect-0x10> (1000 <bt_bb_gain_set+0xf9c>)
+			a7: R_XTENSA_SLOT0_OP	.text.bt_bb_v2_recorrect+0x28
+  aa:	209a90        	or	a9, a10, a9
+  ad:	0020c0        	memw
+  b0:	0899      	s32i.n	a9, a8, 0
+  b2:	0020c0        	memw
+  b5:	08a8      	l32i.n	a10, a8, 0
+  b7:	096c      	movi.n	a9, -32
+  b9:	10aa90        	and	a10, a10, a9
+  bc:	a90c      	movi.n	a9, 10
+  be:	209a90        	or	a9, a10, a9
+  c1:	0020c0        	memw
+  c4:	0899      	s32i.n	a9, a8, 0
+  c6:	ffd981        	l32r	a8, 2c <bt_bb_v2_recorrect-0xc> (600118b0 <bt_bb_gain_set+0x6001184c>)
+			c6: R_XTENSA_SLOT0_OP	.text.bt_bb_v2_recorrect+0x2c
+  c9:	ffd991        	l32r	a9, 30 <bt_bb_v2_recorrect-0x8> (ffffc1ff <bt_bb_gain_set+0xffffc19b>)
+			c9: R_XTENSA_SLOT0_OP	.text.bt_bb_v2_recorrect+0x30
+  cc:	0020c0        	memw
+  cf:	08a8      	l32i.n	a10, a8, 0
+  d1:	10aa90        	and	a10, a10, a9
+  d4:	ffd891        	l32r	a9, 34 <bt_bb_v2_recorrect-0x4> (1400 <bt_bb_gain_set+0x139c>)
+			d4: R_XTENSA_SLOT0_OP	.text.bt_bb_v2_recorrect+0x34
+  d7:	209a90        	or	a9, a10, a9
+  da:	0020c0        	memw
+  dd:	0899      	s32i.n	a9, a8, 0
+  df:	0020c0        	memw
+  e2:	08a8      	l32i.n	a10, a8, 0
+  e4:	0fae92        	movi	a9, 0xfffffe0f
+  e7:	10aa90        	and	a10, a10, a9
+  ea:	a0a092        	movi	a9, 160
+  ed:	209a90        	or	a9, a10, a9
+  f0:	0020c0        	memw
+  f3:	0899      	s32i.n	a9, a8, 0
+  f5:	f01d      	retw.n
+
+Disassembly of section .text.bt_bb_corr_set:
+
+00000000 <bt_bb_corr_set-0x34>:
+   0:	60011064 	
+   4:	fc0fffff 	
+   8:	00200000 	
+   c:	fff03fff 	
+  10:	00008000 	
+  14:	ffffc0ff 	
+  18:	60011068 	
+  1c:	03ffffff 	
+  20:	10000000 	
+  24:	00d00000 	
+  28:	fff00fff 	
+  2c:	000a1000 	
+  30:	00000800 	
+
+00000034 <bt_bb_corr_set>:
+  34:	004136        	entry	a1, 32
+  37:	fff281        	l32r	a8, 0 <bt_bb_corr_set-0x34> (60011064 <bt_bb_gain_set+0x60011000>)
+			37: R_XTENSA_SLOT0_OP	.text.bt_bb_corr_set
+  3a:	fff291        	l32r	a9, 4 <bt_bb_corr_set-0x30> (fc0fffff <bt_bb_gain_set+0xfc0fff9b>)
+			3a: R_XTENSA_SLOT0_OP	.text.bt_bb_corr_set+0x4
+  3d:	0020c0        	memw
+  40:	08a8      	l32i.n	a10, a8, 0
+  42:	10ba90        	and	a11, a10, a9
+  45:	fff0a1        	l32r	a10, 8 <bt_bb_corr_set-0x2c> (200000 <bt_bb_gain_set+0x1fff9c>)
+			45: R_XTENSA_SLOT0_OP	.text.bt_bb_corr_set+0x8
+  48:	20aba0        	or	a10, a11, a10
+  4b:	0020c0        	memw
+  4e:	08a9      	s32i.n	a10, a8, 0
+  50:	0020c0        	memw
+  53:	08b8      	l32i.n	a11, a8, 0
+  55:	ffeda1        	l32r	a10, c <bt_bb_corr_set-0x28> (fff03fff <bt_bb_gain_set+0xfff03f9b>)
+			55: R_XTENSA_SLOT0_OP	.text.bt_bb_corr_set+0xc
+  58:	10bba0        	and	a11, a11, a10
+  5b:	ffeda1        	l32r	a10, 10 <bt_bb_corr_set-0x24> (8000 <bt_bb_gain_set+0x7f9c>)
+			5b: R_XTENSA_SLOT0_OP	.text.bt_bb_corr_set+0x10
+  5e:	20aba0        	or	a10, a11, a10
+  61:	0020c0        	memw
+  64:	08a9      	s32i.n	a10, a8, 0
+  66:	0020c0        	memw
+  69:	08b8      	l32i.n	a11, a8, 0
+  6b:	ffeaa1        	l32r	a10, 14 <bt_bb_corr_set-0x20> (ffffc0ff <bt_bb_gain_set+0xffffc09b>)
+			6b: R_XTENSA_SLOT0_OP	.text.bt_bb_corr_set+0x14
+  6e:	10bba0        	and	a11, a11, a10
+  71:	00a7a2        	movi	a10, 0x700
+  74:	20aba0        	or	a10, a11, a10
+  77:	0020c0        	memw
+  7a:	08a9      	s32i.n	a10, a8, 0
+  7c:	0020c0        	memw
+  7f:	08b8      	l32i.n	a11, a8, 0
+  81:	03afa2        	movi	a10, -253
+  84:	10bba0        	and	a11, a11, a10
+  87:	4a0c      	movi.n	a10, 4
+  89:	20aba0        	or	a10, a11, a10
+  8c:	0020c0        	memw
+  8f:	08a9      	s32i.n	a10, a8, 0
+  91:	ffe181        	l32r	a8, 18 <bt_bb_corr_set-0x1c> (60011068 <bt_bb_gain_set+0x60011004>)
+			91: R_XTENSA_SLOT0_OP	.text.bt_bb_corr_set+0x18
+  94:	ffe2a1        	l32r	a10, 1c <bt_bb_corr_set-0x18> (3ffffff <bt_bb_gain_set+0x3ffff9b>)
+			94: R_XTENSA_SLOT0_OP	.text.bt_bb_corr_set+0x1c
+  97:	0020c0        	memw
+  9a:	08b8      	l32i.n	a11, a8, 0
+  9c:	10bba0        	and	a11, a11, a10
+  9f:	ffe0a1        	l32r	a10, 20 <bt_bb_corr_set-0x14> (10000000 <bt_bb_gain_set+0xfffff9c>)
+			9f: R_XTENSA_SLOT0_OP	.text.bt_bb_corr_set+0x20
+  a2:	20aba0        	or	a10, a11, a10
+  a5:	0020c0        	memw
+  a8:	08a9      	s32i.n	a10, a8, 0
+  aa:	0020c0        	memw
+  ad:	08b8      	l32i.n	a11, a8, 0
+  af:	1fa8a2        	movi	a10, 0xfffff81f
+  b2:	10bba0        	and	a11, a11, a10
+  b5:	60a0a2        	movi	a10, 96
+  b8:	20aba0        	or	a10, a11, a10
+  bb:	0020c0        	memw
+  be:	08a9      	s32i.n	a10, a8, 0
+  c0:	0020c0        	memw
+  c3:	08a8      	l32i.n	a10, a8, 0
+  c5:	109a90        	and	a9, a10, a9
+  c8:	ffd7a1        	l32r	a10, 24 <bt_bb_corr_set-0x10> (d00000 <bt_bb_gain_set+0xcfff9c>)
+			c8: R_XTENSA_SLOT0_OP	.text.bt_bb_corr_set+0x24
+  cb:	2099a0        	or	a9, a9, a10
+  ce:	0020c0        	memw
+  d1:	0899      	s32i.n	a9, a8, 0
+  d3:	0020c0        	memw
+  d6:	08a8      	l32i.n	a10, a8, 0
+  d8:	ffd491        	l32r	a9, 28 <bt_bb_corr_set-0xc> (fff00fff <bt_bb_gain_set+0xfff00f9b>)
+			d8: R_XTENSA_SLOT0_OP	.text.bt_bb_corr_set+0x28
+  db:	10aa90        	and	a10, a10, a9
+  de:	ffd391        	l32r	a9, 2c <bt_bb_corr_set-0x8> (a1000 <bt_bb_gain_set+0xa0f9c>)
+			de: R_XTENSA_SLOT0_OP	.text.bt_bb_corr_set+0x2c
+  e1:	209a90        	or	a9, a10, a9
+  e4:	0020c0        	memw
+  e7:	0899      	s32i.n	a9, a8, 0
+  e9:	0020c0        	memw
+  ec:	08a8      	l32i.n	a10, a8, 0
+  ee:	ffd091        	l32r	a9, 30 <bt_bb_corr_set-0x4> (800 <bt_bb_gain_set+0x79c>)
+			ee: R_XTENSA_SLOT0_OP	.text.bt_bb_corr_set+0x30
+  f1:	209a90        	or	a9, a10, a9
+  f4:	0020c0        	memw
+  f7:	0899      	s32i.n	a9, a8, 0
+  f9:	f01d      	retw.n
+
+Disassembly of section .text.bt_bb_dpo_set:
+
+00000000 <bt_bb_dpo_set-0x28>:
+   0:	60011038 	
+   4:	60011024 	
+   8:	87ffffff 	
+   c:	28000000 	
+  10:	60011020 	
+  14:	fffc3fff 	
+  18:	00014000 	
+  1c:	ffffc3ff 	
+  20:	00001400 	
+  24:	60011028 	
+
+00000028 <bt_bb_dpo_set>:
+  28:	004136        	entry	a1, 32
+  2b:	fff5a1        	l32r	a10, 0 <bt_bb_dpo_set-0x28> (60011038 <bt_bb_gain_set+0x60010fd4>)
+			2b: R_XTENSA_SLOT0_OP	.text.bt_bb_dpo_set
+  2e:	7fa882        	movi	a8, 0xfffff87f
+  31:	0020c0        	memw
+  34:	0a98      	l32i.n	a9, a10, 0
+  36:	109980        	and	a9, a9, a8
+  39:	80a282        	movi	a8, 0x280
+  3c:	208980        	or	a8, a9, a8
+  3f:	fff191        	l32r	a9, 4 <bt_bb_dpo_set-0x24> (60011024 <bt_bb_gain_set+0x60010fc0>)
+			3f: R_XTENSA_SLOT0_OP	.text.bt_bb_dpo_set+0x4
+  42:	0020c0        	memw
+  45:	0a89      	s32i.n	a8, a10, 0
+  47:	0020c0        	memw
+  4a:	09a8      	l32i.n	a10, a9, 0
+  4c:	ffef81        	l32r	a8, 8 <bt_bb_dpo_set-0x20> (87ffffff <bt_bb_gain_set+0x87ffff9b>)
+			4c: R_XTENSA_SLOT0_OP	.text.bt_bb_dpo_set+0x8
+  4f:	10aa80        	and	a10, a10, a8
+  52:	ffee81        	l32r	a8, c <bt_bb_dpo_set-0x1c> (28000000 <bt_bb_gain_set+0x27ffff9c>)
+			52: R_XTENSA_SLOT0_OP	.text.bt_bb_dpo_set+0xc
+  55:	208a80        	or	a8, a10, a8
+  58:	0020c0        	memw
+  5b:	0989      	s32i.n	a8, a9, 0
+  5d:	ffec81        	l32r	a8, 10 <bt_bb_dpo_set-0x18> (60011020 <bt_bb_gain_set+0x60010fbc>)
+			5d: R_XTENSA_SLOT0_OP	.text.bt_bb_dpo_set+0x10
+  60:	ffeda1        	l32r	a10, 14 <bt_bb_dpo_set-0x14> (fffc3fff <bt_bb_gain_set+0xfffc3f9b>)
+			60: R_XTENSA_SLOT0_OP	.text.bt_bb_dpo_set+0x14
+  63:	0020c0        	memw
+  66:	08b8      	l32i.n	a11, a8, 0
+  68:	10bba0        	and	a11, a11, a10
+  6b:	ffeba1        	l32r	a10, 18 <bt_bb_dpo_set-0x10> (14000 <bt_bb_gain_set+0x13f9c>)
+			6b: R_XTENSA_SLOT0_OP	.text.bt_bb_dpo_set+0x18
+  6e:	20aba0        	or	a10, a11, a10
+  71:	0020c0        	memw
+  74:	08a9      	s32i.n	a10, a8, 0
+  76:	0020c0        	memw
+  79:	08b8      	l32i.n	a11, a8, 0
+  7b:	ffe8a1        	l32r	a10, 1c <bt_bb_dpo_set-0xc> (ffffc3ff <bt_bb_gain_set+0xffffc39b>)
+			7b: R_XTENSA_SLOT0_OP	.text.bt_bb_dpo_set+0x1c
+  7e:	10bba0        	and	a11, a11, a10
+  81:	ffe7a1        	l32r	a10, 20 <bt_bb_dpo_set-0x8> (1400 <bt_bb_gain_set+0x139c>)
+			81: R_XTENSA_SLOT0_OP	.text.bt_bb_dpo_set+0x20
+  84:	20aba0        	or	a10, a11, a10
+  87:	0020c0        	memw
+  8a:	08a9      	s32i.n	a10, a8, 0
+  8c:	0020c0        	memw
+  8f:	08b8      	l32i.n	a11, a8, 0
+  91:	c0afa2        	movi	a10, -64
+  94:	10bba0        	and	a11, a11, a10
+  97:	6a0c      	movi.n	a10, 6
+  99:	20aba0        	or	a10, a11, a10
+  9c:	0020c0        	memw
+  9f:	08a9      	s32i.n	a10, a8, 0
+  a1:	0020c0        	memw
+  a4:	09a8      	l32i.n	a10, a9, 0
+  a6:	d87c      	movi.n	a8, -3
+  a8:	108a80        	and	a8, a10, a8
+  ab:	ffdea1        	l32r	a10, 24 <bt_bb_dpo_set-0x4> (60011028 <bt_bb_gain_set+0x60010fc4>)
+			ab: R_XTENSA_SLOT0_OP	.text.bt_bb_dpo_set+0x24
+  ae:	0020c0        	memw
+  b1:	0989      	s32i.n	a8, a9, 0
+  b3:	0020c0        	memw
+  b6:	0a98      	l32i.n	a9, a10, 0
+  b8:	cfaf82        	movi	a8, -49
+  bb:	109980        	and	a9, a9, a8
+  be:	082c      	movi.n	a8, 32
+  c0:	208980        	or	a8, a9, a8
+  c3:	0020c0        	memw
+  c6:	0a89      	s32i.n	a8, a10, 0
+  c8:	f01d      	retw.n
+
+Disassembly of section .text.bt_bb_restart_set:
+
+00000000 <bt_bb_restart_set-0x64>:
+   0:	6001c084 	
+   4:	ffe07fff 	
+   8:	00188000 	
+   c:	600118ac 	
+  10:	fffc0fff 	
+  14:	00031000 	
+  18:	ffff81ff 	
+  1c:	00001e00 	
+  20:	600118a4 	
+  24:	6001c058 	
+  28:	ffdfffff 	
+  2c:	60011888 	
+  30:	efffffff 	
+  34:	6001c090 	
+  38:	03ffffff 	
+  3c:	d8000000 	
+  40:	fffff03f 	
+  44:	00000d80 	
+  48:	fc0fffff 	
+  4c:	00a00000 	
+  50:	f81fffff 	
+  54:	01400000 	
+  58:	6001c1a0 	
+  5c:	00050000 	
+  60:	00000c40 	
+
+00000064 <bt_bb_restart_set>:
+  64:	004136        	entry	a1, 32
+  67:	ffe691        	l32r	a9, 0 <bt_bb_restart_set-0x64> (6001c084 <bt_bb_restart_set+0x6001c020>)
+			67: R_XTENSA_SLOT0_OP	.text.bt_bb_restart_set
+  6a:	ffe6d1        	l32r	a13, 4 <bt_bb_restart_set-0x60> (ffe07fff <bt_bb_restart_set+0xffe07f9b>)
+			6a: R_XTENSA_SLOT0_OP	.text.bt_bb_restart_set+0x4
+  6d:	0020c0        	memw
+  70:	0988      	l32i.n	a8, a9, 0
+  72:	10a8d0        	and	a10, a8, a13
+  75:	ffe481        	l32r	a8, 8 <bt_bb_restart_set-0x5c> (188000 <bt_bb_restart_set+0x187f9c>)
+			75: R_XTENSA_SLOT0_OP	.text.bt_bb_restart_set+0x8
+  78:	208a80        	or	a8, a10, a8
+  7b:	0020c0        	memw
+  7e:	0989      	s32i.n	a8, a9, 0
+  80:	ffe381        	l32r	a8, c <bt_bb_restart_set-0x58> (600118ac <bt_bb_restart_set+0x60011848>)
+			80: R_XTENSA_SLOT0_OP	.text.bt_bb_restart_set+0xc
+  83:	ffe3a1        	l32r	a10, 10 <bt_bb_restart_set-0x54> (fffc0fff <bt_bb_restart_set+0xfffc0f9b>)
+			83: R_XTENSA_SLOT0_OP	.text.bt_bb_restart_set+0x10
+  86:	0020c0        	memw
+  89:	08b8      	l32i.n	a11, a8, 0
+  8b:	10bba0        	and	a11, a11, a10
+  8e:	ffe1a1        	l32r	a10, 14 <bt_bb_restart_set-0x50> (31000 <bt_bb_restart_set+0x30f9c>)
+			8e: R_XTENSA_SLOT0_OP	.text.bt_bb_restart_set+0x14
+  91:	20aba0        	or	a10, a11, a10
+  94:	0020c0        	memw
+  97:	08a9      	s32i.n	a10, a8, 0
+  99:	0020c0        	memw
+  9c:	09b8      	l32i.n	a11, a9, 0
+  9e:	ffdea1        	l32r	a10, 18 <bt_bb_restart_set-0x4c> (ffff81ff <bt_bb_restart_set+0xffff819b>)
+			9e: R_XTENSA_SLOT0_OP	.text.bt_bb_restart_set+0x18
+  a1:	10bba0        	and	a11, a11, a10
+  a4:	ffdea1        	l32r	a10, 1c <bt_bb_restart_set-0x48> (1e00 <bt_bb_restart_set+0x1d9c>)
+			a4: R_XTENSA_SLOT0_OP	.text.bt_bb_restart_set+0x1c
+  a7:	20aba0        	or	a10, a11, a10
+  aa:	0020c0        	memw
+  ad:	09a9      	s32i.n	a10, a9, 0
+  af:	ffdc91        	l32r	a9, 20 <bt_bb_restart_set-0x44> (600118a4 <bt_bb_restart_set+0x60011840>)
+			af: R_XTENSA_SLOT0_OP	.text.bt_bb_restart_set+0x20
+  b2:	c0afa2        	movi	a10, -64
+  b5:	0020c0        	memw
+  b8:	09b8      	l32i.n	a11, a9, 0
+  ba:	10cba0        	and	a12, a11, a10
+  bd:	fb0c      	movi.n	a11, 15
+  bf:	20bcb0        	or	a11, a12, a11
+  c2:	ffd8c1        	l32r	a12, 24 <bt_bb_restart_set-0x40> (6001c058 <bt_bb_restart_set+0x6001bff4>)
+			c2: R_XTENSA_SLOT0_OP	.text.bt_bb_restart_set+0x24
+  c5:	0020c0        	memw
+  c8:	09b9      	s32i.n	a11, a9, 0
+  ca:	0020c0        	memw
+  cd:	0ce8      	l32i.n	a14, a12, 0
+  cf:	ffd6b1        	l32r	a11, 28 <bt_bb_restart_set-0x3c> (ffdfffff <bt_bb_restart_set+0xffdfff9b>)
+			cf: R_XTENSA_SLOT0_OP	.text.bt_bb_restart_set+0x28
+  d2:	10beb0        	and	a11, a14, a11
+  d5:	0020c0        	memw
+  d8:	0cb9      	s32i.n	a11, a12, 0
+  da:	ffd4c1        	l32r	a12, 2c <bt_bb_restart_set-0x38> (60011888 <bt_bb_restart_set+0x60011824>)
+			da: R_XTENSA_SLOT0_OP	.text.bt_bb_restart_set+0x2c
+  dd:	ffd4b1        	l32r	a11, 30 <bt_bb_restart_set-0x34> (efffffff <bt_bb_restart_set+0xefffff9b>)
+			dd: R_XTENSA_SLOT0_OP	.text.bt_bb_restart_set+0x30
+  e0:	0020c0        	memw
+  e3:	0ce8      	l32i.n	a14, a12, 0
+  e5:	10beb0        	and	a11, a14, a11
+  e8:	0020c0        	memw
+  eb:	0cb9      	s32i.n	a11, a12, 0
+  ed:	ffd1b1        	l32r	a11, 34 <bt_bb_restart_set-0x30> (6001c090 <bt_bb_restart_set+0x6001c02c>)
+			ed: R_XTENSA_SLOT0_OP	.text.bt_bb_restart_set+0x34
+  f0:	ffd2c1        	l32r	a12, 38 <bt_bb_restart_set-0x2c> (3ffffff <bt_bb_restart_set+0x3ffff9b>)
+			f0: R_XTENSA_SLOT0_OP	.text.bt_bb_restart_set+0x38
+  f3:	0020c0        	memw
+  f6:	0be8      	l32i.n	a14, a11, 0
+  f8:	10eec0        	and	a14, a14, a12
+  fb:	ffd0c1        	l32r	a12, 3c <bt_bb_restart_set-0x28> (d8000000 <bt_bb_restart_set+0xd7ffff9c>)
+			fb: R_XTENSA_SLOT0_OP	.text.bt_bb_restart_set+0x3c
+  fe:	20cec0        	or	a12, a14, a12
+ 101:	0020c0        	memw
+ 104:	0bc9      	s32i.n	a12, a11, 0
+ 106:	0020c0        	memw
+ 109:	08e8      	l32i.n	a14, a8, 0
+ 10b:	ffcdc1        	l32r	a12, 40 <bt_bb_restart_set-0x24> (fffff03f <bt_bb_restart_set+0xffffefdb>)
+			10b: R_XTENSA_SLOT0_OP	.text.bt_bb_restart_set+0x40
+ 10e:	10fec0        	and	a15, a14, a12
+ 111:	ffcce1        	l32r	a14, 44 <bt_bb_restart_set-0x20> (d80 <bt_bb_restart_set+0xd1c>)
+			111: R_XTENSA_SLOT0_OP	.text.bt_bb_restart_set+0x44
+ 114:	20efe0        	or	a14, a15, a14
+ 117:	0020c0        	memw
+ 11a:	08e9      	s32i.n	a14, a8, 0
+ 11c:	0020c0        	memw
+ 11f:	0bf8      	l32i.n	a15, a11, 0
+ 121:	ffc9e1        	l32r	a14, 48 <bt_bb_restart_set-0x1c> (fc0fffff <bt_bb_restart_set+0xfc0fff9b>)
+			121: R_XTENSA_SLOT0_OP	.text.bt_bb_restart_set+0x48
+ 124:	10ffe0        	and	a15, a15, a14
+ 127:	ffc9e1        	l32r	a14, 4c <bt_bb_restart_set-0x18> (a00000 <bt_bb_restart_set+0x9fff9c>)
+			127: R_XTENSA_SLOT0_OP	.text.bt_bb_restart_set+0x4c
+ 12a:	20efe0        	or	a14, a15, a14
+ 12d:	0020c0        	memw
+ 130:	0be9      	s32i.n	a14, a11, 0
+ 132:	0020c0        	memw
+ 135:	09e8      	l32i.n	a14, a9, 0
+ 137:	ffc6b1        	l32r	a11, 50 <bt_bb_restart_set-0x14> (f81fffff <bt_bb_restart_set+0xf81fff9b>)
+			137: R_XTENSA_SLOT0_OP	.text.bt_bb_restart_set+0x50
+ 13a:	10eeb0        	and	a14, a14, a11
+ 13d:	ffc5b1        	l32r	a11, 54 <bt_bb_restart_set-0x10> (1400000 <bt_bb_restart_set+0x13fff9c>)
+			13d: R_XTENSA_SLOT0_OP	.text.bt_bb_restart_set+0x54
+ 140:	20beb0        	or	a11, a14, a11
+ 143:	0020c0        	memw
+ 146:	09b9      	s32i.n	a11, a9, 0
+ 148:	ffc4b1        	l32r	a11, 58 <bt_bb_restart_set-0xc> (6001c1a0 <bt_bb_restart_set+0x6001c13c>)
+			148: R_XTENSA_SLOT0_OP	.text.bt_bb_restart_set+0x58
+ 14b:	0020c0        	memw
+ 14e:	0be8      	l32i.n	a14, a11, 0
+ 150:	10fea0        	and	a15, a14, a10
+ 153:	ce0c      	movi.n	a14, 12
+ 155:	20efe0        	or	a14, a15, a14
+ 158:	0020c0        	memw
+ 15b:	0be9      	s32i.n	a14, a11, 0
+ 15d:	0020c0        	memw
+ 160:	09e8      	l32i.n	a14, a9, 0
+ 162:	10ded0        	and	a13, a14, a13
+ 165:	ffbde1        	l32r	a14, 5c <bt_bb_restart_set-0x8> (50000 <bt_bb_restart_set+0x4ff9c>)
+			165: R_XTENSA_SLOT0_OP	.text.bt_bb_restart_set+0x5c
+ 168:	20dde0        	or	a13, a13, a14
+ 16b:	0020c0        	memw
+ 16e:	09d9      	s32i.n	a13, a9, 0
+ 170:	0020c0        	memw
+ 173:	0b98      	l32i.n	a9, a11, 0
+ 175:	10c9c0        	and	a12, a9, a12
+ 178:	ffba91        	l32r	a9, 60 <bt_bb_restart_set-0x4> (c40 <bt_bb_restart_set+0xbdc>)
+			178: R_XTENSA_SLOT0_OP	.text.bt_bb_restart_set+0x60
+ 17b:	20cc90        	or	a12, a12, a9
+ 17e:	0020c0        	memw
+ 181:	0bc9      	s32i.n	a12, a11, 0
+ 183:	0020c0        	memw
+ 186:	0898      	l32i.n	a9, a8, 0
+ 188:	10a9a0        	and	a10, a9, a10
+ 18b:	193c      	movi.n	a9, 49
+ 18d:	20aa90        	or	a10, a10, a9
+ 190:	0020c0        	memw
+ 193:	08a9      	s32i.n	a10, a8, 0
+ 195:	f01d      	retw.n
+
+Disassembly of section .text.bt_bb_target_set:
+
+00000000 <bt_bb_target_set-0x60>:
+   0:	6001c080 	
+   4:	fffe00ff 	
+   8:	0001d400 	
+   c:	60011898 	
+  10:	6001c144 	
+  14:	6001189c 	
+  18:	6001c0d0 	
+  1c:	60011840 	
+  20:	ffc01fff 	
+  24:	003a8000 	
+  28:	fffc01ff 	
+  2c:	0003a800 	
+  30:	ff81ffff 	
+  34:	00180000 	
+  38:	ffff81ff 	
+  3c:	00001800 	
+  40:	ff03ffff 	
+  44:	00300000 	
+  48:	6001c1a4 	
+  4c:	60011894 	
+  50:	ff803fff 	
+  54:	00750000 	
+  58:	007fffff 	
+  5c:	ea000000 	
+
+00000060 <bt_bb_target_set>:
+  60:	004136        	entry	a1, 32
+  63:	ffe721        	l32r	a2, 0 <bt_bb_target_set-0x60> (6001c080 <bt_bb_gain_set+0x6001c01c>)
+			63: R_XTENSA_SLOT0_OP	.text.bt_bb_target_set
+  66:	ffe731        	l32r	a3, 4 <bt_bb_target_set-0x5c> (fffe00ff <bt_bb_gain_set+0xfffe009b>)
+			66: R_XTENSA_SLOT0_OP	.text.bt_bb_target_set+0x4
+  69:	0020c0        	memw
+  6c:	0288      	l32i.n	a8, a2, 0
+  6e:	ffe7f1        	l32r	a15, c <bt_bb_target_set-0x54> (60011898 <bt_bb_gain_set+0x60011834>)
+			6e: R_XTENSA_SLOT0_OP	.text.bt_bb_target_set+0xc
+  71:	108830        	and	a8, a8, a3
+  74:	ffe531        	l32r	a3, 8 <bt_bb_target_set-0x58> (1d400 <bt_bb_gain_set+0x1d39c>)
+			74: R_XTENSA_SLOT0_OP	.text.bt_bb_target_set+0x8
+  77:	00ae92        	movi	a9, 0xfffffe00
+  7a:	203830        	or	a3, a8, a3
+  7d:	0020c0        	memw
+  80:	0239      	s32i.n	a3, a2, 0
+  82:	0020c0        	memw
+  85:	0fa8      	l32i.n	a10, a15, 0
+  87:	d4a182        	movi	a8, 0x1d4
+  8a:	10aa90        	and	a10, a10, a9
+  8d:	ffe0b1        	l32r	a11, 10 <bt_bb_target_set-0x50> (6001c144 <bt_bb_gain_set+0x6001c0e0>)
+			8d: R_XTENSA_SLOT0_OP	.text.bt_bb_target_set+0x10
+  90:	20aa80        	or	a10, a10, a8
+  93:	0020c0        	memw
+  96:	0fa9      	s32i.n	a10, a15, 0
+  98:	0020c0        	memw
+  9b:	0ba8      	l32i.n	a10, a11, 0
+  9d:	ffde31        	l32r	a3, 18 <bt_bb_target_set-0x48> (6001c0d0 <bt_bb_gain_set+0x6001c06c>)
+			9d: R_XTENSA_SLOT0_OP	.text.bt_bb_target_set+0x18
+  a0:	10aa90        	and	a10, a10, a9
+  a3:	20aa80        	or	a10, a10, a8
+  a6:	0020c0        	memw
+  a9:	0ba9      	s32i.n	a10, a11, 0
+  ab:	ffdaa1        	l32r	a10, 14 <bt_bb_target_set-0x4c> (6001189c <bt_bb_gain_set+0x60011838>)
+			ab: R_XTENSA_SLOT0_OP	.text.bt_bb_target_set+0x14
+  ae:	ffdbd1        	l32r	a13, 1c <bt_bb_target_set-0x44> (60011840 <bt_bb_gain_set+0x600117dc>)
+			ae: R_XTENSA_SLOT0_OP	.text.bt_bb_target_set+0x1c
+  b1:	0020c0        	memw
+  b4:	0ac8      	l32i.n	a12, a10, 0
+  b6:	10cc90        	and	a12, a12, a9
+  b9:	20cc80        	or	a12, a12, a8
+  bc:	0020c0        	memw
+  bf:	0ac9      	s32i.n	a12, a10, 0
+  c1:	0020c0        	memw
+  c4:	03c8      	l32i.n	a12, a3, 0
+  c6:	10cc90        	and	a12, a12, a9
+  c9:	20cc80        	or	a12, a12, a8
+  cc:	0020c0        	memw
+  cf:	03c9      	s32i.n	a12, a3, 0
+  d1:	0020c0        	memw
+  d4:	0dc8      	l32i.n	a12, a13, 0
+  d6:	ffd231        	l32r	a3, 20 <bt_bb_target_set-0x40> (ffc01fff <bt_bb_gain_set+0xffc01f9b>)
+			d6: R_XTENSA_SLOT0_OP	.text.bt_bb_target_set+0x20
+  d9:	10cc30        	and	a12, a12, a3
+  dc:	ffd231        	l32r	a3, 24 <bt_bb_target_set-0x3c> (3a8000 <bt_bb_gain_set+0x3a7f9c>)
+			dc: R_XTENSA_SLOT0_OP	.text.bt_bb_target_set+0x24
+  df:	203c30        	or	a3, a12, a3
+  e2:	0020c0        	memw
+  e5:	0d39      	s32i.n	a3, a13, 0
+  e7:	0020c0        	memw
+  ea:	0be8      	l32i.n	a14, a11, 0
+  ec:	ffcfd1        	l32r	a13, 28 <bt_bb_target_set-0x38> (fffc01ff <bt_bb_gain_set+0xfffc019b>)
+			ec: R_XTENSA_SLOT0_OP	.text.bt_bb_target_set+0x28
+  ef:	ffcfc1        	l32r	a12, 2c <bt_bb_target_set-0x34> (3a800 <bt_bb_gain_set+0x3a79c>)
+			ef: R_XTENSA_SLOT0_OP	.text.bt_bb_target_set+0x2c
+  f2:	10eed0        	and	a14, a14, a13
+  f5:	20eec0        	or	a14, a14, a12
+  f8:	0020c0        	memw
+  fb:	0be9      	s32i.n	a14, a11, 0
+  fd:	0020c0        	memw
+ 100:	0ae8      	l32i.n	a14, a10, 0
+ 102:	ffcb31        	l32r	a3, 30 <bt_bb_target_set-0x30> (ff81ffff <bt_bb_gain_set+0xff81ff9b>)
+			102: R_XTENSA_SLOT0_OP	.text.bt_bb_target_set+0x30
+ 105:	10eed0        	and	a14, a14, a13
+ 108:	20eec0        	or	a14, a14, a12
+ 10b:	0020c0        	memw
+ 10e:	0ae9      	s32i.n	a14, a10, 0
+ 110:	0020c0        	memw
+ 113:	02e8      	l32i.n	a14, a2, 0
+ 115:	103e30        	and	a3, a14, a3
+ 118:	ffc7e1        	l32r	a14, 34 <bt_bb_target_set-0x2c> (180000 <bt_bb_gain_set+0x17ff9c>)
+			118: R_XTENSA_SLOT0_OP	.text.bt_bb_target_set+0x34
+ 11b:	20e3e0        	or	a14, a3, a14
+ 11e:	0020c0        	memw
+ 121:	02e9      	s32i.n	a14, a2, 0
+ 123:	0020c0        	memw
+ 126:	0fe8      	l32i.n	a14, a15, 0
+ 128:	ffc421        	l32r	a2, 38 <bt_bb_target_set-0x28> (ffff81ff <bt_bb_gain_set+0xffff819b>)
+			128: R_XTENSA_SLOT0_OP	.text.bt_bb_target_set+0x38
+ 12b:	10ee20        	and	a14, a14, a2
+ 12e:	ffc321        	l32r	a2, 3c <bt_bb_target_set-0x24> (1800 <bt_bb_gain_set+0x179c>)
+			12e: R_XTENSA_SLOT0_OP	.text.bt_bb_target_set+0x3c
+ 131:	202e20        	or	a2, a14, a2
+ 134:	0020c0        	memw
+ 137:	0f29      	s32i.n	a2, a15, 0
+ 139:	0020c0        	memw
+ 13c:	0be8      	l32i.n	a14, a11, 0
+ 13e:	ffc0f1        	l32r	a15, 40 <bt_bb_target_set-0x20> (ff03ffff <bt_bb_gain_set+0xff03ff9b>)
+			13e: R_XTENSA_SLOT0_OP	.text.bt_bb_target_set+0x40
+ 141:	ffc021        	l32r	a2, 44 <bt_bb_target_set-0x1c> (300000 <bt_bb_gain_set+0x2fff9c>)
+			141: R_XTENSA_SLOT0_OP	.text.bt_bb_target_set+0x44
+ 144:	10eef0        	and	a14, a14, a15
+ 147:	20ee20        	or	a14, a14, a2
+ 14a:	0020c0        	memw
+ 14d:	0be9      	s32i.n	a14, a11, 0
+ 14f:	0020c0        	memw
+ 152:	0a38      	l32i.n	a3, a10, 0
+ 154:	10f3f0        	and	a15, a3, a15
+ 157:	202f20        	or	a2, a15, a2
+ 15a:	0020c0        	memw
+ 15d:	0a29      	s32i.n	a2, a10, 0
+ 15f:	ffbaa1        	l32r	a10, 48 <bt_bb_target_set-0x18> (6001c1a4 <bt_bb_gain_set+0x6001c140>)
+			15f: R_XTENSA_SLOT0_OP	.text.bt_bb_target_set+0x48
+ 162:	0020c0        	memw
+ 165:	0a28      	l32i.n	a2, a10, 0
+ 167:	109290        	and	a9, a2, a9
+ 16a:	208980        	or	a8, a9, a8
+ 16d:	ffb721        	l32r	a2, 4c <bt_bb_target_set-0x14> (60011894 <bt_bb_gain_set+0x60011830>)
+			16d: R_XTENSA_SLOT0_OP	.text.bt_bb_target_set+0x4c
+ 170:	0020c0        	memw
+ 173:	0a89      	s32i.n	a8, a10, 0
+ 175:	0020c0        	memw
+ 178:	0298      	l32i.n	a9, a2, 0
+ 17a:	ffb581        	l32r	a8, 50 <bt_bb_target_set-0x10> (ff803fff <bt_bb_gain_set+0xff803f9b>)
+			17a: R_XTENSA_SLOT0_OP	.text.bt_bb_target_set+0x50
+ 17d:	109980        	and	a9, a9, a8
+ 180:	ffb581        	l32r	a8, 54 <bt_bb_target_set-0xc> (750000 <bt_bb_gain_set+0x74ff9c>)
+			180: R_XTENSA_SLOT0_OP	.text.bt_bb_target_set+0x54
+ 183:	208980        	or	a8, a9, a8
+ 186:	0020c0        	memw
+ 189:	0289      	s32i.n	a8, a2, 0
+ 18b:	0020c0        	memw
+ 18e:	0a38      	l32i.n	a3, a10, 0
+ 190:	ffb281        	l32r	a8, 58 <bt_bb_target_set-0x8> (7fffff <bt_bb_gain_set+0x7fff9b>)
+			190: R_XTENSA_SLOT0_OP	.text.bt_bb_target_set+0x58
+ 193:	10d3d0        	and	a13, a3, a13
+ 196:	20cdc0        	or	a12, a13, a12
+ 199:	0020c0        	memw
+ 19c:	0ac9      	s32i.n	a12, a10, 0
+ 19e:	0020c0        	memw
+ 1a1:	0298      	l32i.n	a9, a2, 0
+ 1a3:	109980        	and	a9, a9, a8
+ 1a6:	ffad81        	l32r	a8, 5c <bt_bb_target_set-0x4> (ea000000 <bt_bb_gain_set+0xe9ffff9c>)
+			1a6: R_XTENSA_SLOT0_OP	.text.bt_bb_target_set+0x5c
+ 1a9:	208980        	or	a8, a9, a8
+ 1ac:	0020c0        	memw
+ 1af:	0289      	s32i.n	a8, a2, 0
+ 1b1:	f01d      	retw.n
+
+Disassembly of section .text.bt_bb_detect_set:
+
+00000000 <bt_bb_detect_set-0x38>:
+   0:	6001c1a0 	
+   4:	ffe1ffff 	
+   8:	001a0000 	
+   c:	600118ac 	
+  10:	ff87ffff 	
+  14:	00680000 	
+  18:	6001c07c 	
+  1c:	f0ffffff 	
+  20:	03000000 	
+  24:	600118a0 	
+  28:	600118a8 	
+  2c:	ff83ffff 	
+  30:	00100000 	
+  34:	6001c080 	
+
+00000038 <bt_bb_detect_set>:
+  38:	004136        	entry	a1, 32
+  3b:	fff1a1        	l32r	a10, 0 <bt_bb_detect_set-0x38> (6001c1a0 <bt_bb_gain_set+0x6001c13c>)
+			3b: R_XTENSA_SLOT0_OP	.text.bt_bb_detect_set
+  3e:	fff181        	l32r	a8, 4 <bt_bb_detect_set-0x34> (ffe1ffff <bt_bb_gain_set+0xffe1ff9b>)
+			3e: R_XTENSA_SLOT0_OP	.text.bt_bb_detect_set+0x4
+  41:	0020c0        	memw
+  44:	0a98      	l32i.n	a9, a10, 0
+  46:	fff4b1        	l32r	a11, 18 <bt_bb_detect_set-0x20> (6001c07c <bt_bb_gain_set+0x6001c018>)
+			46: R_XTENSA_SLOT0_OP	.text.bt_bb_detect_set+0x18
+  49:	109980        	and	a9, a9, a8
+  4c:	ffef81        	l32r	a8, 8 <bt_bb_detect_set-0x30> (1a0000 <bt_bb_gain_set+0x19ff9c>)
+			4c: R_XTENSA_SLOT0_OP	.text.bt_bb_detect_set+0x8
+  4f:	208980        	or	a8, a9, a8
+  52:	0020c0        	memw
+  55:	0a89      	s32i.n	a8, a10, 0
+  57:	ffeda1        	l32r	a10, c <bt_bb_detect_set-0x2c> (600118ac <bt_bb_gain_set+0x60011848>)
+			57: R_XTENSA_SLOT0_OP	.text.bt_bb_detect_set+0xc
+  5a:	ffed81        	l32r	a8, 10 <bt_bb_detect_set-0x28> (ff87ffff <bt_bb_gain_set+0xff87ff9b>)
+			5a: R_XTENSA_SLOT0_OP	.text.bt_bb_detect_set+0x10
+  5d:	0020c0        	memw
+  60:	0a98      	l32i.n	a9, a10, 0
+  62:	109980        	and	a9, a9, a8
+  65:	ffeb81        	l32r	a8, 14 <bt_bb_detect_set-0x24> (680000 <bt_bb_gain_set+0x67ff9c>)
+			65: R_XTENSA_SLOT0_OP	.text.bt_bb_detect_set+0x14
+  68:	208980        	or	a8, a9, a8
+  6b:	0020c0        	memw
+  6e:	0a89      	s32i.n	a8, a10, 0
+  70:	0020c0        	memw
+  73:	0b88      	l32i.n	a8, a11, 0
+  75:	ffe9a1        	l32r	a10, 1c <bt_bb_detect_set-0x1c> (f0ffffff <bt_bb_gain_set+0xf0ffff9b>)
+			75: R_XTENSA_SLOT0_OP	.text.bt_bb_detect_set+0x1c
+  78:	ffea91        	l32r	a9, 20 <bt_bb_detect_set-0x18> (3000000 <bt_bb_gain_set+0x2ffff9c>)
+			78: R_XTENSA_SLOT0_OP	.text.bt_bb_detect_set+0x20
+  7b:	1088a0        	and	a8, a8, a10
+  7e:	208890        	or	a8, a8, a9
+  81:	0020c0        	memw
+  84:	0b89      	s32i.n	a8, a11, 0
+  86:	ffe781        	l32r	a8, 24 <bt_bb_detect_set-0x14> (600118a0 <bt_bb_gain_set+0x6001183c>)
+			86: R_XTENSA_SLOT0_OP	.text.bt_bb_detect_set+0x24
+  89:	0020c0        	memw
+  8c:	08b8      	l32i.n	a11, a8, 0
+  8e:	10aba0        	and	a10, a11, a10
+  91:	209a90        	or	a9, a10, a9
+  94:	ffe5a1        	l32r	a10, 28 <bt_bb_detect_set-0x10> (600118a8 <bt_bb_gain_set+0x60011844>)
+			94: R_XTENSA_SLOT0_OP	.text.bt_bb_detect_set+0x28
+  97:	0020c0        	memw
+  9a:	0899      	s32i.n	a9, a8, 0
+  9c:	0020c0        	memw
+  9f:	0a98      	l32i.n	a9, a10, 0
+  a1:	ffe281        	l32r	a8, 2c <bt_bb_detect_set-0xc> (ff83ffff <bt_bb_gain_set+0xff83ff9b>)
+			a1: R_XTENSA_SLOT0_OP	.text.bt_bb_detect_set+0x2c
+  a4:	109980        	and	a9, a9, a8
+  a7:	ffe281        	l32r	a8, 30 <bt_bb_detect_set-0x8> (100000 <bt_bb_gain_set+0xfff9c>)
+			a7: R_XTENSA_SLOT0_OP	.text.bt_bb_detect_set+0x30
+  aa:	208980        	or	a8, a9, a8
+  ad:	0020c0        	memw
+  b0:	0a89      	s32i.n	a8, a10, 0
+  b2:	ffe0a1        	l32r	a10, 34 <bt_bb_detect_set-0x4> (6001c080 <bt_bb_gain_set+0x6001c01c>)
+			b2: R_XTENSA_SLOT0_OP	.text.bt_bb_detect_set+0x34
+  b5:	c1af82        	movi	a8, -63
+  b8:	0020c0        	memw
+  bb:	0a98      	l32i.n	a9, a10, 0
+  bd:	109980        	and	a9, a9, a8
+  c0:	880c      	movi.n	a8, 8
+  c2:	208980        	or	a8, a9, a8
+  c5:	0020c0        	memw
+  c8:	0a89      	s32i.n	a8, a10, 0
+  ca:	f01d      	retw.n
+
+Disassembly of section .text.bt_bb_gain_set:
+
+00000000 <bt_bb_gain_set-0x64>:
+   0:	6001c094 	
+   4:	60011854 	
+   8:	6001104c 	
+   c:	6001c0d0 	
+  10:	0001fe00 	
+  14:	60011844 	
+  18:	ffffc07f 	
+  1c:	ff07ffff 	
+  20:	00d00000 	
+  24:	6001c0a4 	
+  28:	003f8000 	
+  2c:	60011850 	
+  30:	ffe03fff 	
+  34:	1fc00000 	
+  38:	f01fffff 	
+  3c:	60011848 	
+  40:	ff00ffff 	
+  44:	00530000 	
+  48:	6001184c 	
+  4c:	04000000 	
+  50:	60011858 	
+  54:	06172430 	
+  58:	6001185c 	
+  5c:	fff80000 	
+  60:	00002710 	
+
+00000064 <bt_bb_gain_set>:
+  64:	004136        	entry	a1, 32
+  67:	ffe691        	l32r	a9, 0 <bt_bb_gain_set-0x64> (6001c094 <bt_bb_gain_set+0x6001c030>)
+			67: R_XTENSA_SLOT0_OP	.text.bt_bb_gain_set
+  6a:	1a0c      	movi.n	a10, 1
+  6c:	0020c0        	memw
+  6f:	0988      	l32i.n	a8, a9, 0
+  71:	ffe4d1        	l32r	a13, 4 <bt_bb_gain_set-0x60> (60011854 <bt_bb_gain_set+0x600117f0>)
+			71: R_XTENSA_SLOT0_OP	.text.bt_bb_gain_set+0x4
+  74:	2088a0        	or	a8, a8, a10
+  77:	0020c0        	memw
+  7a:	0989      	s32i.n	a8, a9, 0
+  7c:	0020c0        	memw
+  7f:	0d88      	l32i.n	a8, a13, 0
+  81:	ffe191        	l32r	a9, 8 <bt_bb_gain_set-0x5c> (6001104c <bt_bb_gain_set+0x60010fe8>)
+			81: R_XTENSA_SLOT0_OP	.text.bt_bb_gain_set+0x8
+  84:	2088a0        	or	a8, a8, a10
+  87:	0020c0        	memw
+  8a:	0d89      	s32i.n	a8, a13, 0
+  8c:	0020c0        	memw
+  8f:	09b8      	l32i.n	a11, a9, 0
+  91:	480c      	movi.n	a8, 4
+  93:	208b80        	or	a8, a11, a8
+  96:	0020c0        	memw
+  99:	0989      	s32i.n	a8, a9, 0
+  9b:	ffdc81        	l32r	a8, c <bt_bb_gain_set-0x58> (6001c0d0 <bt_bb_gain_set+0x6001c06c>)
+			9b: R_XTENSA_SLOT0_OP	.text.bt_bb_gain_set+0xc
+  9e:	ffdde1        	l32r	a14, 14 <bt_bb_gain_set-0x50> (60011844 <bt_bb_gain_set+0x600117e0>)
+			9e: R_XTENSA_SLOT0_OP	.text.bt_bb_gain_set+0x14
+  a1:	0020c0        	memw
+  a4:	0898      	l32i.n	a9, a8, 0
+  a6:	ffda81        	l32r	a8, 10 <bt_bb_gain_set-0x54> (1fe00 <bt_bb_gain_set+0x1fd9c>)
+			a6: R_XTENSA_SLOT0_OP	.text.bt_bb_gain_set+0x10
+  a9:	ffdbc1        	l32r	a12, 18 <bt_bb_gain_set-0x4c> (ffffc07f <bt_bb_gain_set+0xffffc01b>)
+			a9: R_XTENSA_SLOT0_OP	.text.bt_bb_gain_set+0x18
+  ac:	109980        	and	a9, a9, a8
+  af:	0020c0        	memw
+  b2:	0e88      	l32i.n	a8, a14, 0
+  b4:	649990        	extui	a9, a9, 9, 7
+  b7:	11b990        	slli	a11, a9, 7
+  ba:	1088c0        	and	a8, a8, a12
+  bd:	208b80        	or	a8, a11, a8
+  c0:	0020c0        	memw
+  c3:	0e89      	s32i.n	a8, a14, 0
+  c5:	0020c0        	memw
+  c8:	0e88      	l32i.n	a8, a14, 0
+  ca:	80afb2        	movi	a11, -128
+  cd:	1088b0        	and	a8, a8, a11
+  d0:	209890        	or	a9, a8, a9
+  d3:	0020c0        	memw
+  d6:	0e99      	s32i.n	a9, a14, 0
+  d8:	0020c0        	memw
+  db:	0e98      	l32i.n	a9, a14, 0
+  dd:	ffcf81        	l32r	a8, 1c <bt_bb_gain_set-0x48> (ff07ffff <bt_bb_gain_set+0xff07ff9b>)
+			dd: R_XTENSA_SLOT0_OP	.text.bt_bb_gain_set+0x1c
+  e0:	109980        	and	a9, a9, a8
+  e3:	ffcf81        	l32r	a8, 20 <bt_bb_gain_set-0x44> (d00000 <bt_bb_gain_set+0xcfff9c>)
+			e3: R_XTENSA_SLOT0_OP	.text.bt_bb_gain_set+0x20
+  e6:	208980        	or	a8, a9, a8
+  e9:	0020c0        	memw
+  ec:	0e89      	s32i.n	a8, a14, 0
+  ee:	0020c0        	memw
+  f1:	0d98      	l32i.n	a9, a13, 0
+  f3:	03ae82        	movi	a8, 0xfffffe03
+  f6:	109980        	and	a9, a9, a8
+  f9:	c8a082        	movi	a8, 200
+  fc:	208980        	or	a8, a9, a8
+  ff:	0020c0        	memw
+ 102:	0d89      	s32i.n	a8, a13, 0
+ 104:	0020c0        	memw
+ 107:	0d88      	l32i.n	a8, a13, 0
+ 109:	ffc691        	l32r	a9, 24 <bt_bb_gain_set-0x40> (6001c0a4 <bt_bb_gain_set+0x6001c040>)
+			109: R_XTENSA_SLOT0_OP	.text.bt_bb_gain_set+0x24
+ 10c:	20a8a0        	or	a10, a8, a10
+ 10f:	0020c0        	memw
+ 112:	0da9      	s32i.n	a10, a13, 0
+ 114:	0020c0        	memw
+ 117:	09a8      	l32i.n	a10, a9, 0
+ 119:	ffc381        	l32r	a8, 28 <bt_bb_gain_set-0x3c> (3f8000 <bt_bb_gain_set+0x3f7f9c>)
+			119: R_XTENSA_SLOT0_OP	.text.bt_bb_gain_set+0x28
+ 11c:	0020c0        	memw
+ 11f:	09e8      	l32i.n	a14, a9, 0
+ 121:	108a80        	and	a8, a10, a8
+ 124:	ffc2a1        	l32r	a10, 2c <bt_bb_gain_set-0x38> (60011850 <bt_bb_gain_set+0x600117ec>)
+			124: R_XTENSA_SLOT0_OP	.text.bt_bb_gain_set+0x2c
+ 127:	418f80        	srli	a8, a8, 15
+ 12a:	0020c0        	memw
+ 12d:	0ad8      	l32i.n	a13, a10, 0
+ 12f:	ffc091        	l32r	a9, 30 <bt_bb_gain_set-0x34> (ffe03fff <bt_bb_gain_set+0xffe03f9b>)
+			12f: R_XTENSA_SLOT0_OP	.text.bt_bb_gain_set+0x30
+ 132:	10dd90        	and	a13, a13, a9
+ 135:	119820        	slli	a9, a8, 14
+ 138:	209d90        	or	a9, a13, a9
+ 13b:	0020c0        	memw
+ 13e:	0a99      	s32i.n	a9, a10, 0
+ 140:	0020c0        	memw
+ 143:	0a98      	l32i.n	a9, a10, 0
+ 145:	10c9c0        	and	a12, a9, a12
+ 148:	119890        	slli	a9, a8, 7
+ 14b:	20cc90        	or	a12, a12, a9
+ 14e:	0020c0        	memw
+ 151:	0ac9      	s32i.n	a12, a10, 0
+ 153:	0020c0        	memw
+ 156:	0a98      	l32i.n	a9, a10, 0
+ 158:	1099b0        	and	a9, a9, a11
+ 15b:	209980        	or	a9, a9, a8
+ 15e:	0020c0        	memw
+ 161:	0a99      	s32i.n	a9, a10, 0
+ 163:	ffb491        	l32r	a9, 34 <bt_bb_gain_set-0x30> (1fc00000 <bt_bb_gain_set+0x1fbfff9c>)
+			163: R_XTENSA_SLOT0_OP	.text.bt_bb_gain_set+0x34
+ 166:	0020c0        	memw
+ 169:	0ab8      	l32i.n	a11, a10, 0
+ 16b:	108e90        	and	a8, a14, a9
+ 16e:	ffb291        	l32r	a9, 38 <bt_bb_gain_set-0x2c> (f01fffff <bt_bb_gain_set+0xf01fff9b>)
+			16e: R_XTENSA_SLOT0_OP	.text.bt_bb_gain_set+0x38
+ 171:	958680        	extui	a8, a8, 22, 10
+ 174:	109b90        	and	a9, a11, a9
+ 177:	0188b0        	slli	a8, a8, 21
+ 17a:	208890        	or	a8, a8, a9
+ 17d:	0020c0        	memw
+ 180:	0a89      	s32i.n	a8, a10, 0
+ 182:	ffaea1        	l32r	a10, 3c <bt_bb_gain_set-0x28> (60011848 <bt_bb_gain_set+0x600117e4>)
+			182: R_XTENSA_SLOT0_OP	.text.bt_bb_gain_set+0x3c
+ 185:	ffae81        	l32r	a8, 40 <bt_bb_gain_set-0x24> (ff00ffff <bt_bb_gain_set+0xff00ff9b>)
+			185: R_XTENSA_SLOT0_OP	.text.bt_bb_gain_set+0x40
+ 188:	0020c0        	memw
+ 18b:	0a98      	l32i.n	a9, a10, 0
+ 18d:	109980        	and	a9, a9, a8
+ 190:	ffad81        	l32r	a8, 44 <bt_bb_gain_set-0x20> (530000 <bt_bb_gain_set+0x52ff9c>)
+			190: R_XTENSA_SLOT0_OP	.text.bt_bb_gain_set+0x44
+ 193:	208980        	or	a8, a9, a8
+ 196:	0020c0        	memw
+ 199:	0a89      	s32i.n	a8, a10, 0
+ 19b:	ffab81        	l32r	a8, 48 <bt_bb_gain_set-0x1c> (6001184c <bt_bb_gain_set+0x600117e8>)
+			19b: R_XTENSA_SLOT0_OP	.text.bt_bb_gain_set+0x48
+ 19e:	ffab91        	l32r	a9, 4c <bt_bb_gain_set-0x18> (4000000 <bt_bb_gain_set+0x3ffff9c>)
+			19e: R_XTENSA_SLOT0_OP	.text.bt_bb_gain_set+0x4c
+ 1a1:	0020c0        	memw
+ 1a4:	08a8      	l32i.n	a10, a8, 0
+ 1a6:	209a90        	or	a9, a10, a9
+ 1a9:	0020c0        	memw
+ 1ac:	0899      	s32i.n	a9, a8, 0
+ 1ae:	ffa8a1        	l32r	a10, 50 <bt_bb_gain_set-0x14> (60011858 <bt_bb_gain_set+0x600117f4>)
+			1ae: R_XTENSA_SLOT0_OP	.text.bt_bb_gain_set+0x50
+ 1b1:	ffa891        	l32r	a9, 54 <bt_bb_gain_set-0x10> (6172430 <bt_bb_gain_set+0x61723cc>)
+			1b1: R_XTENSA_SLOT0_OP	.text.bt_bb_gain_set+0x54
+ 1b4:	0020c0        	memw
+ 1b7:	0a99      	s32i.n	a9, a10, 0
+ 1b9:	ffa7a1        	l32r	a10, 58 <bt_bb_gain_set-0xc> (6001185c <bt_bb_gain_set+0x600117f8>)
+			1b9: R_XTENSA_SLOT0_OP	.text.bt_bb_gain_set+0x58
+ 1bc:	0020c0        	memw
+ 1bf:	0a99      	s32i.n	a9, a10, 0
+ 1c1:	0020c0        	memw
+ 1c4:	08a8      	l32i.n	a10, a8, 0
+ 1c6:	ffa591        	l32r	a9, 5c <bt_bb_gain_set-0x8> (fff80000 <bt_bb_gain_set+0xfff7ff9c>)
+			1c6: R_XTENSA_SLOT0_OP	.text.bt_bb_gain_set+0x5c
+ 1c9:	10aa90        	and	a10, a10, a9
+ 1cc:	ffa591        	l32r	a9, 60 <bt_bb_gain_set-0x4> (2710 <bt_bb_gain_set+0x26ac>)
+			1cc: R_XTENSA_SLOT0_OP	.text.bt_bb_gain_set+0x60
+ 1cf:	209a90        	or	a9, a10, a9
+ 1d2:	0020c0        	memw
+ 1d5:	0899      	s32i.n	a9, a8, 0
+ 1d7:	f01d      	retw.n
+
+Disassembly of section .text.bt_bb_v2_rx_rssi_thresh:
+
+00000000 <bt_bb_v2_rx_rssi_thresh-0x1c>:
+   0:	6001c07c 	
+   4:	ff00ffff 	
+   8:	600118a0 	
+   c:	6001c1a0 	
+  10:	e01fffff 	
+  14:	600118ac 	
+  18:	807fffff 	
+
+0000001c <bt_bb_v2_rx_rssi_thresh>:
+  1c:	004136        	entry	a1, 32
+  1f:	fff8a1        	l32r	a10, 0 <bt_bb_v2_rx_rssi_thresh-0x1c> (6001c07c <bt_bb_gain_set+0x6001c018>)
+			1f: R_XTENSA_SLOT0_OP	.text.bt_bb_v2_rx_rssi_thresh
+  22:	fff891        	l32r	a9, 4 <bt_bb_v2_rx_rssi_thresh-0x18> (ff00ffff <bt_bb_gain_set+0xff00ff9b>)
+			22: R_XTENSA_SLOT0_OP	.text.bt_bb_v2_rx_rssi_thresh+0x4
+  25:	0020c0        	memw
+  28:	0a88      	l32i.n	a8, a10, 0
+  2a:	742020        	extui	a2, a2, 0, 8
+  2d:	112200        	slli	a2, a2, 16
+  30:	108890        	and	a8, a8, a9
+  33:	208820        	or	a8, a8, a2
+  36:	0020c0        	memw
+  39:	0a89      	s32i.n	a8, a10, 0
+  3b:	fff381        	l32r	a8, 8 <bt_bb_v2_rx_rssi_thresh-0x14> (600118a0 <bt_bb_gain_set+0x6001183c>)
+			3b: R_XTENSA_SLOT0_OP	.text.bt_bb_v2_rx_rssi_thresh+0x8
+  3e:	743030        	extui	a3, a3, 0, 8
+  41:	0020c0        	memw
+  44:	08a8      	l32i.n	a10, a8, 0
+  46:	109a90        	and	a9, a10, a9
+  49:	202920        	or	a2, a9, a2
+  4c:	fff091        	l32r	a9, c <bt_bb_v2_rx_rssi_thresh-0x10> (6001c1a0 <bt_bb_gain_set+0x6001c13c>)
+			4c: R_XTENSA_SLOT0_OP	.text.bt_bb_v2_rx_rssi_thresh+0xc
+  4f:	0020c0        	memw
+  52:	0829      	s32i.n	a2, a8, 0
+  54:	0020c0        	memw
+  57:	0988      	l32i.n	a8, a9, 0
+  59:	ffed21        	l32r	a2, 10 <bt_bb_v2_rx_rssi_thresh-0xc> (e01fffff <bt_bb_gain_set+0xe01fff9b>)
+			59: R_XTENSA_SLOT0_OP	.text.bt_bb_v2_rx_rssi_thresh+0x10
+  5c:	108820        	and	a8, a8, a2
+  5f:	0123b0        	slli	a2, a3, 21
+  62:	202820        	or	a2, a8, a2
+  65:	ffeb81        	l32r	a8, 14 <bt_bb_v2_rx_rssi_thresh-0x8> (600118ac <bt_bb_gain_set+0x60011848>)
+			65: R_XTENSA_SLOT0_OP	.text.bt_bb_v2_rx_rssi_thresh+0x14
+  68:	0020c0        	memw
+  6b:	0929      	s32i.n	a2, a9, 0
+  6d:	0020c0        	memw
+  70:	0898      	l32i.n	a9, a8, 0
+  72:	ffe921        	l32r	a2, 18 <bt_bb_v2_rx_rssi_thresh-0x4> (807fffff <bt_bb_gain_set+0x807fff9b>)
+			72: R_XTENSA_SLOT0_OP	.text.bt_bb_v2_rx_rssi_thresh+0x18
+  75:	013390        	slli	a3, a3, 23
+  78:	102920        	and	a2, a9, a2
+  7b:	203230        	or	a3, a2, a3
+  7e:	0020c0        	memw
+  81:	0839      	s32i.n	a3, a8, 0
+  83:	f01d      	retw.n
+
+Disassembly of section .text.bt_bb_v2_rx_set:
+
+00000000 <bt_bb_v2_rx_set-0x44>:
+   0:	60026010 	
+   4:	000f000b 	
+   8:	60011008 	
+   c:	e07fffff 	
+  10:	60033c18 	
+  14:	7fffffff 	
+  18:	60011888 	
+  1c:	dfffffff 	
+  20:	fffbffff 	
+	...
+			24: R_XTENSA_32	bt_bb_corr_set
+			28: R_XTENSA_32	bt_bb_dpo_set
+			2c: R_XTENSA_32	bt_bb_restart_set
+			30: R_XTENSA_32	bt_bb_target_set
+			34: R_XTENSA_32	bt_bb_detect_set
+			38: R_XTENSA_32	bt_bb_gain_set
+			3c: R_XTENSA_32	bt_bb_v2_rx_rssi_thresh
+			40: R_XTENSA_32	bt_bb_v2_recorrect
+
+00000044 <bt_bb_v2_rx_set>:
+  44:	004136        	entry	a1, 32
+  47:	ffee91        	l32r	a9, 0 <bt_bb_v2_rx_set-0x44> (60026010 <bt_bb_gain_set+0x60025fac>)
+			47: R_XTENSA_SLOT0_OP	.text.bt_bb_v2_rx_set
+  4a:	ffee81        	l32r	a8, 4 <bt_bb_v2_rx_set-0x40> (f000b <bt_bb_gain_set+0xeffa7>)
+			4a: R_XTENSA_SLOT0_OP	.text.bt_bb_v2_rx_set+0x4
+  4d:	0020c0        	memw
+  50:	09a8      	l32i.n	a10, a9, 0
+  52:	542020        	extui	a2, a2, 0, 6
+  55:	208a80        	or	a8, a10, a8
+  58:	0020c0        	memw
+  5b:	0989      	s32i.n	a8, a9, 0
+  5d:	ffea91        	l32r	a9, 8 <bt_bb_v2_rx_set-0x3c> (60011008 <bt_bb_gain_set+0x60010fa4>)
+			5d: R_XTENSA_SLOT0_OP	.text.bt_bb_v2_rx_set+0x8
+  60:	ffeb81        	l32r	a8, c <bt_bb_v2_rx_set-0x38> (e07fffff <bt_bb_gain_set+0xe07fff9b>)
+			60: R_XTENSA_SLOT0_OP	.text.bt_bb_v2_rx_set+0xc
+  63:	0020c0        	memw
+  66:	09a8      	l32i.n	a10, a9, 0
+  68:	012290        	slli	a2, a2, 23
+  6b:	108a80        	and	a8, a10, a8
+  6e:	202280        	or	a2, a2, a8
+  71:	0020c0        	memw
+  74:	0929      	s32i.n	a2, a9, 0
+  76:	ffeb81        	l32r	a8, 24 <bt_bb_v2_rx_set-0x20> (0 <bt_bb_v2_rx_set-0x44>)
+			76: R_XTENSA_SLOT0_OP	.text.bt_bb_v2_rx_set+0x24
+			76: R_XTENSA_ASM_EXPAND	bt_bb_corr_set
+  79:	0008e0        	callx8	a8
+  7c:	ffeb81        	l32r	a8, 28 <bt_bb_v2_rx_set-0x1c> (0 <bt_bb_v2_rx_set-0x44>)
+			7c: R_XTENSA_SLOT0_OP	.text.bt_bb_v2_rx_set+0x28
+			7c: R_XTENSA_ASM_EXPAND	bt_bb_dpo_set
+  7f:	0008e0        	callx8	a8
+  82:	ffea81        	l32r	a8, 2c <bt_bb_v2_rx_set-0x18> (0 <bt_bb_v2_rx_set-0x44>)
+			82: R_XTENSA_SLOT0_OP	.text.bt_bb_v2_rx_set+0x2c
+			82: R_XTENSA_ASM_EXPAND	bt_bb_restart_set
+  85:	0008e0        	callx8	a8
+  88:	ffea81        	l32r	a8, 30 <bt_bb_v2_rx_set-0x14> (0 <bt_bb_v2_rx_set-0x44>)
+			88: R_XTENSA_SLOT0_OP	.text.bt_bb_v2_rx_set+0x30
+			88: R_XTENSA_ASM_EXPAND	bt_bb_target_set
+  8b:	0008e0        	callx8	a8
+  8e:	ffe981        	l32r	a8, 34 <bt_bb_v2_rx_set-0x10> (0 <bt_bb_v2_rx_set-0x44>)
+			8e: R_XTENSA_SLOT0_OP	.text.bt_bb_v2_rx_set+0x34
+			8e: R_XTENSA_ASM_EXPAND	bt_bb_detect_set
+  91:	0008e0        	callx8	a8
+  94:	ffe981        	l32r	a8, 38 <bt_bb_v2_rx_set-0xc> (0 <bt_bb_v2_rx_set-0x44>)
+			94: R_XTENSA_SLOT0_OP	.text.bt_bb_v2_rx_set+0x38
+			94: R_XTENSA_ASM_EXPAND	bt_bb_gain_set
+  97:	0008e0        	callx8	a8
+  9a:	92afb2        	movi	a11, -110
+  9d:	9cafa2        	movi	a10, -100
+  a0:	ffe781        	l32r	a8, 3c <bt_bb_v2_rx_set-0x8> (0 <bt_bb_v2_rx_set-0x44>)
+			a0: R_XTENSA_SLOT0_OP	.text.bt_bb_v2_rx_set+0x3c
+			a0: R_XTENSA_ASM_EXPAND	bt_bb_v2_rx_rssi_thresh
+  a3:	0008e0        	callx8	a8
+  a6:	ffe681        	l32r	a8, 40 <bt_bb_v2_rx_set-0x4> (0 <bt_bb_v2_rx_set-0x44>)
+			a6: R_XTENSA_SLOT0_OP	.text.bt_bb_v2_rx_set+0x40
+			a6: R_XTENSA_ASM_EXPAND	bt_bb_v2_recorrect
+  a9:	0008e0        	callx8	a8
+  ac:	ffd981        	l32r	a8, 10 <bt_bb_v2_rx_set-0x34> (60033c18 <bt_bb_gain_set+0x60033bb4>)
+			ac: R_XTENSA_SLOT0_OP	.text.bt_bb_v2_rx_set+0x10
+  af:	ffd921        	l32r	a2, 14 <bt_bb_v2_rx_set-0x30> (7fffffff <bt_bb_gain_set+0x7fffff9b>)
+			af: R_XTENSA_SLOT0_OP	.text.bt_bb_v2_rx_set+0x14
+  b2:	0020c0        	memw
+  b5:	0898      	l32i.n	a9, a8, 0
+  b7:	102920        	and	a2, a9, a2
+  ba:	0020c0        	memw
+  bd:	0829      	s32i.n	a2, a8, 0
+  bf:	ffd621        	l32r	a2, 18 <bt_bb_v2_rx_set-0x2c> (60011888 <bt_bb_gain_set+0x60011824>)
+			bf: R_XTENSA_SLOT0_OP	.text.bt_bb_v2_rx_set+0x18
+  c2:	ffd681        	l32r	a8, 1c <bt_bb_v2_rx_set-0x28> (dfffffff <bt_bb_gain_set+0xdfffff9b>)
+			c2: R_XTENSA_SLOT0_OP	.text.bt_bb_v2_rx_set+0x1c
+  c5:	0020c0        	memw
+  c8:	0298      	l32i.n	a9, a2, 0
+  ca:	108980        	and	a8, a9, a8
+  cd:	0020c0        	memw
+  d0:	0289      	s32i.n	a8, a2, 0
+  d2:	0020c0        	memw
+  d5:	0298      	l32i.n	a9, a2, 0
+  d7:	ffd281        	l32r	a8, 20 <bt_bb_v2_rx_set-0x24> (fffbffff <bt_bb_gain_set+0xfffbff9b>)
+			d7: R_XTENSA_SLOT0_OP	.text.bt_bb_v2_rx_set+0x20
+  da:	108980        	and	a8, a9, a8
+  dd:	0020c0        	memw
+  e0:	0289      	s32i.n	a8, a2, 0
+  e2:	f01d      	retw.n
+
+Disassembly of section .text.bt_bb_v2_tx_set:
+
+00000000 <bt_bb_v2_tx_set-0x24>:
+   0:	60011018 	
+   4:	ffff00ff 	
+   8:	00002800 	
+   c:	00ffffff 	
+  10:	20000000 	
+  14:	60011008 	
+  18:	ff81ffff 	
+  1c:	6001100c 	
+  20:	fffff0ff 	
+
+00000024 <bt_bb_v2_tx_set>:
+  24:	004136        	entry	a1, 32
+  27:	fff681        	l32r	a8, 0 <bt_bb_v2_tx_set-0x24> (60011018 <bt_bb_gain_set+0x60010fb4>)
+			27: R_XTENSA_SLOT0_OP	.text.bt_bb_v2_tx_set
+  2a:	fff691        	l32r	a9, 4 <bt_bb_v2_tx_set-0x20> (ffff00ff <bt_bb_gain_set+0xffff009b>)
+			2a: R_XTENSA_SLOT0_OP	.text.bt_bb_v2_tx_set+0x4
+  2d:	0020c0        	memw
+  30:	08a8      	l32i.n	a10, a8, 0
+  32:	542020        	extui	a2, a2, 0, 6
+  35:	10aa90        	and	a10, a10, a9
+  38:	fff491        	l32r	a9, 8 <bt_bb_v2_tx_set-0x1c> (2800 <bt_bb_gain_set+0x279c>)
+			38: R_XTENSA_SLOT0_OP	.text.bt_bb_v2_tx_set+0x8
+  3b:	0122f0        	slli	a2, a2, 17
+  3e:	209a90        	or	a9, a10, a9
+  41:	0020c0        	memw
+  44:	0899      	s32i.n	a9, a8, 0
+  46:	0020c0        	memw
+  49:	08a8      	l32i.n	a10, a8, 0
+  4b:	fff091        	l32r	a9, c <bt_bb_v2_tx_set-0x18> (ffffff <bt_bb_gain_set+0xffff9b>)
+			4b: R_XTENSA_SLOT0_OP	.text.bt_bb_v2_tx_set+0xc
+  4e:	10aa90        	and	a10, a10, a9
+  51:	ffef91        	l32r	a9, 10 <bt_bb_v2_tx_set-0x14> (20000000 <bt_bb_gain_set+0x1fffff9c>)
+			51: R_XTENSA_SLOT0_OP	.text.bt_bb_v2_tx_set+0x10
+  54:	209a90        	or	a9, a10, a9
+  57:	0020c0        	memw
+  5a:	0899      	s32i.n	a9, a8, 0
+  5c:	0020c0        	memw
+  5f:	08a8      	l32i.n	a10, a8, 0
+  61:	00af92        	movi	a9, 0xffffff00
+  64:	10aa90        	and	a10, a10, a9
+  67:	190c      	movi.n	a9, 1
+  69:	209a90        	or	a9, a10, a9
+  6c:	0020c0        	memw
+  6f:	0899      	s32i.n	a9, a8, 0
+  71:	ffe891        	l32r	a9, 14 <bt_bb_v2_tx_set-0x10> (60011008 <bt_bb_gain_set+0x60010fa4>)
+			71: R_XTENSA_SLOT0_OP	.text.bt_bb_v2_tx_set+0x14
+  74:	ffe981        	l32r	a8, 18 <bt_bb_v2_tx_set-0xc> (ff81ffff <bt_bb_gain_set+0xff81ff9b>)
+			74: R_XTENSA_SLOT0_OP	.text.bt_bb_v2_tx_set+0x18
+  77:	0020c0        	memw
+  7a:	09a8      	l32i.n	a10, a9, 0
+  7c:	108a80        	and	a8, a10, a8
+  7f:	202280        	or	a2, a2, a8
+  82:	0020c0        	memw
+  85:	0929      	s32i.n	a2, a9, 0
+  87:	ffe591        	l32r	a9, 1c <bt_bb_v2_tx_set-0x8> (6001100c <bt_bb_gain_set+0x60010fa8>)
+			87: R_XTENSA_SLOT0_OP	.text.bt_bb_v2_tx_set+0x1c
+  8a:	ffe521        	l32r	a2, 20 <bt_bb_v2_tx_set-0x4> (fffff0ff <bt_bb_gain_set+0xfffff09b>)
+			8a: R_XTENSA_SLOT0_OP	.text.bt_bb_v2_tx_set+0x20
+  8d:	0020c0        	memw
+  90:	0988      	l32i.n	a8, a9, 0
+  92:	108820        	and	a8, a8, a2
+  95:	00a122        	movi	a2, 0x100
+  98:	202820        	or	a2, a8, a2
+  9b:	0020c0        	memw
+  9e:	0929      	s32i.n	a2, a9, 0
+  a0:	f01d      	retw.n
+
+Disassembly of section .text.bt_bb_v2_version:
+
+00000000 <bt_bb_v2_version-0x14>:
+   0:	00000000 	
+			0: R_XTENSA_32	.rodata.str1.1
+   4:	00000009 	
+			4: R_XTENSA_32	.rodata.str1.1
+   8:	00000015 	
+			8: R_XTENSA_32	.rodata.str1.1
+   c:	0000001d 	
+			c: R_XTENSA_32	.rodata.str1.1
+  10:	00000000 	
+			10: R_XTENSA_32	phy_printf
+
+00000014 <bt_bb_v2_version>:
+  14:	004136        	entry	a1, 32
+  17:	fffad1        	l32r	a13, 0 <bt_bb_v2_version-0x14> (0 <bt_bb_v2_version-0x14>)
+			17: R_XTENSA_SLOT0_OP	.text.bt_bb_v2_version
+  1a:	fffac1        	l32r	a12, 4 <bt_bb_v2_version-0x10> (9 <bt_bb_v2_version-0xb>)
+			1a: R_XTENSA_SLOT0_OP	.text.bt_bb_v2_version+0x4
+  1d:	fffab1        	l32r	a11, 8 <bt_bb_v2_version-0xc> (15 <bt_bb_v2_version+0x1>)
+			1d: R_XTENSA_SLOT0_OP	.text.bt_bb_v2_version+0x8
+  20:	fffba1        	l32r	a10, c <bt_bb_v2_version-0x8> (1d <bt_bb_v2_version+0x9>)
+			20: R_XTENSA_SLOT0_OP	.text.bt_bb_v2_version+0xc
+  23:	fffb81        	l32r	a8, 10 <bt_bb_v2_version-0x4> (0 <bt_bb_v2_version-0x14>)
+			23: R_XTENSA_SLOT0_OP	.text.bt_bb_v2_version+0x10
+			23: R_XTENSA_ASM_EXPAND	phy_printf
+  26:	0008e0        	callx8	a8
+  29:	f01d      	retw.n
+
+Disassembly of section .text.bt_bb_tx_cca_set:
+
+00000000 <bt_bb_tx_cca_set-0x38>:
+   0:	600110b8 	
+   4:	80000000 	
+   8:	7fffffff 	
+   c:	600110bc 	
+  10:	40000000 	
+  14:	bfffffff 	
+  18:	c3ffffff 	
+  1c:	fc3fffff 	
+  20:	00200000 	
+  24:	ffdfffff 	
+  28:	ffe01fff 	
+  2c:	00001000 	
+  30:	ffffefff 	
+  34:	fffff0ff 	
+
+00000038 <bt_bb_tx_cca_set>:
+  38:	004136        	entry	a1, 32
+  3b:	fff181        	l32r	a8, 0 <bt_bb_tx_cca_set-0x38> (600110b8 <bt_bb_gain_set+0x60011054>)
+			3b: R_XTENSA_SLOT0_OP	.text.bt_bb_tx_cca_set
+  3e:	fff191        	l32r	a9, 4 <bt_bb_tx_cca_set-0x34> (80000000 <bt_bb_gain_set+0x7fffff9c>)
+			3e: R_XTENSA_SLOT0_OP	.text.bt_bb_tx_cca_set+0x4
+  41:	0020c0        	memw
+  44:	08a8      	l32i.n	a10, a8, 0
+  46:	209a90        	or	a9, a10, a9
+  49:	42cc      	bnez.n	a2, 51 <bt_bb_tx_cca_set+0x19>
+			49: R_XTENSA_SLOT0_OP	.text.bt_bb_tx_cca_set+0x51
+  4b:	ffef91        	l32r	a9, 8 <bt_bb_tx_cca_set-0x30> (7fffffff <bt_bb_gain_set+0x7fffff9b>)
+			4b: R_XTENSA_SLOT0_OP	.text.bt_bb_tx_cca_set+0x8
+  4e:	109a90        	and	a9, a10, a9
+  51:	0020c0        	memw
+  54:	0899      	s32i.n	a9, a8, 0
+  56:	0020c0        	memw
+  59:	0898      	l32i.n	a9, a8, 0
+  5b:	743030        	extui	a3, a3, 0, 8
+  5e:	01aea2        	movi	a10, 0xfffffe01
+  61:	1133f0        	slli	a3, a3, 1
+  64:	1099a0        	and	a9, a9, a10
+  67:	209390        	or	a9, a3, a9
+  6a:	0020c0        	memw
+  6d:	0899      	s32i.n	a9, a8, 0
+  6f:	0020c0        	memw
+  72:	0898      	l32i.n	a9, a8, 0
+  74:	130c      	movi.n	a3, 1
+  76:	203930        	or	a3, a9, a3
+  79:	0020c0        	memw
+  7c:	0839      	s32i.n	a3, a8, 0
+  7e:	ffe381        	l32r	a8, c <bt_bb_tx_cca_set-0x2c> (600110bc <bt_bb_gain_set+0x60011058>)
+			7e: R_XTENSA_SLOT0_OP	.text.bt_bb_tx_cca_set+0xc
+  81:	c48c      	beqz.n	a4, 91 <bt_bb_tx_cca_set+0x59>
+			81: R_XTENSA_SLOT0_OP	.text.bt_bb_tx_cca_set+0x91
+  83:	0020c0        	memw
+  86:	0848      	l32i.n	a4, a8, 0
+  88:	ffe231        	l32r	a3, 10 <bt_bb_tx_cca_set-0x28> (40000000 <bt_bb_gain_set+0x3fffff9c>)
+			88: R_XTENSA_SLOT0_OP	.text.bt_bb_tx_cca_set+0x10
+  8b:	203430        	or	a3, a4, a3
+  8e:	000286        	j	9c <bt_bb_tx_cca_set+0x64>
+			8e: R_XTENSA_SLOT0_OP	.text.bt_bb_tx_cca_set+0x9c
+  91:	0020c0        	memw
+  94:	0848      	l32i.n	a4, a8, 0
+  96:	ffdf31        	l32r	a3, 14 <bt_bb_tx_cca_set-0x24> (bfffffff <bt_bb_gain_set+0xbfffff9b>)
+			96: R_XTENSA_SLOT0_OP	.text.bt_bb_tx_cca_set+0x14
+  99:	103430        	and	a3, a4, a3
+  9c:	0020c0        	memw
+  9f:	0839      	s32i.n	a3, a8, 0
+  a1:	0020c0        	memw
+  a4:	0898      	l32i.n	a9, a8, 0
+  a6:	ffdca1        	l32r	a10, 18 <bt_bb_tx_cca_set-0x20> (c3ffffff <bt_bb_gain_set+0xc3ffff9b>)
+			a6: R_XTENSA_SLOT0_OP	.text.bt_bb_tx_cca_set+0x18
+  a9:	345050        	extui	a5, a5, 0, 4
+  ac:	1099a0        	and	a9, a9, a10
+  af:	015560        	slli	a5, a5, 26
+  b2:	209590        	or	a9, a5, a9
+  b5:	0020c0        	memw
+  b8:	0899      	s32i.n	a9, a8, 0
+  ba:	0020c0        	memw
+  bd:	0898      	l32i.n	a9, a8, 0
+  bf:	ffd7a1        	l32r	a10, 1c <bt_bb_tx_cca_set-0x1c> (fc3fffff <bt_bb_gain_set+0xfc3fff9b>)
+			bf: R_XTENSA_SLOT0_OP	.text.bt_bb_tx_cca_set+0x1c
+  c2:	346060        	extui	a6, a6, 0, 4
+  c5:	0166a0        	slli	a6, a6, 22
+  c8:	1099a0        	and	a9, a9, a10
+  cb:	209690        	or	a9, a6, a9
+  ce:	0020c0        	memw
+  d1:	0899      	s32i.n	a9, a8, 0
+  d3:	0020c0        	memw
+  d6:	002842        	l32i	a4, a8, 0
+  d9:	ffd131        	l32r	a3, 20 <bt_bb_tx_cca_set-0x18> (200000 <bt_bb_gain_set+0x1fff9c>)
+			d9: R_XTENSA_SLOT0_OP	.text.bt_bb_tx_cca_set+0x20
+  dc:	203430        	or	a3, a4, a3
+  df:	005756        	bnez	a7, e8 <bt_bb_tx_cca_set+0xb0>
+			df: R_XTENSA_SLOT0_OP	.text.bt_bb_tx_cca_set+0xe8
+  e2:	ffd031        	l32r	a3, 24 <bt_bb_tx_cca_set-0x14> (ffdfffff <bt_bb_gain_set+0xffdfff9b>)
+			e2: R_XTENSA_SLOT0_OP	.text.bt_bb_tx_cca_set+0x24
+  e5:	103430        	and	a3, a4, a3
+  e8:	0020c0        	memw
+  eb:	0839      	s32i.n	a3, a8, 0
+  ed:	ffc781        	l32r	a8, c <bt_bb_tx_cca_set-0x2c> (600110bc <bt_bb_gain_set+0x60011058>)
+			ed: R_XTENSA_SLOT0_OP	.text.bt_bb_tx_cca_set+0xc
+  f0:	81b8      	l32i.n	a11, a1, 32
+  f2:	0020c0        	memw
+  f5:	0898      	l32i.n	a9, a8, 0
+  f7:	ffcca1        	l32r	a10, 28 <bt_bb_tx_cca_set-0x10> (ffe01fff <bt_bb_gain_set+0xffe01f9b>)
+			f7: R_XTENSA_SLOT0_OP	.text.bt_bb_tx_cca_set+0x28
+  fa:	74b0b0        	extui	a11, a11, 0, 8
+  fd:	11bb30        	slli	a11, a11, 13
+ 100:	1099a0        	and	a9, a9, a10
+ 103:	209b90        	or	a9, a11, a9
+ 106:	0020c0        	memw
+ 109:	0899      	s32i.n	a9, a8, 0
+ 10b:	9138      	l32i.n	a3, a1, 36
+ 10d:	0020c0        	memw
+ 110:	0848      	l32i.n	a4, a8, 0
+ 112:	738c      	beqz.n	a3, 11d <bt_bb_tx_cca_set+0xe5>
+			112: R_XTENSA_SLOT0_OP	.text.bt_bb_tx_cca_set+0x11d
+ 114:	ffc631        	l32r	a3, 2c <bt_bb_tx_cca_set-0xc> (1000 <bt_bb_gain_set+0xf9c>)
+			114: R_XTENSA_SLOT0_OP	.text.bt_bb_tx_cca_set+0x2c
+ 117:	203430        	or	a3, a4, a3
+ 11a:	000146        	j	123 <bt_bb_tx_cca_set+0xeb>
+			11a: R_XTENSA_SLOT0_OP	.text.bt_bb_tx_cca_set+0x123
+ 11d:	ffc431        	l32r	a3, 30 <bt_bb_tx_cca_set-0x8> (ffffefff <bt_bb_gain_set+0xffffef9b>)
+			11d: R_XTENSA_SLOT0_OP	.text.bt_bb_tx_cca_set+0x30
+ 120:	103430        	and	a3, a4, a3
+ 123:	0020c0        	memw
+ 126:	0839      	s32i.n	a3, a8, 0
+ 128:	a1b8      	l32i.n	a11, a1, 40
+ 12a:	0020c0        	memw
+ 12d:	0898      	l32i.n	a9, a8, 0
+ 12f:	ffc1a1        	l32r	a10, 34 <bt_bb_tx_cca_set-0x4> (fffff0ff <bt_bb_gain_set+0xfffff09b>)
+			12f: R_XTENSA_SLOT0_OP	.text.bt_bb_tx_cca_set+0x34
+ 132:	34b0b0        	extui	a11, a11, 0, 4
+ 135:	11bb80        	slli	a11, a11, 8
+ 138:	1099a0        	and	a9, a9, a10
+ 13b:	209b90        	or	a9, a11, a9
+ 13e:	0020c0        	memw
+ 141:	0899      	s32i.n	a9, a8, 0
+ 143:	b1b8      	l32i.n	a11, a1, 44
+ 145:	0020c0        	memw
+ 148:	0898      	l32i.n	a9, a8, 0
+ 14a:	11bbc0        	slli	a11, a11, 4
+ 14d:	0fafa2        	movi	a10, -241
+ 150:	74b0b0        	extui	a11, a11, 0, 8
+ 153:	1099a0        	and	a9, a9, a10
+ 156:	209b90        	or	a9, a11, a9
+ 159:	0020c0        	memw
+ 15c:	0899      	s32i.n	a9, a8, 0
+ 15e:	0020c0        	memw
+ 161:	0848      	l32i.n	a4, a8, 0
+ 163:	ffa831        	l32r	a3, 4 <bt_bb_tx_cca_set-0x34> (80000000 <bt_bb_gain_set+0x7fffff9c>)
+			163: R_XTENSA_SLOT0_OP	.text.bt_bb_tx_cca_set+0x4
+ 166:	203430        	or	a3, a4, a3
+ 169:	0020c0        	memw
+ 16c:	0839      	s32i.n	a3, a8, 0
+ 16e:	f01d      	retw.n
+
+Disassembly of section .text.bt_bb_v2_init_cmplx:
+
+00000000 <bt_bb_v2_init_cmplx-0x28>:
+   0:	6000e0c4 	
+   4:	02000000 	
+   8:	600060fc 	
+   c:	ffff00ff 	
+  10:	0000c800 	
+  14:	fdffffff 	
+	...
+			18: R_XTENSA_32	bt_bb_v2_tx_set
+			1c: R_XTENSA_32	bt_bb_v2_rx_set
+			20: R_XTENSA_32	bt_bb_filter_sel
+			24: R_XTENSA_32	bt_bb_v2_version
+
+00000028 <bt_bb_v2_init_cmplx>:
+  28:	004136        	entry	a1, 32
+  2b:	fff531        	l32r	a3, 0 <bt_bb_v2_init_cmplx-0x28> (6000e0c4 <bt_bb_gain_set+0x6000e060>)
+			2b: R_XTENSA_SLOT0_OP	.text.bt_bb_v2_init_cmplx
+  2e:	fff581        	l32r	a8, 4 <bt_bb_v2_init_cmplx-0x24> (2000000 <bt_bb_gain_set+0x1ffff9c>)
+			2e: R_XTENSA_SLOT0_OP	.text.bt_bb_v2_init_cmplx+0x4
+  31:	0020c0        	memw
+  34:	0398      	l32i.n	a9, a3, 0
+  36:	0a0c      	movi.n	a10, 0
+  38:	208980        	or	a8, a9, a8
+  3b:	0020c0        	memw
+  3e:	0389      	s32i.n	a8, a3, 0
+  40:	fff681        	l32r	a8, 18 <bt_bb_v2_init_cmplx-0x10> (0 <bt_bb_v2_init_cmplx-0x28>)
+			40: R_XTENSA_SLOT0_OP	.text.bt_bb_v2_init_cmplx+0x18
+			40: R_XTENSA_ASM_EXPAND	bt_bb_v2_tx_set
+  43:	0008e0        	callx8	a8
+  46:	4a0c      	movi.n	a10, 4
+  48:	fff581        	l32r	a8, 1c <bt_bb_v2_init_cmplx-0xc> (0 <bt_bb_v2_init_cmplx-0x28>)
+			48: R_XTENSA_SLOT0_OP	.text.bt_bb_v2_init_cmplx+0x1c
+			48: R_XTENSA_ASM_EXPAND	bt_bb_v2_rx_set
+  4b:	0008e0        	callx8	a8
+  4e:	fff481        	l32r	a8, 20 <bt_bb_v2_init_cmplx-0x8> (0 <bt_bb_v2_init_cmplx-0x28>)
+			4e: R_XTENSA_SLOT0_OP	.text.bt_bb_v2_init_cmplx+0x20
+			4e: R_XTENSA_ASM_EXPAND	bt_bb_filter_sel
+  51:	0008e0        	callx8	a8
+  54:	ffeda1        	l32r	a10, 8 <bt_bb_v2_init_cmplx-0x20> (600060fc <bt_bb_gain_set+0x60006098>)
+			54: R_XTENSA_SLOT0_OP	.text.bt_bb_v2_init_cmplx+0x8
+  57:	ffed81        	l32r	a8, c <bt_bb_v2_init_cmplx-0x1c> (ffff00ff <bt_bb_gain_set+0xffff009b>)
+			57: R_XTENSA_SLOT0_OP	.text.bt_bb_v2_init_cmplx+0xc
+  5a:	0020c0        	memw
+  5d:	0a98      	l32i.n	a9, a10, 0
+  5f:	109980        	and	a9, a9, a8
+  62:	ffeb81        	l32r	a8, 10 <bt_bb_v2_init_cmplx-0x18> (c800 <bt_bb_gain_set+0xc79c>)
+			62: R_XTENSA_SLOT0_OP	.text.bt_bb_v2_init_cmplx+0x10
+  65:	208980        	or	a8, a9, a8
+  68:	0020c0        	memw
+  6b:	0a89      	s32i.n	a8, a10, 0
+  6d:	0020c0        	memw
+  70:	0398      	l32i.n	a9, a3, 0
+  72:	ffe881        	l32r	a8, 14 <bt_bb_v2_init_cmplx-0x14> (fdffffff <bt_bb_gain_set+0xfdffff9b>)
+			72: R_XTENSA_SLOT0_OP	.text.bt_bb_v2_init_cmplx+0x14
+  75:	108980        	and	a8, a9, a8
+  78:	0020c0        	memw
+  7b:	0389      	s32i.n	a8, a3, 0
+  7d:	428c      	beqz.n	a2, 85 <bt_bb_v2_init_cmplx+0x5d>
+			7d: R_XTENSA_SLOT0_OP	.text.bt_bb_v2_init_cmplx+0x85
+  7f:	ffe981        	l32r	a8, 24 <bt_bb_v2_init_cmplx-0x4> (0 <bt_bb_v2_init_cmplx-0x28>)
+			7f: R_XTENSA_SLOT0_OP	.text.bt_bb_v2_init_cmplx+0x24
+			7f: R_XTENSA_ASM_EXPAND	bt_bb_v2_version
+  82:	0008e0        	callx8	a8
+  85:	f01d      	retw.n
+
+Disassembly of section .text.coex_pti_print:
+
+00000000 <coex_pti_print-0x48>:
+   0:	60035084 	
+   4:	0000003a 	
+			4: R_XTENSA_32	.rodata.str1.1
+   8:	60035098 	
+   c:	0000004a 	
+			c: R_XTENSA_32	.rodata.str1.1
+  10:	6003509c 	
+  14:	0000005b 	
+			14: R_XTENSA_32	.rodata.str1.1
+  18:	60031530 	
+  1c:	0000006c 	
+			1c: R_XTENSA_32	.rodata.str1.1
+  20:	60031150 	
+  24:	0000007a 	
+			24: R_XTENSA_32	.rodata.str1.1
+  28:	60031048 	
+  2c:	00000088 	
+			2c: R_XTENSA_32	.rodata.str1.1
+	...
+			30: R_XTENSA_32	phy_printf
+			34: R_XTENSA_32	phy_printf
+			38: R_XTENSA_32	phy_printf
+			3c: R_XTENSA_32	phy_printf
+			40: R_XTENSA_32	phy_printf
+			44: R_XTENSA_32	phy_printf
+
+00000048 <coex_pti_print>:
+  48:	004136        	entry	a1, 32
+  4b:	ffed81        	l32r	a8, 0 <coex_pti_print-0x48> (60035084 <bt_bb_gain_set+0x60035020>)
+			4b: R_XTENSA_SLOT0_OP	.text.coex_pti_print
+  4e:	ffeda1        	l32r	a10, 4 <coex_pti_print-0x44> (3a <coex_pti_print-0xe>)
+			4e: R_XTENSA_SLOT0_OP	.text.coex_pti_print+0x4
+  51:	0020c0        	memw
+  54:	08b8      	l32i.n	a11, a8, 0
+  56:	fff681        	l32r	a8, 30 <coex_pti_print-0x18> (0 <coex_pti_print-0x48>)
+			56: R_XTENSA_SLOT0_OP	.text.coex_pti_print+0x30
+			56: R_XTENSA_ASM_EXPAND	phy_printf
+  59:	0008e0        	callx8	a8
+  5c:	ffeb81        	l32r	a8, 8 <coex_pti_print-0x40> (60035098 <bt_bb_gain_set+0x60035034>)
+			5c: R_XTENSA_SLOT0_OP	.text.coex_pti_print+0x8
+  5f:	ffeba1        	l32r	a10, c <coex_pti_print-0x3c> (4a <coex_pti_print+0x2>)
+			5f: R_XTENSA_SLOT0_OP	.text.coex_pti_print+0xc
+  62:	0020c0        	memw
+  65:	08b8      	l32i.n	a11, a8, 0
+  67:	fff381        	l32r	a8, 34 <coex_pti_print-0x14> (0 <coex_pti_print-0x48>)
+			67: R_XTENSA_SLOT0_OP	.text.coex_pti_print+0x34
+			67: R_XTENSA_ASM_EXPAND	phy_printf
+  6a:	0008e0        	callx8	a8
+  6d:	ffe881        	l32r	a8, 10 <coex_pti_print-0x38> (6003509c <bt_bb_gain_set+0x60035038>)
+			6d: R_XTENSA_SLOT0_OP	.text.coex_pti_print+0x10
+  70:	ffe9a1        	l32r	a10, 14 <coex_pti_print-0x34> (5b <coex_pti_print+0x13>)
+			70: R_XTENSA_SLOT0_OP	.text.coex_pti_print+0x14
+  73:	0020c0        	memw
+  76:	08b8      	l32i.n	a11, a8, 0
+  78:	fff081        	l32r	a8, 38 <coex_pti_print-0x10> (0 <coex_pti_print-0x48>)
+			78: R_XTENSA_SLOT0_OP	.text.coex_pti_print+0x38
+			78: R_XTENSA_ASM_EXPAND	phy_printf
+  7b:	0008e0        	callx8	a8
+  7e:	ffe681        	l32r	a8, 18 <coex_pti_print-0x30> (60031530 <bt_bb_gain_set+0x600314cc>)
+			7e: R_XTENSA_SLOT0_OP	.text.coex_pti_print+0x18
+  81:	ffe6a1        	l32r	a10, 1c <coex_pti_print-0x2c> (6c <coex_pti_print+0x24>)
+			81: R_XTENSA_SLOT0_OP	.text.coex_pti_print+0x1c
+  84:	0020c0        	memw
+  87:	0028b2        	l32i	a11, a8, 0
+  8a:	ffec81        	l32r	a8, 3c <coex_pti_print-0xc> (0 <coex_pti_print-0x48>)
+			8a: R_XTENSA_SLOT0_OP	.text.coex_pti_print+0x3c
+			8a: R_XTENSA_ASM_EXPAND	phy_printf
+  8d:	0008e0        	callx8	a8
+  90:	ffe481        	l32r	a8, 20 <coex_pti_print-0x28> (60031150 <bt_bb_gain_set+0x600310ec>)
+			90: R_XTENSA_SLOT0_OP	.text.coex_pti_print+0x20
+  93:	ffe4a1        	l32r	a10, 24 <coex_pti_print-0x24> (7a <coex_pti_print+0x32>)
+			93: R_XTENSA_SLOT0_OP	.text.coex_pti_print+0x24
+  96:	0020c0        	memw
+  99:	08b8      	l32i.n	a11, a8, 0
+  9b:	ffe981        	l32r	a8, 40 <coex_pti_print-0x8> (0 <coex_pti_print-0x48>)
+			9b: R_XTENSA_SLOT0_OP	.text.coex_pti_print+0x40
+			9b: R_XTENSA_ASM_EXPAND	phy_printf
+  9e:	0008e0        	callx8	a8
+  a1:	ffe181        	l32r	a8, 28 <coex_pti_print-0x20> (60031048 <bt_bb_gain_set+0x60030fe4>)
+			a1: R_XTENSA_SLOT0_OP	.text.coex_pti_print+0x28
+  a4:	ffe2a1        	l32r	a10, 2c <coex_pti_print-0x1c> (88 <coex_pti_print+0x40>)
+			a4: R_XTENSA_SLOT0_OP	.text.coex_pti_print+0x2c
+  a7:	0020c0        	memw
+  aa:	08b8      	l32i.n	a11, a8, 0
+  ac:	ffe681        	l32r	a8, 44 <coex_pti_print-0x4> (0 <coex_pti_print-0x48>)
+			ac: R_XTENSA_SLOT0_OP	.text.coex_pti_print+0x44
+			ac: R_XTENSA_ASM_EXPAND	phy_printf
+  af:	0008e0        	callx8	a8
+  b2:	f01d      	retw.n
+
+Disassembly of section .text.force_coex_timer0_wifi_v2:
+
+00000000 <force_coex_timer0_wifi_v2-0x8>:
+   0:	600350a8 	
+   4:	90000000 	
+
+00000008 <force_coex_timer0_wifi_v2>:
+   8:	004136        	entry	a1, 32
+   b:	fffd91        	l32r	a9, 0 <force_coex_timer0_wifi_v2-0x8> (600350a8 <bt_bb_gain_set+0x60035044>)
+			b: R_XTENSA_SLOT0_OP	.text.force_coex_timer0_wifi_v2
+   e:	fffd81        	l32r	a8, 4 <force_coex_timer0_wifi_v2-0x4> (90000000 <bt_bb_gain_set+0x8fffff9c>)
+			e: R_XTENSA_SLOT0_OP	.text.force_coex_timer0_wifi_v2+0x4
+  11:	0020c0        	memw
+  14:	09a8      	l32i.n	a10, a9, 0
+  16:	208a80        	or	a8, a10, a8
+  19:	0020c0        	memw
+  1c:	0989      	s32i.n	a8, a9, 0
+  1e:	f01d      	retw.n
+
+Disassembly of section .text.force_coex_timer0_wifi_pti_v2:
+
+00000000 <force_coex_timer0_wifi_pti_v2-0x8>:
+   0:	600350a8 	
+   4:	f0ffffff 	
+
+00000008 <force_coex_timer0_wifi_pti_v2>:
+   8:	004136        	entry	a1, 32
+   b:	fffd91        	l32r	a9, 0 <force_coex_timer0_wifi_pti_v2-0x8> (600350a8 <bt_bb_gain_set+0x60035044>)
+			b: R_XTENSA_SLOT0_OP	.text.force_coex_timer0_wifi_pti_v2
+   e:	fffd81        	l32r	a8, 4 <force_coex_timer0_wifi_pti_v2-0x4> (f0ffffff <bt_bb_gain_set+0xf0ffff9b>)
+			e: R_XTENSA_SLOT0_OP	.text.force_coex_timer0_wifi_pti_v2+0x4
+  11:	0020c0        	memw
+  14:	09a8      	l32i.n	a10, a9, 0
+  16:	342020        	extui	a2, a2, 0, 4
+  19:	012280        	slli	a2, a2, 24
+  1c:	108a80        	and	a8, a10, a8
+  1f:	202280        	or	a2, a2, a8
+  22:	0020c0        	memw
+  25:	0929      	s32i.n	a2, a9, 0
+  27:	f01d      	retw.n
+
+Disassembly of section .text.force_coex_timer1_bt_v2:
+
+00000000 <force_coex_timer1_bt_v2-0x8>:
+   0:	600350b0 	
+   4:	d0000000 	
+
+00000008 <force_coex_timer1_bt_v2>:
+   8:	004136        	entry	a1, 32
+   b:	fffd91        	l32r	a9, 0 <force_coex_timer1_bt_v2-0x8> (600350b0 <bt_bb_gain_set+0x6003504c>)
+			b: R_XTENSA_SLOT0_OP	.text.force_coex_timer1_bt_v2
+   e:	fffd81        	l32r	a8, 4 <force_coex_timer1_bt_v2-0x4> (d0000000 <bt_bb_gain_set+0xcfffff9c>)
+			e: R_XTENSA_SLOT0_OP	.text.force_coex_timer1_bt_v2+0x4
+  11:	0020c0        	memw
+  14:	09a8      	l32i.n	a10, a9, 0
+  16:	208a80        	or	a8, a10, a8
+  19:	0020c0        	memw
+  1c:	0989      	s32i.n	a8, a9, 0
+  1e:	f01d      	retw.n
+
+Disassembly of section .text.force_coex_timer1_bt_pti_v2:
+
+00000000 <force_coex_timer1_bt_pti_v2-0x8>:
+   0:	600350b0 	
+   4:	f0ffffff 	
+
+00000008 <force_coex_timer1_bt_pti_v2>:
+   8:	004136        	entry	a1, 32
+   b:	fffd91        	l32r	a9, 0 <force_coex_timer1_bt_pti_v2-0x8> (600350b0 <bt_bb_gain_set+0x6003504c>)
+			b: R_XTENSA_SLOT0_OP	.text.force_coex_timer1_bt_pti_v2
+   e:	fffd81        	l32r	a8, 4 <force_coex_timer1_bt_pti_v2-0x4> (f0ffffff <bt_bb_gain_set+0xf0ffff9b>)
+			e: R_XTENSA_SLOT0_OP	.text.force_coex_timer1_bt_pti_v2+0x4
+  11:	0020c0        	memw
+  14:	09a8      	l32i.n	a10, a9, 0
+  16:	342020        	extui	a2, a2, 0, 4
+  19:	012280        	slli	a2, a2, 24
+  1c:	108a80        	and	a8, a10, a8
+  1f:	202280        	or	a2, a2, a8
+  22:	0020c0        	memw
+  25:	0929      	s32i.n	a2, a9, 0
+  27:	f01d      	retw.n
+
+Disassembly of section .text.force_coex_timer11_bt_v2:
+
+00000000 <force_coex_timer11_bt_v2-0x8>:
+   0:	60035100 	
+   4:	d0000000 	
+
+00000008 <force_coex_timer11_bt_v2>:
+   8:	004136        	entry	a1, 32
+   b:	fffd91        	l32r	a9, 0 <force_coex_timer11_bt_v2-0x8> (60035100 <bt_bb_gain_set+0x6003509c>)
+			b: R_XTENSA_SLOT0_OP	.text.force_coex_timer11_bt_v2
+   e:	fffd81        	l32r	a8, 4 <force_coex_timer11_bt_v2-0x4> (d0000000 <bt_bb_gain_set+0xcfffff9c>)
+			e: R_XTENSA_SLOT0_OP	.text.force_coex_timer11_bt_v2+0x4
+  11:	0020c0        	memw
+  14:	09a8      	l32i.n	a10, a9, 0
+  16:	208a80        	or	a8, a10, a8
+  19:	0020c0        	memw
+  1c:	0989      	s32i.n	a8, a9, 0
+  1e:	f01d      	retw.n
+
+Disassembly of section .text.force_coex_timer11_bt_pti_v2:
+
+00000000 <force_coex_timer11_bt_pti_v2-0x8>:
+   0:	60035100 	
+   4:	f0ffffff 	
+
+00000008 <force_coex_timer11_bt_pti_v2>:
+   8:	004136        	entry	a1, 32
+   b:	fffd91        	l32r	a9, 0 <force_coex_timer11_bt_pti_v2-0x8> (60035100 <bt_bb_gain_set+0x6003509c>)
+			b: R_XTENSA_SLOT0_OP	.text.force_coex_timer11_bt_pti_v2
+   e:	fffd81        	l32r	a8, 4 <force_coex_timer11_bt_pti_v2-0x4> (f0ffffff <bt_bb_gain_set+0xf0ffff9b>)
+			e: R_XTENSA_SLOT0_OP	.text.force_coex_timer11_bt_pti_v2+0x4
+  11:	0020c0        	memw
+  14:	09a8      	l32i.n	a10, a9, 0
+  16:	342020        	extui	a2, a2, 0, 4
+  19:	012280        	slli	a2, a2, 24
+  1c:	108a80        	and	a8, a10, a8
+  1f:	202280        	or	a2, a2, a8
+  22:	0020c0        	memw
+  25:	0929      	s32i.n	a2, a9, 0
+  27:	f01d      	retw.n
+
+Disassembly of section .text.bt_get_channel_pwr_set:
+
+00000000 <bt_get_channel_pwr_set-0x18>:
+   0:	6000e0c4 	
+   4:	02000000 	
+   8:	ffff7fff 	
+   c:	60011004 	
+	...
+			10: R_XTENSA_32	force_coex_timer11_bt_v2
+			14: R_XTENSA_32	force_coex_timer11_bt_pti_v2
+
+00000018 <bt_get_channel_pwr_set>:
+  18:	004136        	entry	a1, 32
+  1b:	fff981        	l32r	a8, 0 <bt_get_channel_pwr_set-0x18> (6000e0c4 <bt_bb_gain_set+0x6000e060>)
+			1b: R_XTENSA_SLOT0_OP	.text.bt_get_channel_pwr_set
+  1e:	fff991        	l32r	a9, 4 <bt_get_channel_pwr_set-0x14> (2000000 <bt_bb_gain_set+0x1ffff9c>)
+			1e: R_XTENSA_SLOT0_OP	.text.bt_get_channel_pwr_set+0x4
+  21:	0020c0        	memw
+  24:	08a8      	l32i.n	a10, a8, 0
+  26:	1122f0        	slli	a2, a2, 1
+  29:	209a90        	or	a9, a10, a9
+  2c:	0020c0        	memw
+  2f:	0899      	s32i.n	a9, a8, 0
+  31:	0020c0        	memw
+  34:	08a8      	l32i.n	a10, a8, 0
+  36:	01af92        	movi	a9, -255
+  39:	109a90        	and	a9, a10, a9
+  3c:	742020        	extui	a2, a2, 0, 8
+  3f:	202290        	or	a2, a2, a9
+  42:	0020c0        	memw
+  45:	0829      	s32i.n	a2, a8, 0
+  47:	0020c0        	memw
+  4a:	0898      	l32i.n	a9, a8, 0
+  4c:	ffef21        	l32r	a2, 8 <bt_get_channel_pwr_set-0x10> (ffff7fff <bt_bb_gain_set+0xffff7f9b>)
+			4c: R_XTENSA_SLOT0_OP	.text.bt_get_channel_pwr_set+0x8
+  4f:	102920        	and	a2, a9, a2
+  52:	0020c0        	memw
+  55:	0829      	s32i.n	a2, a8, 0
+  57:	0020c0        	memw
+  5a:	002892        	l32i	a9, a8, 0
+  5d:	00a122        	movi	a2, 0x100
+  60:	202920        	or	a2, a9, a2
+  63:	0020c0        	memw
+  66:	0829      	s32i.n	a2, a8, 0
+  68:	0020c0        	memw
+  6b:	0828      	l32i.n	a2, a8, 0
+  6d:	ff72d6        	bgez	a2, 68 <bt_get_channel_pwr_set+0x50>
+			6d: R_XTENSA_SLOT0_OP	.text.bt_get_channel_pwr_set+0x68
+  70:	0020c0        	memw
+  73:	0898      	l32i.n	a9, a8, 0
+  75:	ffae22        	movi	a2, 0xfffffeff
+  78:	102920        	and	a2, a9, a2
+  7b:	0020c0        	memw
+  7e:	0829      	s32i.n	a2, a8, 0
+  80:	ffe481        	l32r	a8, 10 <bt_get_channel_pwr_set-0x8> (0 <bt_get_channel_pwr_set-0x18>)
+			80: R_XTENSA_SLOT0_OP	.text.bt_get_channel_pwr_set+0x10
+			80: R_XTENSA_ASM_EXPAND	force_coex_timer11_bt_v2
+  83:	0008e0        	callx8	a8
+  86:	fa0c      	movi.n	a10, 15
+  88:	ffe381        	l32r	a8, 14 <bt_get_channel_pwr_set-0x4> (0 <bt_get_channel_pwr_set-0x18>)
+			88: R_XTENSA_SLOT0_OP	.text.bt_get_channel_pwr_set+0x14
+			88: R_XTENSA_ASM_EXPAND	force_coex_timer11_bt_pti_v2
+  8b:	0008e0        	callx8	a8
+  8e:	ffdf81        	l32r	a8, c <bt_get_channel_pwr_set-0xc> (60011004 <bt_bb_gain_set+0x60010fa0>)
+			8e: R_XTENSA_SLOT0_OP	.text.bt_get_channel_pwr_set+0xc
+  91:	00a322        	movi	a2, 0x300
+  94:	0020c0        	memw
+  97:	0898      	l32i.n	a9, a8, 0
+  99:	202920        	or	a2, a9, a2
+  9c:	0020c0        	memw
+  9f:	0829      	s32i.n	a2, a8, 0
+  a1:	f01d      	retw.n
+
+Disassembly of section .text.bt_get_channel_pwr:
+
+00000000 <bt_get_channel_pwr-0x4>:
+   0:	600110b0 	
+
+00000004 <bt_get_channel_pwr>:
+   4:	004136        	entry	a1, 32
+   7:	fffe21        	l32r	a2, 0 <bt_get_channel_pwr-0x4> (600110b0 <bt_bb_gain_set+0x6001104c>)
+			7: R_XTENSA_SLOT0_OP	.text.bt_get_channel_pwr
+   a:	0020c0        	memw
+   d:	0228      	l32i.n	a2, a2, 0
+   f:	742020        	extui	a2, a2, 0, 8
+  12:	f01d      	retw.n
+
+Disassembly of section .text.bt_get_channel_pwr_unset:
+
+00000000 <bt_get_channel_pwr_unset-0x10>:
+   0:	60011004 	
+   4:	6000e0c4 	
+   8:	fdffffff 	
+   c:	00000000 	
+			c: R_XTENSA_32	force_coex_timer11_bt_pti_v2
+
+00000010 <bt_get_channel_pwr_unset>:
+  10:	004136        	entry	a1, 32
+  13:	fffb91        	l32r	a9, 0 <bt_get_channel_pwr_unset-0x10> (60011004 <bt_bb_gain_set+0x60010fa0>)
+			13: R_XTENSA_SLOT0_OP	.text.bt_get_channel_pwr_unset
+  16:	ffac82        	movi	a8, 0xfffffcff
+  19:	0020c0        	memw
+  1c:	09a8      	l32i.n	a10, a9, 0
+  1e:	108a80        	and	a8, a10, a8
+  21:	0020c0        	memw
+  24:	006982        	s32i	a8, a9, 0
+  27:	00a0a2        	movi	a10, 0
+  2a:	fff881        	l32r	a8, c <bt_get_channel_pwr_unset-0x4> (0 <bt_get_channel_pwr_unset-0x10>)
+			2a: R_XTENSA_SLOT0_OP	.text.bt_get_channel_pwr_unset+0xc
+			2a: R_XTENSA_ASM_EXPAND	force_coex_timer11_bt_pti_v2
+  2d:	0008e0        	callx8	a8
+  30:	fff591        	l32r	a9, 4 <bt_get_channel_pwr_unset-0xc> (6000e0c4 <bt_bb_gain_set+0x6000e060>)
+			30: R_XTENSA_SLOT0_OP	.text.bt_get_channel_pwr_unset+0x4
+  33:	fff581        	l32r	a8, 8 <bt_get_channel_pwr_unset-0x8> (fdffffff <bt_bb_gain_set+0xfdffff9b>)
+			33: R_XTENSA_SLOT0_OP	.text.bt_get_channel_pwr_unset+0x8
+  36:	0020c0        	memw
+  39:	09a8      	l32i.n	a10, a9, 0
+  3b:	108a80        	and	a8, a10, a8
+  3e:	0020c0        	memw
+  41:	0989      	s32i.n	a8, a9, 0
+  43:	f01d      	retw.n
+
+Disassembly of section .text.bt_set_chn:
+
+00000000 <bt_set_chn-0xc>:
+   0:	6000e0c4 	
+   4:	02000000 	
+   8:	00000000 	
+			8: R_XTENSA_32	set_chan_freq_sw_start
+
+0000000c <bt_set_chn>:
+   c:	004136        	entry	a1, 32
+   f:	fffc91        	l32r	a9, 0 <bt_set_chn-0xc> (6000e0c4 <bt_bb_gain_set+0x6000e060>)
+			f: R_XTENSA_SLOT0_OP	.text.bt_set_chn
+  12:	fffc81        	l32r	a8, 4 <bt_set_chn-0x8> (2000000 <bt_bb_gain_set+0x1ffff9c>)
+			12: R_XTENSA_SLOT0_OP	.text.bt_set_chn+0x4
+  15:	0020c0        	memw
+  18:	09a8      	l32i.n	a10, a9, 0
+  1a:	0c0c      	movi.n	a12, 0
+  1c:	208a80        	or	a8, a10, a8
+  1f:	0020c0        	memw
+  22:	0989      	s32i.n	a8, a9, 0
+  24:	20bcc0        	or	a11, a12, a12
+  27:	74a020        	extui	a10, a2, 0, 8
+  2a:	fff781        	l32r	a8, 8 <bt_set_chn-0x4> (0 <bt_set_chn-0xc>)
+			2a: R_XTENSA_SLOT0_OP	.text.bt_set_chn+0x8
+			2a: R_XTENSA_ASM_EXPAND	set_chan_freq_sw_start
+  2d:	0008e0        	callx8	a8
+  30:	f01d      	retw.n

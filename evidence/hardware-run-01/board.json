@@ -1,0 +1,15 @@
+{
+  "chip": "ESP32-S3 (QFN56)",
+  "revision": "v0.2",
+  "flash_bytes": 4194304,
+  "flash_vendor": "XMC",
+  "psram_bytes": 2097152,
+  "crystal_mhz": 40,
+  "interface": "USB-Serial/JTAG",
+  "port": "/dev/cu.usbmodem101",
+  "mac": "ac:27:6e:cc:fb:80",
+  "original_flash_sha256": "c5804fe1dd0b57906e9fc6a93066edac99edb1f82e3e1dd92d34f4a0dc0e686c",
+  "case_0_flashed": true,
+  "runtime_result": "All five cases completed and matched source-derived expectations",
+  "current_firmware_case": 4
+}

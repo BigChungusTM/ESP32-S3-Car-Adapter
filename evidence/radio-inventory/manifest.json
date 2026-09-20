@@ -1,0 +1,110 @@
+{
+  "idf_path": "/Users/lojaws/.platformio/packages/framework-espidf",
+  "version": "5.1.6",
+  "files": [
+    {
+      "path": "components/esp_phy/lib/esp32/libbttestmode.a",
+      "sha256": "fd512e3155947f8b95ac8500556fda9d349011e37d0039b22a6ccce68d014dc8"
+    },
+    {
+      "path": "components/esp_phy/lib/esp32/libphy.a",
+      "sha256": "53dd1d8c7ff9de9799d1cf46cbe092417b7ed311c3cbfdc487c0e70e7dcebf28"
+    },
+    {
+      "path": "components/esp_phy/lib/esp32/librftest.a",
+      "sha256": "6d0ba1e125bc21dad5c71d528db1f55c06a97d4e78dadf6dabe8a2753199aa36"
+    },
+    {
+      "path": "components/esp_phy/lib/esp32/librtc.a",
+      "sha256": "544b27be485381ededfbd689f783e4fa591d185c7d5d5435dc9abee1ecd6a79a"
+    },
+    {
+      "path": "components/esp_phy/lib/esp32s3/libbtbb.a",
+      "sha256": "62749de05c432584f207f3c3b660617620eb35cca9bbe4716f90175fb09ac029"
+    },
+    {
+      "path": "components/esp_phy/lib/esp32s3/libbttestmode.a",
+      "sha256": "14495d9ed96eabe3862fa53163b1d2f993cbf35636ce02839eca177558cfef67"
+    },
+    {
+      "path": "components/esp_phy/lib/esp32s3/libphy.a",
+      "sha256": "95560823fa3e3cc08858327fabf7146a10914485ff2e5ff2046de852241f9581"
+    },
+    {
+      "path": "components/esp_phy/lib/esp32s3/librfate.a",
+      "sha256": "b451caa66762e21b1516865fee89105027085ecdb95484ad61e9b649b56ddc6f"
+    },
+    {
+      "path": "components/esp_phy/lib/esp32s3/librftest.a",
+      "sha256": "c54d142239363adef6d7675b2ce7f7592696ed69c92f89e1628d119bfc0becad"
+    },
+    {
+      "path": "components/bt/controller/lib_esp32/esp32/libbtdm_app.a",
+      "sha256": "adb30ef4c3717e730d27349836236ba26cd51b4303e8e74d69051e5f9acf4a1a"
+    },
+    {
+      "path": "components/bt/controller/lib_esp32c2/esp32c2-bt-lib/libble_app.a",
+      "sha256": "b4f8dc3ff8af3cadd5ffcd145f4d9173ec812e4a38b9164a87b1336737e860d6"
+    },
+    {
+      "path": "components/bt/controller/lib_esp32c2/esp32c2-bt-lib/libble_app_flash.a",
+      "sha256": "59ba148514d204cfa87eba6d92619cef8a0f4d3a3a878dab3eccf602a9ac748d"
+    },
+    {
+      "path": "components/bt/controller/lib_esp32c3_family/esp32c3/libbtdm_app.a",
+      "sha256": "0c36854866180f6b264038c36eaf8045ee65c22642be322e30ce7696facaebc4"
+    },
+    {
+      "path": "components/bt/controller/lib_esp32c3_family/esp32c3/libbtdm_app_flash.a",
+      "sha256": "211a008cb76623699e8aa69abdeab0ab453f228ec42beeaa19a7892b644cda50"
+    },
+    {
+      "path": "components/bt/controller/lib_esp32c3_family/esp32s3/libbtdm_app.a",
+      "sha256": "87e0043280d0157240b24cf82547d93b1f2fb531877fe042630751b1cd308356"
+    },
+    {
+      "path": "components/bt/controller/lib_esp32c3_family/esp32s3/libbtdm_app_flash.a",
+      "sha256": "f982adb48e484aa26faea8b2cdb006b33fb879411888e731a7d0d53c082fd278"
+    },
+    {
+      "path": "components/bt/controller/lib_esp32c6/esp32c6-bt-lib/esp32c6/libble_app.a",
+      "sha256": "78faf9dae5276ba00615efe70aedcd05b50ac4e108fe6ca1b413521c69b1c325"
+    },
+    {
+      "path": "components/bt/controller/lib_esp32c6/esp32c6-bt-lib/esp32c61/libble_app.a",
+      "sha256": "24c555c5a64c1c711eada35b77f85d0bb48898e9b1595b22aa07a15d5bb04788"
+    },
+    {
+      "path": "components/bt/controller/lib_esp32h2/esp32h2-bt-lib/beta1/libble_app.a",
+      "sha256": "95a378b7fa8c688fa0c93c9c3976fe2064300a042bc78157e7206af85a218397"
+    },
+    {
+      "path": "components/bt/controller/lib_esp32h2/esp32h2-bt-lib/beta2/libble_app.a",
+      "sha256": "7b2ad1b920f13577762ca29b4102b2c2bb464925769c16935a7e754a50499547"
+    },
+    {
+      "path": "components/bt/controller/lib_esp32h2/esp32h2-bt-lib/libble_app.a",
+      "sha256": "6be549aa1be3d589b1be593d3e27886c87b0f70ebe3ac8229874202ca329af51"
+    },
+    {
+      "path": "components/bt/CMakeLists.txt",
+      "sha256": "b11098f5c499781772837eadc73899fda8cf2253b5326ca48f6b212ea31b0ed7"
+    },
+    {
+      "path": "components/bt/controller/esp32c3/bt.c",
+      "sha256": "e420be55b2c2f6a6e747dd1b7f31d27d51a2f3b72cb6bc4ffa317720a5be1066"
+    },
+    {
+      "path": "components/bt/controller/esp32/bt.c",
+      "sha256": "893447b9b46e3d7058f51fd14679458021886ad284058f9706615941d1153418"
+    },
+    {
+      "path": "components/bt/include/esp32c3/include/esp_bt.h",
+      "sha256": "2703d079e7813f83c85b801b1ee475ebffe4858ecd0756d3c7b0cd6633a4b12d"
+    },
+    {
+      "path": "components/esp_rom/esp32s3/ld/esp32s3.rom.bt_funcs.ld",
+      "sha256": "453dcc504b16813d567174dbf9e523f7b1786ec93df30f5e78665992a940df1b"
+    }
+  ]
+}

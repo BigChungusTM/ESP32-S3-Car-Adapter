@@ -1,0 +1,67 @@
+esptool.py v4.12.0
+Serial port /dev/cu.usbmodem101
+Connecting...
+Chip is ESP32-S3 (QFN56) (revision v0.2)
+Features: WiFi, BLE, Embedded PSRAM 8MB (AP_3v3)
+Crystal is 40MHz
+USB mode: USB-Serial/JTAG
+MAC: 68:ee:8f:5b:3d:34
+Uploading stub...
+Running stub...
+Stub running...
+Changing baud rate to 921600
+Changed.
+Configuring flash size...
+Flash will be erased from 0x00000000 to 0x00005fff...
+Flash will be erased from 0x00008000 to 0x00008fff...
+Flash will be erased from 0x00010000 to 0x000e7fff...
+SHA digest in image updated
+Compressed 20688 bytes to 13090...
+Writing at 0x00000000... (100 %)
+Wrote 20688 bytes (13090 compressed) at 0x00000000 in 0.2 seconds (effective 844.4 kbit/s)...
+Hash of data verified.
+Compressed 3072 bytes to 105...
+Writing at 0x00008000... (100 %)
+Wrote 3072 bytes (105 compressed) at 0x00008000 in 0.0 seconds (effective 558.9 kbit/s)...
+Hash of data verified.
+Compressed 883584 bytes to 561456...
+Writing at 0x00010000... (2 %)
+Writing at 0x0001b83f... (5 %)
+Writing at 0x000263c0... (8 %)
+Writing at 0x00031128... (11 %)
+Writing at 0x00037435... (14 %)
+Writing at 0x0003cd56... (17 %)
+Writing at 0x00042607... (20 %)
+Writing at 0x0004840a... (22 %)
+Writing at 0x0004dd31... (25 %)
+Writing at 0x000532cd... (28 %)
+Writing at 0x00058aed... (31 %)
+Writing at 0x0005e581... (34 %)
+Writing at 0x000640eb... (37 %)
+Writing at 0x00069b9b... (40 %)
+Writing at 0x0006f78c... (42 %)
+Writing at 0x000758c3... (45 %)
+Writing at 0x0007a795... (48 %)
+Writing at 0x0007fa60... (51 %)
+Writing at 0x0008493c... (54 %)
+Writing at 0x00089d49... (57 %)
+Writing at 0x0008f10e... (60 %)
+Writing at 0x0009461a... (62 %)
+Writing at 0x0009a0ae... (65 %)
+Writing at 0x0009f80c... (68 %)
+Writing at 0x000a540e... (71 %)
+Writing at 0x000ab74d... (74 %)
+Writing at 0x000b0b0b... (77 %)
+Writing at 0x000b6dc1... (80 %)
+Writing at 0x000bf013... (82 %)
+Writing at 0x000c7231... (85 %)
+Writing at 0x000cd037... (88 %)
+Writing at 0x000d4fe1... (91 %)
+Writing at 0x000daf75... (94 %)
+Writing at 0x000e0dd4... (97 %)
+Writing at 0x000e5d54... (100 %)
+Wrote 883584 bytes (561456 compressed) at 0x00010000 in 4.8 seconds (effective 1466.9 kbit/s)...
+Hash of data verified.
+
+Leaving...
+Staying in bootloader.
