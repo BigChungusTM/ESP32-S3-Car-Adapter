@@ -490,34 +490,46 @@ static void audio_pump(void) {
 // mount. Car hosts that scan once miss an immediately-present device;
 // a delayed fresh insertion is re-enumerated reliably.
 static int64_t next_attach_us;
-static bool attach_armed;
 
 // Retry offsets after the first deliberate attach (ms).
 static const uint32_t retry_schedule_ms[] = {3000, 3000, 4000, 5000, 15000, 15000, 15000};
 static uint8_t retry_idx;
+
+static bool stack_ready;
+
+static void usb_stack_start(void) {
+    usb_phy_config_t phy_config = {
+        .controller = USB_PHY_CTRL_OTG,
+        .target = USB_PHY_TARGET_INT,
+        .otg_mode = USB_OTG_MODE_DEVICE,
+        .otg_speed = USB_PHY_SPEED_FULL,
+        .ext_io_conf = NULL,
+        .otg_io_conf = NULL,
+    };
+    usb_phy_handle_t phy = NULL;
+    if (usb_new_phy(&phy_config, &phy) != ESP_OK) {
+        ESP_LOGE(TAG, "usb_new_phy failed");
+        return;
+    }
+    tusb_rhport_init_t dev_init = {.role = TUSB_ROLE_DEVICE, .speed = TUSB_SPEED_AUTO};
+    tusb_init(0, &dev_init);
+    phy_ready_us = esp_timer_get_time();
+    stack_ready = true;
+}
 
 static void do_attach(const char *why) {
     connect_attempts++;
     if (first_connect_us == 0) first_connect_us = esp_timer_get_time();
     iap_logf("USB attach #%u (%s)", connect_attempts, why);
     ESP_LOGI(TAG, "USB attach #%u (%s)", connect_attempts, why);
-    tud_connect();
+    if (stack_ready) tud_connect();
 }
 
 static void attach_poll(void) {
     if (ever_mounted) return;
-    int64_t now = esp_timer_get_time();
-    if (!attach_armed) {
-        // First deliberate attach after the configured boot delay.
-        if (now - boot_us >= (int64_t) CONFIG_IPOD_USB_ATTACH_DELAY_MS * 1000) {
-            attach_armed = true;
-            do_attach("first");
-            next_attach_us = now;
-        }
-        return;
-    }
     if (tud_mounted() || retry_idx >= sizeof(retry_schedule_ms) / sizeof(retry_schedule_ms[0]))
         return;
+    int64_t now = esp_timer_get_time();
     if (now < next_attach_us) return;
     iap_logf("USB re-attach (unmounted)");
     tud_disconnect();
@@ -530,8 +542,29 @@ static void attach_poll(void) {
 static void tusb_task(void *arg) {
     (void) arg;
     boot_us = esp_timer_get_time();
+    // Hold electrically quiet across boot: the stack (and its pullup) only
+    // starts after the configured delay, so the host sees one clean insertion
+    // instead of a half-boot device. tud_task() is never called before init,
+    // which also avoids it blocking forever with no SOF events arriving.
+    while (esp_timer_get_time() - boot_us <
+           (int64_t) CONFIG_IPOD_USB_ATTACH_DELAY_MS * 1000) {
+        vTaskDelay(pdMS_TO_TICKS(50));
+    }
+    usb_stack_start();
+    // Stack init attaches immediately: this IS the first deliberate attach.
+    connect_attempts++;
+    first_connect_us = esp_timer_get_time();
+    iap_logf("USB attach #1 (first)");
+    ESP_LOGI(TAG, "USB attach #1 (first)");
+    retry_idx = 1;  // schedule[0] consumed by the first attach timing
+    next_attach_us = first_connect_us +
+        (int64_t) retry_schedule_ms[0] * 1000;
     TickType_t last = xTaskGetTickCount();
     while (true) {
+        if (!stack_ready) {
+            vTaskDelayUntil(&last, pdMS_TO_TICKS(10));
+            continue;
+        }
         tud_task();
         audio_pump();
         iap_tx_pump();  // backstop: flush any reports queued outside callbacks
@@ -556,30 +589,10 @@ bool ipod_usb_init(void) {
         ESP_LOGE(TAG, "PSRAM ring alloc failed");
         return false;
     }
-    // Internal PHY, OTG device mode on GPIO19/20 (shared with Serial/JTAG;
-    // the USB console goes quiet once the car/host enumerates us).
-    usb_phy_config_t phy_config = {
-        .controller = USB_PHY_CTRL_OTG,
-        .target = USB_PHY_TARGET_INT,
-        .otg_mode = USB_OTG_MODE_DEVICE,
-        .otg_speed = USB_PHY_SPEED_FULL,
-        .ext_io_conf = NULL,
-        .otg_io_conf = NULL,
-    };
-    usb_phy_handle_t phy = NULL;
-    if (usb_new_phy(&phy_config, &phy) != ESP_OK) {
-        ESP_LOGE(TAG, "usb_new_phy failed");
-        return false;
-    }
-
-    tusb_rhport_init_t dev_init = {.role = TUSB_ROLE_DEVICE, .speed = TUSB_SPEED_AUTO};
-    tusb_init(0, &dev_init);
-    phy_ready_us = esp_timer_get_time();
-
-    // Hold disconnected: attachment is deliberate (see attach_poll), never
-    // immediate at boot. This is the cold-boot enumeration fix.
-    tud_disconnect();
-
+    // NOTE: PHY + TinyUSB stack start from the USB task after the boot
+    // delay (see tusb_task). Starting them here would attach immediately and
+    // reintroduce the cold-boot race; calling tud_task() before init would
+    // block forever with no SOF events. So: allocate first, start later.
     if (xTaskCreate(tusb_task, "ipod_usb", 4096, NULL, 6, NULL) != pdPASS) {
         ESP_LOGE(TAG, "task create failed");
         return false;
