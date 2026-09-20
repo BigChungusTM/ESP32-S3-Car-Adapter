@@ -131,6 +131,52 @@ static void show_tx(const char *label) {
 int main(void) {
     iap_set_serial("68EE8F5B3D34");
 
+    // Multipart v2 auth: transaction fidelity, retries and strict audio gate.
+    {
+        const uint8_t start[] = {0, 0x38};
+        pkt_begin(); pkt_cmd(start, sizeof(start)); feed_frame(fbuf, fn); decode_tx();
+        const uint8_t first[] = {0, 0x15, 0, 0x41, 2, 0, 0, 2, 0xaa};
+        pkt_begin(); pkt_cmd(first, sizeof(first)); feed_frame(fbuf, fn);
+        CHECK(decode_tx() == 1 && tx_cmds[0] == 2, "first cert only ACK");
+        const uint8_t final[] = {0, 0x15, 0, 0x44, 2, 0, 2, 2, 0xcc};
+        pkt_begin(); pkt_cmd(final, sizeof(final)); feed_frame(fbuf, fn);
+        CHECK(decode_tx() == 1 && tx_cmds[0] == 2 && tx_pay[0][2] == 2,
+              "missing middle cert rejected");
+        pkt_begin(); pkt_cmd(first, sizeof(first)); feed_frame(fbuf, fn);
+        CHECK(decode_tx() == 1 && tx_pay[0][2] == 0, "duplicate intermediate ACK");
+        const uint8_t middle[] = {0, 0x15, 0, 0x42, 2, 0, 1, 2, 0xbb};
+        pkt_begin(); pkt_cmd(middle, sizeof(middle)); feed_frame(fbuf, fn);
+        CHECK(decode_tx() == 1 && tx_cmds[0] == 2, "middle cert only ACK");
+        pkt_begin(); pkt_cmd(final, sizeof(final)); feed_frame(fbuf, fn);
+        CHECK(decode_tx() == 2 && tx_cmds[0] == 0x16 && tx_cmds[1] == 0x17,
+              "final cert ACK then signature challenge; no DigitalAudio");
+        CHECK(tx_paylen[1] == 23 && tx_pay[1][0] == 0 && tx_pay[1][1] == 0x44,
+              "signature response preserves final certificate transaction");
+        for (int i=2; i<23; i++) CHECK(tx_pay[1][i] == 0, "reference v2 challenge byte %d", i);
+        iap_snapshot_t snap; iap_snapshot(&snap);
+        CHECK(!strcmp(snap.state, "AUTH_SIG"), "wait for signature, not next certificate");
+        pkt_begin(); pkt_cmd(final, sizeof(final)); feed_frame(fbuf, fn);
+        CHECK(decode_tx() == 1 && tx_cmds[0] == 0x16, "duplicate final doesn't restart negotiation");
+        const uint8_t sig[] = {0, 0x18, 0, 0x45, 0x12, 0x34};
+        pkt_begin(); pkt_cmd(sig, sizeof(sig)); feed_frame(fbuf, fn);
+        CHECK(decode_tx() == 2 && tx_cmds[0] == 0x19 && tx_cmds[1] == 0x0a0002,
+              "signature ACK precedes single DigitalAudio start");
+        CHECK(tx_pay[0][0] == 0 && tx_pay[0][1] == 0x45,
+              "signature ACK transaction is 0045, not fabricated 0000");
+        pkt_begin(); pkt_cmd(sig, sizeof(sig)); feed_frame(fbuf, fn);
+        CHECK(decode_tx() == 1 && tx_cmds[0] == 0x19, "duplicate signature doesn't restart audio");
+        const uint8_t audio_ack[] = {0x0a, 0, 0, 0x46, 0, 4};
+        pkt_begin(); pkt_cmd(audio_ack, sizeof(audio_ack)); feed_frame(fbuf, fn); decode_tx();
+        iap_snapshot(&snap); CHECK(!strcmp(snap.state, "READY"), "audio accepted ready");
+        iap_reset_protocol();
+        iap_snapshot(&snap); CHECK(!strcmp(snap.state, "IDLE"), "new USB session reset");
+        const uint8_t bad[] = {0, 0x15, 2, 0, 0};
+        pkt_begin(); pkt_cmd(bad, sizeof(bad)); feed_frame(fbuf, fn);
+        CHECK(decode_tx() == 1 && tx_cmds[0] == 2 && tx_pay[0][0] == 2,
+              "truncated v2 cert rejected without starting audio");
+        iap_reset_protocol();
+    }
+
     // 1. IdentifyDeviceLingoes (no trx yet)
     {
         uint8_t c[] = {0x00, 0x13, 0x00, 0x00, 0x40, 0x11, 0x00, 0x00, 0x00, 0x00,
@@ -299,6 +345,24 @@ int main(void) {
         int n = decode_tx();
         CHECK(n == 1 && tx_cmds[0] == 0x0008, "split frame reassembled");
         if (n == 1) CHECK(memcmp(tx_pay[0] + 2, "Volvo AirPlay", 13) == 0, "name text");
+    }
+
+    // AirPlay input alone must not advance the car's play-position clock.
+    iap_set_track("artist", "track", "album");
+    iap_set_playing(true);
+    iap_note_pcm(176400);
+    {
+        uint8_t c[] = {4, 0, 0x1c, 0, 0x70};
+        pkt_begin(); pkt_cmd(c, sizeof(c)); feed_frame(fbuf, fn); decode_tx();
+        CHECK(tx_pay[0][6] == 0 && tx_pay[0][7] == 0 && tx_pay[0][8] == 0 && tx_pay[0][9] == 0,
+              "queued PCM doesn't advance position");
+        iap_note_usb_time(1000000);
+        pkt_begin(); pkt_cmd(c, sizeof(c)); feed_frame(fbuf, fn); decode_tx();
+        CHECK(tx_pay[0][8] == 3 && tx_pay[0][9] == 0xe8, "completed USB advances position 1000ms");
+        iap_set_playing(false);
+        iap_note_usb_time(2000000);
+        pkt_begin(); pkt_cmd(c, sizeof(c)); feed_frame(fbuf, fn); decode_tx();
+        CHECK(tx_pay[0][8] == 3 && tx_pay[0][9] == 0xe8, "paused USB silence doesn't advance position");
     }
 
     if (failures == 0) printf("\nALL TESTS PASSED\n");

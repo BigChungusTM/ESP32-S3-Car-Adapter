@@ -18,6 +18,7 @@
 #include "log_util.h"
 #include "ipod_usb.h"
 #include "iap.h"
+#include "media_core.h"
 
 static const char *TAG = "AIRPLAY";
 log_level raop_loglevel = lINFO, util_loglevel = lWARN;
@@ -37,19 +38,20 @@ void logprint(const char *format, ...) {
 static void audio_data(const uint8_t *data, size_t length, uint32_t playtime) {
     (void)playtime;
     // Decoded PCM is 44.1 kHz stereo s16; forward complete frames to USB.
-    ipod_usb_push_pcm((const int16_t *) data, length / 4);
+    media_write_pcm((const int16_t *) data, length / 4);
     uint32_t nonzero = 0;
     for (size_t i = 0; i < length; i++) nonzero += data[i] != 0;
     portENTER_CRITICAL(&stats_lock);
     pcm_bytes += length; pcm_nonzero += nonzero; pcm_callbacks++;
     portEXIT_CRITICAL(&stats_lock);
-    // First milestone: consume and measure decoded PCM. No car/DAC output yet.
+    // Feed decoded PCM through the media boundary to USB.
 }
 
 static bool audio_command(raop_event_t event, ...) {
     va_list args; va_start(args, event);
     switch (event) {
     case RAOP_SETUP: {
+        media_begin();
         uint8_t **buffer = va_arg(args, uint8_t **);
         size_t *size = va_arg(args, size_t *);
         *buffer = audio_buffer; *size = audio_buffer_size;
@@ -66,14 +68,14 @@ static bool audio_command(raop_event_t event, ...) {
         snprintf(album, sizeof(album), "%s", al ? al : "");
         snprintf(title, sizeof(title), "%s", t ? t : "");
         portEXIT_CRITICAL(&stats_lock);
-        iap_set_track(a, t, al);
+        media_set_metadata(a, t, al);
         ESP_LOGI(TAG, "Metadata received");
         break;
     }
-    case RAOP_STREAM: iap_set_playing(true); ESP_LOGI(TAG, "Stream started"); break;
-    case RAOP_PLAY: iap_set_playing(true); ESP_LOGI(TAG, "Playback scheduled"); break;
-    case RAOP_STOP: iap_set_playing(false); ESP_LOGI(TAG, "Stream stopped"); break;
-    case RAOP_FLUSH: iap_set_playing(false); ESP_LOGI(TAG, "Stream flushed"); break;
+    case RAOP_STREAM: media_set_play_state(true); ESP_LOGI(TAG, "Stream started"); break;
+    case RAOP_PLAY: media_set_play_state(true); ESP_LOGI(TAG, "Playback scheduled"); break;
+    case RAOP_STOP: media_end(); ESP_LOGI(TAG, "Stream stopped"); break;
+    case RAOP_FLUSH: media_flush(); ESP_LOGI(TAG, "Stream flushed"); break;
     default: break;
     }
     va_end(args);
@@ -122,6 +124,8 @@ static esp_err_t status_handler(httpd_req_t *request) {
         "USB iPod: ready=%d mounted=%d audio=%d suspended=%d rate=%lu tone=%d underruns=%lu iAP rx=%lu tx=%lu\n"
         "iAP: state=%s cert=%d/%d lastlat=%luus seq=%lu TX{ack=%lu ident=%lu auth=%lu audio=%lu other=%lu}\n"
         "USB timing: boot=%lums phy=%lums firstconn=%lums mount=%lums attempts=%lu\n\n"
+        "Audio: received=%llu buffered=%lu dropped=%llu frames\n"
+        "USB completed: packets=%lu bytes=%llu frames=%llu FIFO-silence=%lu bytes\n\n"
         "USB log:\n",
         CONFIG_ADAPTER_NAME,
         (unsigned long)count, (unsigned long long)bytes, (unsigned long long)nonzero,
@@ -137,7 +141,11 @@ static esp_err_t status_handler(httpd_req_t *request) {
         (unsigned long)iap.tx_other,
         (unsigned long)usb.boot_ms, (unsigned long)usb.phy_ready_ms,
         (unsigned long)usb.first_connect_ms, (unsigned long)usb.mount_ms,
-        (unsigned long)usb.connect_attempts);
+        (unsigned long)usb.connect_attempts,
+        (unsigned long long)usb.airplay_frames_received, (unsigned long)usb.pcm_frames_buffered,
+        (unsigned long long)usb.pcm_frames_dropped, (unsigned long)usb.usb_iso_packets,
+        (unsigned long long)usb.usb_iso_bytes, (unsigned long long)usb.usb_frames_delivered,
+        (unsigned long)usb.usb_fifo_starved_bytes);
     if (n > 0 && (size_t)n < RESPONSE_SZ)
         ipod_usb_read_iap_log(response + n, RESPONSE_SZ - (size_t)n);
     httpd_resp_set_type(request, "text/plain; charset=utf-8");
@@ -159,7 +167,19 @@ void app_main(void) {
     // USB first: the car/host enumerates us as soon as we're plugged in.
     // Note: enabling the OTG peripheral takes over GPIO19/20, so the
     // USB-Serial/JTAG console goes quiet from here on; use the HTTP status page.
-    ipod_usb_init();
+    assert(ipod_usb_init());
+#ifdef CONFIG_IPOD_USB_ENABLE
+    // Give USB an uncontended first enumeration window; keep AP diagnostics
+    // available even if the car never mounts, so do not wait indefinitely.
+    int64_t deadline = esp_timer_get_time() +
+        ((int64_t)CONFIG_IPOD_USB_ATTACH_DELAY_MS + 2500) * 1000;
+    while (esp_timer_get_time() < deadline) {
+        ipod_usb_status_t status;
+        ipod_usb_get_status(&status);
+        if (status.host_mounted) break;
+        vTaskDelay(pdMS_TO_TICKS(20));
+    }
+#endif
     audio_buffer = heap_caps_malloc(audio_buffer_size, MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT);
     assert(audio_buffer);
     ESP_ERROR_CHECK(esp_netif_init());

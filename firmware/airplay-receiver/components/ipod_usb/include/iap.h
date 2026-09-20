@@ -24,6 +24,7 @@ void iap_rx_report(uint8_t report_id, const uint8_t *data, uint16_t len);
 // Pump queued TX reports toward the host. Called from the TinyUSB task loop
 // and the HID report-complete callback.
 void iap_tx_pump(void);
+void iap_reset_protocol(void);
 
 // Returns true while there are queued outbound reports.
 bool iap_tx_pending(void);
@@ -33,8 +34,10 @@ void iap_set_track(const char *artist, const char *title, const char *album);
 void iap_set_playing(bool playing);
 void iap_set_serial(const char *serial);
 
-// bytes: decoded PCM bytes just pushed toward USB (position clock).
+// Incoming PCM activity; does not advance the play-position clock.
 void iap_note_pcm(uint32_t bytes);
+// USB owner supplies cumulative successfully completed USB sample time.
+void iap_note_usb_time(uint64_t total_us);
 
 // True while an AirPlay source is actively producing audio.
 bool iap_audio_active(void);

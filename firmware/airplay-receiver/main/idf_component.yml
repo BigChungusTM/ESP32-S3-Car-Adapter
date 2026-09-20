@@ -1,3 +1,3 @@
 dependencies:
   espressif/mdns: "1.8.2"
-  espressif/tinyusb: "*"
+  espressif/tinyusb: "0.21.0~2"

@@ -13,6 +13,8 @@ extern "C" {
 // UAC1 audio source + HID iAP transport). Safe to call once, early in
 // app_main. Returns true on success.
 bool ipod_usb_init(void);
+void ipod_usb_flush_pcm(void);
+uint64_t ipod_usb_delivered_us(void);
 
 // Push decoded 44.1 kHz stereo s16 PCM (from the AirPlay path) toward USB.
 // Resampled to 48 kHz internally. Drops data when the host is not listening.
@@ -41,6 +43,9 @@ typedef struct {
     bool usb_suspended;
     bool tone_on;
     uint32_t usb_rate;
+    uint64_t airplay_frames_received, pcm_frames_dropped;
+    uint64_t usb_iso_bytes, usb_frames_delivered;
+    uint32_t pcm_frames_buffered, usb_iso_packets, usb_fifo_starved_bytes;
     uint32_t pcm_underruns;
     uint32_t iap_rx_packets;
     uint32_t iap_tx_packets;

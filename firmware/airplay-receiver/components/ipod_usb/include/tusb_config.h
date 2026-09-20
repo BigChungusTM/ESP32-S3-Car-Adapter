@@ -52,9 +52,9 @@ extern "C" {
 #define CFG_TUD_AUDIO_FUNC_1_N_BYTES_PER_SAMPLE_TX    IPOD_USB_BYTES_PER_SAMPLE
 #define CFG_TUD_AUDIO_FUNC_1_N_CHANNELS_TX            IPOD_USB_CHANNELS
 #define CFG_TUD_AUDIO_EP_SZ_IN                        IPOD_USB_EP_IN_SIZE
-#define CFG_TUD_AUDIO_EP_IN_FLOW_CONTROL              1
+#define CFG_TUD_AUDIO_EP_IN_FLOW_CONTROL              0
 #define CFG_TUD_AUDIO_FUNC_1_EP_IN_SZ_MAX             IPOD_USB_EP_IN_SIZE
-#define CFG_TUD_AUDIO_FUNC_1_EP_IN_SW_BUF_SZ          (IPOD_USB_EP_IN_SIZE * 8)
+#define CFG_TUD_AUDIO_FUNC_1_EP_IN_SW_BUF_SZ          (IPOD_USB_EP_IN_SIZE * 16)
 
 //--------------------------------------------------------------------
 // HID CLASS DRIVER CONFIGURATION (iAP transport, interrupt IN only)

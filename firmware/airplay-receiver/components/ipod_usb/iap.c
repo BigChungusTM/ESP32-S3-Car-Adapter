@@ -56,12 +56,25 @@ static uint8_t txq_head, txq_tail, txq_count;
 static uint32_t tx_packets;
 static int64_t last_rx_us;
 static uint32_t last_latency_us;
-typedef enum { ST_IDLE, ST_IDENTIFIED, ST_AUTH, ST_AUTH_OK, ST_READY } iap_state_t;
+typedef enum { ST_IDLE, ST_IDENTIFIED, ST_AUTH, ST_AUTH_SIG, ST_AUTH_OK, ST_AUDIO, ST_READY } iap_state_t;
 static iap_state_t iap_state;
 static int cert_cur = -1, cert_max = -1;
 static uint32_t tx_ack, tx_ident, tx_auth, tx_audio, tx_other;
 static uint32_t pkt_seq;
 static bool stall_dumped;
+#define CERT_CAPACITY 8192
+static uint8_t certificate[CERT_CAPACITY];
+static uint16_t cert_offsets[256], cert_lengths[256], cert_size, cert_next;
+static bool audio_requested;
+
+static void reset_handshake(void) {
+    iap_state = ST_IDLE;
+    cert_cur = cert_max = -1;
+    cert_size = cert_next = 0;
+    audio_requested = false;
+    stall_dumped = false;
+}
+
 
 static bool txq_push(uint8_t id, const uint8_t *data, uint8_t len) {
     if (txq_count >= TXQ_N || len > 64) return false;
@@ -97,7 +110,10 @@ static void tx_frame(const uint8_t *frame, uint16_t len) {
     // reentrancy on some ports; ~10 ms extra latency is irrelevant for iAP.
 }
 
+static void pump_metadata(void);
+
 void iap_tx_pump(void) {
+    pump_metadata();
     while (txq_count > 0) {
         tx_report_t *r = &txq[txq_head];
         if (!tud_hid_report(r->id, r->data, r->len)) break;
@@ -206,7 +222,7 @@ static const cmd_size_t cmd_sizes[] = {
     {0x04, 0x0004, 0}, {0x04, 0x0007, 4}, {0x04, 0x0009, 0},
     {0x04, 0x000B, 1}, {0x04, 0x000C, 7}, {0x04, 0x000E, 0},
     {0x04, 0x0010, 6}, {0x04, 0x0016, 0}, {0x04, 0x0017, 5},
-    {0x04, 0x0018, 1}, {0x04, 0x001A, 5}, {0x04, 0x001C, 0},
+    {0x04, 0x0018, 1}, {0x04, 0x001A, 9}, {0x04, 0x001C, 0},
     {0x04, 0x001E, 0}, {0x04, 0x0020, 4}, {0x04, 0x0022, 4},
     {0x04, 0x0024, 4}, {0x04, 0x0026, 4}, {0x04, 0x0028, 4},
     {0x04, 0x0029, 1}, {0x04, 0x002A, 8}, {0x04, 0x002C, 0},
@@ -289,8 +305,8 @@ static void tx_send(uint8_t lingo, uint16_t cmd, bool use_trx, uint16_t trx,
     else if (lingo == LINGO_GENERAL) tx_auth++;
     else if (lingo == LINGO_AUDIO) tx_audio++;
     else tx_other++;
-    ipod_usb_log(">> lingo=%02X cmd=%04X trx=%s len=%u lat=%luus",
-                 lingo, cmd, has_trx ? "y" : "n", payload_len,
+    ipod_usb_log(">> lingo=%02X cmd=%04X trx=%s%04X len=%u lat=%luus",
+                 lingo, cmd, has_trx ? "" : "absent/", trx, payload_len,
                  (unsigned long) last_latency_us);
     uint16_t n = pkt_encode(c.b, c.n, tx_pkt);
     tx_frame(tx_pkt, n);
@@ -317,27 +333,43 @@ static void tx_notify(uint8_t lingo, uint16_t cmd, const uint8_t *payload, uint1
 
 static char np_artist[192], np_title[192], np_album[192];
 static char dev_serial[32];
-static uint64_t pcm_total_bytes;
-static uint64_t track_start_bytes;
+static uint64_t track_start_us, played_us, last_usb_us;
+static bool metadata_notify_pending;
+static portMUX_TYPE media_lock = portMUX_INITIALIZER_UNLOCKED;
 static int64_t last_push_us;
 static bool playing;
 static bool notify_armed;
 
 void iap_set_track(const char *artist, const char *title, const char *album) {
+    portENTER_CRITICAL(&media_lock);
     snprintf(np_artist, sizeof(np_artist), "%s", artist ? artist : "");
     snprintf(np_title, sizeof(np_title), "%s", title ? title : "");
     snprintf(np_album, sizeof(np_album), "%s", album ? album : "");
-    track_start_bytes = pcm_total_bytes;
-    if (notify_armed) {
-        uint8_t st = 0x01;  // track changed
-        tx_notify(LINGO_EXTREM, 0x0027, &st, 1);
+    track_start_us = played_us;
+    metadata_notify_pending = true;
+    portEXIT_CRITICAL(&media_lock);
+}
+
+static void pump_metadata(void) {
+    portENTER_CRITICAL(&media_lock);
+    bool changed = metadata_notify_pending;
+    metadata_notify_pending = false;
+    portEXIT_CRITICAL(&media_lock);
+    if (changed && notify_armed) {
+        uint8_t status = 1;
+        tx_notify(LINGO_EXTREM, 0x0027, &status, 1);
     }
 }
 
-void iap_set_playing(bool p) { playing = p; }
+void iap_set_playing(bool p) {
+    portENTER_CRITICAL(&media_lock); playing = p; portEXIT_CRITICAL(&media_lock);
+}
 
 bool iap_audio_active(void) {
-    return playing && (esp_timer_get_time() - last_push_us < 3000000);
+    portENTER_CRITICAL(&media_lock);
+    bool active = playing && (esp_timer_get_time() - last_push_us < 3000000);
+    portEXIT_CRITICAL(&media_lock);
+    return active;
 }
 
 //--------------------------------------------------------------------+
@@ -349,7 +381,9 @@ static const char *state_name(iap_state_t s) {
     case ST_IDLE: return "IDLE";
     case ST_IDENTIFIED: return "IDENTIFIED";
     case ST_AUTH: return "AUTH_CERT";
+    case ST_AUTH_SIG: return "AUTH_SIG";
     case ST_AUTH_OK: return "AUTH_OK";
+    case ST_AUDIO: return "AUDIO_CAPS";
     default: return "READY";
     }
 }
@@ -359,7 +393,9 @@ static const char *expected_next(void) {
     case ST_IDLE: return "IdentifyDeviceLingoes/StartIDPS";
     case ST_IDENTIFIED: return "auth sections/LingoVersion";
     case ST_AUTH: return "cert section";
-    case ST_AUTH_OK: return "player queries";
+    case ST_AUTH_SIG: return "RetDevAuthenticationSignature";
+    case ST_AUTH_OK: return "DigitalAudio start";
+    case ST_AUDIO: return "sample rates/AccAck";
     default: return "player queries";
     }
 }
@@ -388,25 +424,42 @@ void iap_watchdog(void) {
 }
 
 void iap_note_pcm(uint32_t bytes) {
-    pcm_total_bytes += bytes;
+    (void)bytes;
+    portENTER_CRITICAL(&media_lock);
     last_push_us = esp_timer_get_time();
+    portEXIT_CRITICAL(&media_lock);
+}
+
+void iap_note_usb_time(uint64_t total_us) {
+    portENTER_CRITICAL(&media_lock);
+    if (playing && esp_timer_get_time() - last_push_us < 3000000)
+        played_us += total_us - last_usb_us;
+    last_usb_us = total_us;
+    portEXIT_CRITICAL(&media_lock);
 }
 
 // ms of audio delivered for the current track (44100 Hz stereo s16)
 static uint32_t track_pos_ms(void) {
-    uint64_t b = pcm_total_bytes - track_start_bytes;
-    return (uint32_t) ((b * 1000) / 176400);
+    portENTER_CRITICAL(&media_lock);
+    uint64_t elapsed = played_us - track_start_us;
+    portEXIT_CRITICAL(&media_lock);
+    return (uint32_t)(elapsed / 1000);
 }
 
 static uint8_t play_state(void) {
-    if (!playing) return 0x02;  // paused
-    if (esp_timer_get_time() - last_push_us > 3000000) return 0x02;
-    return 0x01;  // playing
+    return iap_audio_active() ? 0x01 : 0x02;
 }
 
 //--------------------------------------------------------------------+
 // General lingo handler (mirrors Go HandleGeneral)
 //--------------------------------------------------------------------+
+
+static void start_digital_audio(void) {
+    if (audio_requested) return;
+    audio_requested = true;
+    iap_state = ST_AUDIO;
+    tx_notify(LINGO_AUDIO, 0x02, NULL, 0);
+}
 
 static void handle_general(const rx_cmd_t *c) {
     cmd_buf_t r = { .n = 0 };
@@ -415,6 +468,7 @@ static void handle_general(const rx_cmd_t *c) {
 
     switch (c->cmd) {
     case 0x00:  // RequestIdentify: no reply in reference flow
+        reset_handshake();
         respond = false;
         break;
     case 0x02:  // ACK to one of our sends: logged, nothing to do
@@ -467,6 +521,7 @@ static void handle_general(const rx_cmd_t *c) {
         put_u16(&r, 65535);
         break;
     case 0x13: {  // IdentifyDeviceLingoes
+        reset_handshake();
         iap_state = ST_IDENTIFIED;
         resp_cmd = 0x02;
         put_u8(&r, ACK_OK); put_u8(&r, 0x13);
@@ -481,37 +536,68 @@ static void handle_general(const rx_cmd_t *c) {
         return;
     }
     case 0x15: {  // RetDevAuthenticationInfo
-        iap_state = ST_AUTH;
-        if (c->len >= 2 && c->p[0] >= 2) {
-            if (c->len >= 4) { cert_cur = c->p[2]; cert_max = c->p[3]; }
-            uint8_t cur = c->len >= 3 ? c->p[2] : 0;
-            uint8_t max = c->len >= 4 ? c->p[3] : 0;
-            if (cur < max) {
-                resp_cmd = 0x02;
-                put_u8(&r, ACK_OK); put_u8(&r, 0x15);
-                tx_respond(c, LINGO_GENERAL, resp_cmd, r.b, r.n);
-            } else {
-                resp_cmd = 0x16;
-                put_u8(&r, 0x00);  // supported
-                tx_respond(c, LINGO_GENERAL, resp_cmd, r.b, r.n);
-                uint8_t sig[21];
-                memset(sig, 0, sizeof(sig));  // challenge zeros, counter 0
-                tx_notify(LINGO_GENERAL, 0x17, sig, sizeof(sig));
-            }
-        } else {
-            resp_cmd = 0x16;
-            put_u8(&r, 0x00);
-            tx_respond(c, LINGO_GENERAL, resp_cmd, r.b, r.n);
+        if (c->len < 2 || (c->p[0] >= 2 && c->len < 4)) goto bad_certificate;
+        if (c->p[0] < 2) {
+            // Reference v1 flow has no v2 challenge stage.
+            uint8_t supported = 0;
+            tx_respond(c, LINGO_GENERAL, 0x16, &supported, 1);
+            iap_state = ST_AUTH_OK;
+            start_digital_audio();
+            return;
         }
-        // Audio handshake follows auth completion (mirrors Go handlePacket).
-        tx_notify(LINGO_AUDIO, 0x02, NULL, 0);  // GetAccSampleRateCaps
+        uint8_t cur = c->p[2], last = c->p[3];
+        uint16_t size = c->len - 4;
+        if (cur > last || (cert_max >= 0 && last != cert_max)) goto bad_certificate;
+        if (cur < cert_next) {
+            // Retransmission: ACK without appending or restarting audio/auth.
+            if (size != cert_lengths[cur] ||
+                memcmp(certificate + cert_offsets[cur], c->p + 4, size)) goto bad_certificate;
+        } else {
+            if (cur != cert_next || cert_size + size > CERT_CAPACITY) goto bad_certificate;
+            cert_offsets[cur] = cert_size;
+            cert_lengths[cur] = size;
+            memcpy(certificate + cert_size, c->p + 4, size);
+            cert_size += size;
+            cert_next++;
+            cert_cur = cur; cert_max = last;
+            iap_state = ST_AUTH;
+        }
+        if (cur < last) {
+            uint8_t ack[] = {ACK_OK, 0x15};
+            tx_respond(c, LINGO_GENERAL, 0x02, ack, sizeof(ack));
+        } else {
+            uint8_t supported = 0;
+            tx_respond(c, LINGO_GENERAL, 0x16, &supported, 1);
+            if (iap_state == ST_AUTH) {
+                // Go binary.Write(GetDevAuthenticationSignatureV2{Counter:0})
+                // is exactly [20 zero challenge bytes][one zero counter].
+                // Respond preserves the final certificate's transaction ID.
+                const uint8_t challenge[21] = {0};
+                tx_respond(c, LINGO_GENERAL, 0x17, challenge, sizeof(challenge));
+                iap_state = ST_AUTH_SIG;
+                ipod_usb_log("cert complete sections=%u bytes=%u; await signature", cert_next, cert_size);
+            }
+        }
+        return;
+    bad_certificate: {
+        uint8_t ack[] = {ACK_FAILED, 0x15};
+        ipod_usb_log("reject cert len=%u next=%u last=%d", c->len, cert_next, cert_max);
+        tx_respond(c, LINGO_GENERAL, 0x02, ack, sizeof(ack));
         return;
     }
-    case 0x18:  // RetDevAuthenticationSignature
-        iap_state = ST_AUTH_OK;
-        resp_cmd = 0x19;
-        put_u8(&r, 0x00);  // passed
-        break;
+    }
+    case 0x18: {  // RetDevAuthenticationSignature
+        if (c->len == 0 || (iap_state != ST_AUTH_SIG && !audio_requested)) {
+            uint8_t ack[] = {ACK_FAILED, 0x18};
+            tx_respond(c, LINGO_GENERAL, 0x02, ack, sizeof(ack));
+            return;
+        }
+        // Match reference acceptance; no certificate/signature verification.
+        uint8_t passed = 0;
+        tx_respond(c, LINGO_GENERAL, 0x19, &passed, 1);
+        if (!audio_requested) { iap_state = ST_AUTH_OK; start_digital_audio(); }
+        return;
+    }
     case 0x1A:
         resp_cmd = 0x1B;
         put_u8(&r, 1); put_u8(&r, 1); put_u8(&r, 0); put_u8(&r, 0);
@@ -551,6 +637,7 @@ static void handle_general(const rx_cmd_t *c) {
         put_u8(&r, ACK_OK); put_u8(&r, 0x37);
         break;
     case 0x38:  // StartIDPS
+        reset_handshake();
         iap_state = ST_IDENTIFIED;
         trx_counter = 0;
         resp_cmd = 0x02;
@@ -658,6 +745,10 @@ static void handle_general(const rx_cmd_t *c) {
 //--------------------------------------------------------------------+
 
 static void handle_audio(const rx_cmd_t *c) {
+    if (!audio_requested) {
+        ipod_usb_log("ignore DigitalAudio before auth cmd=%02x", c->cmd);
+        return;
+    }
     if (c->cmd == 0x03) {  // RetAccSampleRateCaps -> announce default rate
         cmd_buf_t r = { .n = 0 };
         put_u32(&r, 44100);
@@ -667,6 +758,7 @@ static void handle_audio(const rx_cmd_t *c) {
     } else if (c->cmd == 0x00 && c->len >= 2) {
         // AccAck{status, cmdID}: the car's verdict on our last audio command.
         ipod_usb_log("AccAck status=%u cmd=0x%02x", c->p[0], c->p[1]);
+        if (c->p[0] == ACK_OK && c->p[1] == 0x04) iap_state = ST_READY;
     }
     // iPodAck and the rest: nothing to do.
 }
@@ -734,14 +826,30 @@ static void handle_extremote(const rx_cmd_t *c) {
     case 0x0017: xr_ack(c, ACK_OK); return;
     case 0x0018:
         resp = 0x0019;
-        put_u32(&r, 1);
+        put_u32(&r, c->p[0] == 1 || c->p[0] == 2 || c->p[0] == 3 || c->p[0] == 5 ? 1 : 0);
         break;
-    case 0x001A:
+    case 0x001A: { // category, offset, count (variable-length reference command)
+        if (c->len != 9 || c->p[1] || c->p[2] || c->p[3] || c->p[4]) {
+            xr_ack(c, ACK_FAILED); return;
+        }
+        if (!(c->p[5] || c->p[6] || c->p[7] || c->p[8])) return;
+        const char *name = NULL;
+        portENTER_CRITICAL(&media_lock);
+        switch (c->p[0]) {
+        case 1: name = "AirPlay"; break;
+        case 2: name = np_artist; break;
+        case 3: name = np_album; break;
+        case 5: name = np_title[0] ? np_title : "AirPlay"; break;
+        }
         resp = 0x001B;
         put_u32(&r, 0);
+        // Reference record has a fixed 16-byte name field.
+        for (unsigned i = 0; i < 16; i++) put_u8(&r, name && i < strlen(name) ? name[i] : 0);
+        portEXIT_CRITICAL(&media_lock);
+        if (!name) { xr_ack(c, ACK_FAILED); return; }
         break;
+    }
     case 0x001C:  // GetPlayStatus: LIVE
-        iap_state = ST_READY;
         resp = 0x001D;
         put_u32(&r, 0);  // length unknown
         put_u32(&r, track_pos_ms());
@@ -753,15 +861,21 @@ static void handle_extremote(const rx_cmd_t *c) {
         break;
     case 0x0020:
         resp = 0x0021;
+        portENTER_CRITICAL(&media_lock);
         put_cstr(&r, np_title);
+        portEXIT_CRITICAL(&media_lock);
         break;
     case 0x0022:
         resp = 0x0023;
+        portENTER_CRITICAL(&media_lock);
         put_cstr(&r, np_artist);
+        portEXIT_CRITICAL(&media_lock);
         break;
     case 0x0024:
         resp = 0x0025;
+        portENTER_CRITICAL(&media_lock);
         put_cstr(&r, np_album);
+        portEXIT_CRITICAL(&media_lock);
         break;
     case 0x0026:  // SetPlayStatusChangeNotification (+short form)
         notify_armed = true;
@@ -805,6 +919,7 @@ static void handle_extremote(const rx_cmd_t *c) {
         respond = false;
         break;
     default:
+        ipod_usb_log("unsupported ExtendedRemote cmd=%04x len=%u", c->cmd, c->len);
         xr_ack(c, ACK_FAILED);
         return;
     }
@@ -886,8 +1001,8 @@ static void dispatch_packets(const uint8_t *f, uint16_t n) {
             }
             continue;
         }
-        ipod_usb_log("<< lingo=%02X cmd=%04X trx=%s len=%u",
-                     c.lingo, c.cmd, c.has_trx ? "y" : "n", c.len);
+        ipod_usb_log("<< lingo=%02X cmd=%04X trx=%s%04X len=%u",
+                     c.lingo, c.cmd, c.has_trx ? "" : "absent/", c.trx, c.len);
         switch (c.lingo) {
         case LINGO_GENERAL: handle_general(&c); break;
         case LINGO_AUDIO: handle_audio(&c); break;
@@ -910,4 +1025,12 @@ uint32_t iap_tx_packets(void) { return tx_packets; }
 
 void iap_set_serial(const char *serial) {
     snprintf(dev_serial, sizeof(dev_serial), "%s", serial ? serial : "");
+}
+
+// Called by USB owner when a bus session ends; retain media and lifetime counters.
+void iap_reset_protocol(void) {
+    reset_handshake();
+    txq_head = txq_tail = txq_count = 0;
+    trx_enabled = false; trx_counter = 0;
+    frame_len = 0; last_rx_us = 0; notify_armed = false;
 }

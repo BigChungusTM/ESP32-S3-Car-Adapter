@@ -2,12 +2,12 @@
 //
 // Single configuration mirroring the captured iPod layout:
 //   if0  Audio Control (mic input terminal -> USB streaming output terminal)
-//   if1  Audio Streaming, alt1: 48 kHz stereo s16 device->host, iso IN EP 0x81
+//   if1  Audio Streaming, alt1: 44.1/48 kHz stereo s16 device->host, iso IN EP 0x81
 //   if2  HID iAP transport (208-byte report desc), interrupt IN EP 0x83,
 //        host->device via control SET_REPORT.
 //
-// Audio: AirPlay PCM (44.1 kHz) is resampled to 48 kHz and paced at 192 B/ms.
-// iAP stage 1: log traffic, no replies yet.
+// Audio: USB-paced stereo PCM, with resampling only when the host selects 48 kHz.
+// HID carries iAP authentication, metadata and player commands.
 #include <string.h>
 #include <stdio.h>
 #include <stdarg.h>
@@ -27,6 +27,7 @@
 
 #include "ipod_usb.h"
 #include "iap.h"
+#include "audio_transport.h"
 
 static const char *TAG = "IPODUSB";
 
@@ -81,8 +82,7 @@ static const tusb_desc_device_t desc_device = {
 };
 
 // Single configuration: the iPod personality (UAC1 + HID iAP).
-// Served for descriptor index 0 AND 1 and selected by value 1 OR 2, so both
-// index-driven and value-hardcoded hosts reach it.
+// Only descriptor index 0 exists; its bConfigurationValue is 2.
 static const uint8_t desc_config[] = {
     // Config: 3 interfaces, "iPod USB Interface", self-powered 500 mA.
     // Bit 7 is mandatory per USB spec (the TUD_CONFIG_DESCRIPTOR helper ORs it).
@@ -94,14 +94,14 @@ static const uint8_t desc_config[] = {
     AUDIO_SUBCLASS_CONTROL, 0, 0,
     // AC header, UAC1, total 30, 1 streaming interface (if1)
     9, TUSB_DESC_CS_INTERFACE, AUDIO10_CS_AC_INTERFACE_HEADER, U16_TO_U8S_LE(UAC1_BCD_ADC),
-    U16_TO_U8S_LE(AC_TOTAL_LEN), 1, ITF_NUM_AUDIO_STREAM,
+    U16_TO_U8S_LE(9 + 12 + 9), 1, ITF_NUM_AUDIO_STREAM,
     // Input terminal: microphone, stereo L+R
     12, TUSB_DESC_CS_INTERFACE, AUDIO10_CS_AC_INTERFACE_INPUT_TERMINAL,
-    1, U16_TO_U8S_LE(AUDIO_TERM_TYPE_IN_GENERIC_MIC), 0, 2,
+    1, U16_TO_U8S_LE(AUDIO_TERM_TYPE_IN_GENERIC_MIC), 2, 2,
     U16_TO_U8S_LE(0x0003), 0, 0,
     // Output terminal: USB streaming, sourced from terminal 1
     9, TUSB_DESC_CS_INTERFACE, AUDIO10_CS_AC_INTERFACE_OUTPUT_TERMINAL,
-    2, U16_TO_U8S_LE(AUDIO_TERM_TYPE_USB_STREAMING), 0, 1, 0,
+    2, U16_TO_U8S_LE(AUDIO_TERM_TYPE_USB_STREAMING), 1, 1, 0,
 
     // Interface 1 alt 0: zero bandwidth
     9, TUSB_DESC_INTERFACE, ITF_NUM_AUDIO_STREAM, 0, 0, TUSB_CLASS_AUDIO,
@@ -149,7 +149,7 @@ uint8_t const *tud_descriptor_device_cb(void) {
 }
 
 uint8_t const *tud_descriptor_configuration_cb(uint8_t index) {
-    if (index == 0 || index == 1) return desc_config;
+    if (index == 0) return desc_config;
     iap_logf("config desc idx %u??", index);
     return NULL;
 }
@@ -178,14 +178,20 @@ uint16_t const *tud_descriptor_string_cb(uint8_t index, uint16_t langid) {
 
 static bool usb_ready;
 static bool host_mounted;
-static bool ever_mounted;
 static int64_t boot_us;
 static int64_t phy_ready_us;
 static int64_t first_connect_us;
 static int64_t mount_us;
-static uint8_t connect_attempts;
+static uint32_t connect_attempts;
 static bool audio_streaming;
 static uint32_t pcm_underruns;
+static portMUX_TYPE audio_lock = portMUX_INITIALIZER_UNLOCKED;
+static uint64_t received_frames, dropped_frames, iso_bytes, delivered_us;
+static uint32_t iso_packets, fifo_starved_bytes, packet_fraction, delivery_remainder;
+static uint32_t pending_rate = 44100;
+static uint32_t stream_epoch;
+static void audio_reset(void);
+
 
 #define IAP_LOG_LINES 48
 #define IAP_LOG_LINE  96
@@ -211,8 +217,8 @@ static void iap_logf(const char *fmt, ...) {
 }
 
 void tud_mount_cb(void) {
+    iap_reset_protocol();
     host_mounted = true;
-    ever_mounted = true;
     if (mount_us == 0) {
         mount_us = esp_timer_get_time();
         iap_logf("first mount at %lums", (unsigned long) (mount_us / 1000));
@@ -224,6 +230,8 @@ void tud_mount_cb(void) {
 void tud_umount_cb(void) {
     host_mounted = false;
     audio_streaming = false;
+    iap_reset_protocol();
+    audio_reset();
     iap_logf("USB unmounted");
     ESP_LOGI(TAG, "host unmounted");
 }
@@ -238,6 +246,7 @@ bool tud_audio_set_itf_cb(uint8_t rhport, tusb_control_request_t const *p_reques
     uint8_t itf = TU_U16_LOW(p_request->wIndex);
     uint8_t alt = TU_U16_LOW(p_request->wValue);
     if (itf == ITF_NUM_AUDIO_STREAM) {
+        audio_reset();
         audio_streaming = (alt == 1);
         iap_logf("audio alt=%u streaming=%d", alt, audio_streaming);
         ESP_LOGI(TAG, "audio alt=%u streaming=%d", alt, audio_streaming);
@@ -262,7 +271,11 @@ bool tud_audio_set_req_ep_cb(uint8_t rhport, tusb_control_request_t const *p_req
         p_request->wLength == 3) {
         uint32_t freq = ((uint32_t) pBuff[2] << 16) | ((uint32_t) pBuff[1] << 8) | pBuff[0];
         if (freq == 44100 || freq == 48000) {
+            audio_reset();
+            portENTER_CRITICAL(&audio_lock);
             usb_rate = freq;
+            pending_rate = freq;
+            portEXIT_CRITICAL(&audio_lock);
             iap_logf("rate %lu Hz", (unsigned long) freq);
             ESP_LOGI(TAG, "host selected %lu Hz", (unsigned long) freq);
             return true;
@@ -386,7 +399,6 @@ void tud_hid_set_protocol_cb(uint8_t instance, uint8_t protocol) {
 static int16_t *ring;
 static uint32_t ring_wr;           // total frames ever written
 static uint32_t ring_rd;           // total frames ever consumed
-static float resample_pos;         // fractional input position carried across batches
 static bool tone_on;               // stereo marker tone instead of AirPlay PCM
 static float tone_phase_l, tone_phase_r;
 
@@ -399,17 +411,26 @@ bool ipod_usb_tone(void) { return tone_on; }
 
 void ipod_usb_push_pcm(const int16_t *samples, size_t frames) {
     if (!ring) return;
-    iap_note_pcm((uint32_t) (frames * 4));
-    uint32_t avail = ring_wr - ring_rd;
-    if (avail >= RING_FRAMES) return;  // full: drop (host not keeping up)
-    uint32_t space = RING_FRAMES - avail;
-    if (frames > space) frames = space;
+    iap_note_pcm((uint32_t)(frames * 4)); // activity only, not play-position
+    portENTER_CRITICAL(&audio_lock);
+    received_frames += frames;
+    uint32_t space = RING_FRAMES - (ring_wr - ring_rd);
+    if (frames > space) { dropped_frames += frames - space; frames = space; }
     for (size_t i = 0; i < frames; i++) {
         uint32_t idx = (ring_wr + i) % RING_FRAMES;
         ring[2 * idx] = samples[2 * i];
         ring[2 * idx + 1] = samples[2 * i + 1];
     }
-    ring_wr += (uint32_t) frames;
+    ring_wr += (uint32_t)frames;
+    portEXIT_CRITICAL(&audio_lock);
+}
+
+// A media flush invalidates the task's pending buffer on its next iteration.
+void ipod_usb_flush_pcm(void) {
+    portENTER_CRITICAL(&audio_lock);
+    ring_rd = ring_wr;
+    stream_epoch++;
+    portEXIT_CRITICAL(&audio_lock);
 }
 
 // Produce one 10 ms batch at the active rate: 441 frames passthrough at
@@ -426,59 +447,102 @@ static void produce_batch(int16_t *out, uint32_t rate) {
         }
         return;
     }
-    if (rate == 44100) {
-        uint32_t avail = ring_wr - ring_rd;
-        if (avail < 441) {
-            memset(out, 0, 441 * 2 * sizeof(int16_t));
-            // Count starvation only while a source is actually playing;
-            // an open stream with no AirPlay session is expected silence.
-            if (tone_on || iap_audio_active()) pcm_underruns++;
-            ring_rd = ring_wr;
-            return;
-        }
-        for (uint32_t i = 0; i < 441; i++) {
-            uint32_t idx = (ring_rd + i) % RING_FRAMES;
-            out[2 * i] = ring[2 * idx];
-            out[2 * i + 1] = ring[2 * idx + 1];
-        }
-        ring_rd += 441;
-        return;
+    int16_t input[443 * 2] = {0};
+    uint32_t avail, count;
+    portENTER_CRITICAL(&audio_lock);
+    avail = ring_wr - ring_rd;
+    count = avail < 443 ? avail : 443;
+    for (uint32_t i = 0; i < count; i++) {
+        uint32_t idx = (ring_rd + i) % RING_FRAMES;
+        input[2*i] = ring[2*idx]; input[2*i+1] = ring[2*idx+1];
     }
-    // 48000: linear resample, 441 in -> 480 out.
-    const float step = 44100.0f / 48000.0f;
-    uint32_t avail = ring_wr - ring_rd;
-    if (avail < 443) {  // need 441 + lookahead; else silence
-        memset(out, 0, 480 * 2 * sizeof(int16_t));
-        if (tone_on || iap_audio_active()) pcm_underruns++;
-        ring_rd = ring_wr;  // resync: drop stale backlog
-        resample_pos = 0;
-        return;
+    ring_rd += avail < 441 ? avail : 441;
+    portEXIT_CRITICAL(&audio_lock);
+    if (avail < 441 && iap_audio_active()) pcm_underruns++;
+    if (rate == 44100) { memcpy(out, input, 441 * 4); return; }
+    for (uint32_t i = 0; i < 480; i++) {
+        // Integer phase avoids accumulating float rounding at batch boundaries.
+        uint32_t phase = i * 441, j = phase / 480, rem = phase % 480;
+        for (int ch = 0; ch < 2; ch++)
+            out[2*i+ch] = ((int32_t)input[2*j+ch] * (480-rem) +
+                          (int32_t)input[2*(j+1)+ch] * rem) / 480;
     }
-    for (int i = 0; i < 480; i++) {
-        float p = resample_pos + i * step;
-        uint32_t j = (uint32_t) p;
-        float f = p - (float) j;
-        uint32_t a = (ring_rd + j) % RING_FRAMES;
-        uint32_t b = (ring_rd + j + 1) % RING_FRAMES;
-        for (int ch = 0; ch < 2; ch++) {
-            float s = (float) ring[2 * a + ch] * (1.0f - f) + (float) ring[2 * b + ch] * f;
-            out[2 * i + ch] = (int16_t) s;
-        }
-    }
-    float consumed = 480.0f * step;          // 441.0 exactly
-    uint32_t whole = (uint32_t) (resample_pos + consumed);
-    resample_pos = resample_pos + consumed - (float) whole;
-    ring_rd += whole;
 }
 
 static int16_t stage_buf[480 * 2];
+static audio_pending_t pending;
+static uint32_t stage_epoch;
+
+static void audio_reset(void) {
+    pending = (audio_pending_t){0};
+    portENTER_CRITICAL(&audio_lock);
+    packet_fraction = 0;
+    delivery_remainder = 0;
+    portEXIT_CRITICAL(&audio_lock);
+    if (tud_inited()) tud_audio_n_clear_ep_in_ff(0);
+    ipod_usb_flush_pcm();
+}
+
+uint16_t ipod_usb_packet_bytes_isr(void) {
+    portENTER_CRITICAL_ISR(&audio_lock);
+    uint16_t bytes = audio_packet_bytes(usb_rate, &packet_fraction);
+    portEXIT_CRITICAL_ISR(&audio_lock);
+    return bytes;
+}
+
+void ipod_usb_fifo_starved_isr(uint16_t missing) {
+    portENTER_CRITICAL_ISR(&audio_lock);
+    fifo_starved_bytes += missing;
+    portEXIT_CRITICAL_ISR(&audio_lock);
+}
+
+bool tud_audio_tx_done_isr(uint8_t rhport, uint16_t bytes, uint8_t function,
+                           uint8_t endpoint, uint8_t alt) {
+    (void)rhport; (void)function; (void)endpoint; (void)alt;
+    if (!bytes) return true;
+    portENTER_CRITICAL_ISR(&audio_lock);
+    iso_packets++;
+    iso_bytes += bytes;
+    // The completed packet belongs to the rate selected when it was queued.
+    uint64_t scaled = (uint64_t)(bytes / 4) * 1000000 + delivery_remainder;
+    delivered_us += scaled / pending_rate;
+    delivery_remainder = scaled % pending_rate;
+    pending_rate = usb_rate;
+    portEXIT_CRITICAL_ISR(&audio_lock);
+    return true;
+}
+
+uint64_t ipod_usb_delivered_us(void) {
+    portENTER_CRITICAL(&audio_lock);
+    uint64_t result = delivered_us;
+    portEXIT_CRITICAL(&audio_lock);
+    return result;
+}
 
 static void audio_pump(void) {
     if (!tud_mounted() || !audio_streaming || usb_suspended) return;
-    uint32_t rate = usb_rate;
-    produce_batch(stage_buf, rate);
-    uint16_t done = tud_audio_write(stage_buf, (uint16_t) ((rate / 100) * 4));
-    (void) done;  // FIFO absorbs; leftovers re-created next batch
+    portENTER_CRITICAL(&audio_lock);
+    uint32_t epoch = stream_epoch;
+    portEXIT_CRITICAL(&audio_lock);
+    if (stage_epoch != epoch) {
+        pending = (audio_pending_t){0};
+        tud_audio_n_clear_ep_in_ff(0);
+        stage_epoch = epoch;
+    }
+    // Refill only as the host drains the FIFO, preserving any partial write.
+    // Keep ~10ms available; packetization itself is paced by ISO completions.
+    for (unsigned i = 0; i < 2; i++) {
+        if (pending.offset == pending.length) {
+            tu_fifo_t *fifo = tud_audio_n_get_ep_in_ff(0);
+            if (!fifo || tu_fifo_count(fifo) >= 8 * (usb_rate / 1000) * 4) break;
+            produce_batch(stage_buf, usb_rate);
+            pending.length = (uint16_t)((usb_rate / 100) * 4);
+            pending.offset = 0;
+        }
+        uint16_t before = pending.offset;
+        audio_pending_drain(&pending, stage_buf, tud_audio_write);
+        if (pending.offset == before || pending.offset < pending.length) break;
+    }
 }
 
 //--------------------------------------------------------------------+
@@ -512,9 +576,14 @@ static void usb_stack_start(void) {
         return;
     }
     tusb_rhport_init_t dev_init = {.role = TUSB_ROLE_DEVICE, .speed = TUSB_SPEED_AUTO};
-    tusb_init(0, &dev_init);
+    if (!tusb_init(0, &dev_init)) {
+        ESP_LOGE(TAG, "TinyUSB init failed");
+        return;
+    }
+    tud_disconnect();
     phy_ready_us = esp_timer_get_time();
     stack_ready = true;
+    usb_ready = true;
 }
 
 static void do_attach(const char *why) {
@@ -526,14 +595,14 @@ static void do_attach(const char *why) {
 }
 
 static void attach_poll(void) {
-    if (ever_mounted) return;
+    if (host_mounted) return;
     if (tud_mounted() || retry_idx >= sizeof(retry_schedule_ms) / sizeof(retry_schedule_ms[0]))
         return;
     int64_t now = esp_timer_get_time();
     if (now < next_attach_us) return;
     iap_logf("USB re-attach (unmounted)");
     tud_disconnect();
-    vTaskDelay(pdMS_TO_TICKS(400));
+    vTaskDelay(pdMS_TO_TICKS(300));
     do_attach("retry");
     next_attach_us = esp_timer_get_time() +
         (int64_t) retry_schedule_ms[retry_idx++] * 1000;
@@ -542,16 +611,16 @@ static void attach_poll(void) {
 static void tusb_task(void *arg) {
     (void) arg;
     boot_us = esp_timer_get_time();
-    // Hold electrically quiet across boot: the stack (and its pullup) only
-    // starts after the configured delay, so the host sees one clean insertion
-    // instead of a half-boot device. tud_task() is never called before init,
-    // which also avoids it blocking forever with no SOF events arriving.
+    // Initialise disconnected, then expose the prepared device after the delay.
+    usb_stack_start();
     while (esp_timer_get_time() - boot_us <
            (int64_t) CONFIG_IPOD_USB_ATTACH_DELAY_MS * 1000) {
         vTaskDelay(pdMS_TO_TICKS(50));
     }
-    usb_stack_start();
-    // Stack init attaches immediately: this IS the first deliberate attach.
+    // Stack starts disconnected; attach only after the quiet interval.
+    if (!stack_ready) { vTaskDelete(NULL); return; }
+    tud_connect();
+    // First deliberate attach: this IS the first deliberate attach.
     connect_attempts++;
     first_connect_us = esp_timer_get_time();
     iap_logf("USB attach #1 (first)");
@@ -562,15 +631,16 @@ static void tusb_task(void *arg) {
     TickType_t last = xTaskGetTickCount();
     while (true) {
         if (!stack_ready) {
-            vTaskDelayUntil(&last, pdMS_TO_TICKS(10));
+            vTaskDelayUntil(&last, pdMS_TO_TICKS(1));
             continue;
         }
-        tud_task();
+        tud_task_ext(0, false);
+        iap_note_usb_time(ipod_usb_delivered_us());
         audio_pump();
         iap_tx_pump();  // backstop: flush any reports queued outside callbacks
         iap_watchdog();  // handshake stall diagnostic
         attach_poll();
-        vTaskDelayUntil(&last, pdMS_TO_TICKS(10));
+        vTaskDelayUntil(&last, pdMS_TO_TICKS(1));
     }
 }
 
@@ -589,16 +659,12 @@ bool ipod_usb_init(void) {
         ESP_LOGE(TAG, "PSRAM ring alloc failed");
         return false;
     }
-    // NOTE: PHY + TinyUSB stack start from the USB task after the boot
-    // delay (see tusb_task). Starting them here would attach immediately and
-    // reintroduce the cold-boot race; calling tud_task() before init would
-    // block forever with no SOF events. So: allocate first, start later.
+    // Allocate media state first; USB task initialises disconnected, then attaches.
     if (xTaskCreate(tusb_task, "ipod_usb", 4096, NULL, 6, NULL) != pdPASS) {
         ESP_LOGE(TAG, "task create failed");
         return false;
     }
-    usb_ready = true;
-    ESP_LOGI(TAG, "iPod USB ready: 05AC:1261 UAC1 44.1k/48k + HID iAP");
+    ESP_LOGI(TAG, "iPod USB task created: 05AC:1261 UAC1 44.1k/48k + HID iAP");
     return true;
 #else
     ESP_LOGI(TAG, "iPod USB disabled by Kconfig");
@@ -619,6 +685,15 @@ void ipod_usb_get_status(ipod_usb_status_t *out) {
     out->tone_on = tone_on;
     out->usb_rate = usb_rate;
     out->pcm_underruns = pcm_underruns;
+    portENTER_CRITICAL(&audio_lock);
+    out->airplay_frames_received = received_frames;
+    out->pcm_frames_buffered = ring_wr - ring_rd;
+    out->pcm_frames_dropped = dropped_frames;
+    out->usb_iso_packets = iso_packets;
+    out->usb_iso_bytes = iso_bytes;
+    out->usb_frames_delivered = iso_bytes / 4;
+    out->usb_fifo_starved_bytes = fifo_starved_bytes;
+    portEXIT_CRITICAL(&audio_lock);
     out->iap_rx_packets = iap_rx_packets();
     out->iap_tx_packets = iap_tx_packets();
 }
