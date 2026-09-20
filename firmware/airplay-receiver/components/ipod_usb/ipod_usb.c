@@ -179,6 +179,11 @@ uint16_t const *tud_descriptor_string_cb(uint8_t index, uint16_t langid) {
 static bool usb_ready;
 static bool host_mounted;
 static bool ever_mounted;
+static int64_t boot_us;
+static int64_t phy_ready_us;
+static int64_t first_connect_us;
+static int64_t mount_us;
+static uint8_t connect_attempts;
 static bool audio_streaming;
 static uint32_t pcm_underruns;
 
@@ -208,6 +213,10 @@ static void iap_logf(const char *fmt, ...) {
 void tud_mount_cb(void) {
     host_mounted = true;
     ever_mounted = true;
+    if (mount_us == 0) {
+        mount_us = esp_timer_get_time();
+        iap_logf("first mount at %lums", (unsigned long) (mount_us / 1000));
+    }
     iap_logf("USB mounted (SetConfiguration)");
     ESP_LOGI(TAG, "host mounted (SetConfiguration)");
 }
@@ -476,41 +485,58 @@ static void audio_pump(void) {
 // USB task + init
 //--------------------------------------------------------------------+
 
-// Re-attach until the host first configures us. Some car hosts scan once and
-// never rescan, so a board that boots before the head unit is missed forever;
-// a disconnect/reconnect cycle raises a fresh enumeration event. Stops after
-// the first mount (latch) or a bounded number of tries.
-static uint8_t reattach_tries;
-static int64_t reattach_at_us;
+// Attach strategy: hold disconnected across boot, attach deliberately once
+// firmware is ready, then re-attach on a short schedule until the first
+// mount. Car hosts that scan once miss an immediately-present device;
+// a delayed fresh insertion is re-enumerated reliably.
+static int64_t next_attach_us;
+static bool attach_armed;
 
-static void reattach_poll(void) {
-    if (ever_mounted || reattach_tries >= 8) return;
+// Retry offsets after the first deliberate attach (ms).
+static const uint32_t retry_schedule_ms[] = {3000, 3000, 4000, 5000, 15000, 15000, 15000};
+static uint8_t retry_idx;
+
+static void do_attach(const char *why) {
+    connect_attempts++;
+    if (first_connect_us == 0) first_connect_us = esp_timer_get_time();
+    iap_logf("USB attach #%u (%s)", connect_attempts, why);
+    ESP_LOGI(TAG, "USB attach #%u (%s)", connect_attempts, why);
+    tud_connect();
+}
+
+static void attach_poll(void) {
+    if (ever_mounted) return;
     int64_t now = esp_timer_get_time();
-    if (reattach_at_us == 0) {
-        reattach_at_us = now + 15000000;  // first retry 15 s after boot
+    if (!attach_armed) {
+        // First deliberate attach after the configured boot delay.
+        if (now - boot_us >= (int64_t) CONFIG_IPOD_USB_ATTACH_DELAY_MS * 1000) {
+            attach_armed = true;
+            do_attach("first");
+            next_attach_us = now;
+        }
         return;
     }
-    if (now < reattach_at_us) return;
-    if (!tud_mounted()) {
-        reattach_tries++;
-        iap_logf("USB re-attach try %u", reattach_tries);
-        ESP_LOGI(TAG, "USB re-attach try %u", reattach_tries);
-        tud_disconnect();
-        vTaskDelay(pdMS_TO_TICKS(500));
-        tud_connect();
-        reattach_at_us = now + 15000000;
-    }
+    if (tud_mounted() || retry_idx >= sizeof(retry_schedule_ms) / sizeof(retry_schedule_ms[0]))
+        return;
+    if (now < next_attach_us) return;
+    iap_logf("USB re-attach (unmounted)");
+    tud_disconnect();
+    vTaskDelay(pdMS_TO_TICKS(400));
+    do_attach("retry");
+    next_attach_us = esp_timer_get_time() +
+        (int64_t) retry_schedule_ms[retry_idx++] * 1000;
 }
 
 static void tusb_task(void *arg) {
     (void) arg;
+    boot_us = esp_timer_get_time();
     TickType_t last = xTaskGetTickCount();
     while (true) {
         tud_task();
         audio_pump();
         iap_tx_pump();  // backstop: flush any reports queued outside callbacks
         iap_watchdog();  // handshake stall diagnostic
-        reattach_poll();
+        attach_poll();
         vTaskDelayUntil(&last, pdMS_TO_TICKS(10));
     }
 }
@@ -548,6 +574,11 @@ bool ipod_usb_init(void) {
 
     tusb_rhport_init_t dev_init = {.role = TUSB_ROLE_DEVICE, .speed = TUSB_SPEED_AUTO};
     tusb_init(0, &dev_init);
+    phy_ready_us = esp_timer_get_time();
+
+    // Hold disconnected: attachment is deliberate (see attach_poll), never
+    // immediate at boot. This is the cold-boot enumeration fix.
+    tud_disconnect();
 
     if (xTaskCreate(tusb_task, "ipod_usb", 4096, NULL, 6, NULL) != pdPASS) {
         ESP_LOGE(TAG, "task create failed");
@@ -563,6 +594,11 @@ bool ipod_usb_init(void) {
 }
 
 void ipod_usb_get_status(ipod_usb_status_t *out) {
+    out->boot_ms = (uint32_t) (boot_us / 1000);
+    out->phy_ready_ms = (uint32_t) (phy_ready_us / 1000);
+    out->first_connect_ms = (uint32_t) (first_connect_us / 1000);
+    out->mount_ms = (uint32_t) (mount_us / 1000);
+    out->connect_attempts = connect_attempts;
     out->usb_ready = usb_ready;
     out->host_mounted = host_mounted;
     out->audio_streaming = audio_streaming;

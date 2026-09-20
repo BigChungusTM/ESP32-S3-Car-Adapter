@@ -120,7 +120,8 @@ static esp_err_t status_handler(httpd_req_t *request) {
         "Sessions: %lu\nPCM bytes: %llu\nNonzero PCM bytes: %llu\n"
         "PCM callbacks: %lu\nArtist: %s\nTitle: %s\nPSRAM bytes: %u\n\n"
         "USB iPod: ready=%d mounted=%d audio=%d suspended=%d rate=%lu tone=%d underruns=%lu iAP rx=%lu tx=%lu\n"
-        "iAP: state=%s cert=%d/%d lastlat=%luus seq=%lu TX{ack=%lu ident=%lu auth=%lu audio=%lu other=%lu}\n\n"
+        "iAP: state=%s cert=%d/%d lastlat=%luus seq=%lu TX{ack=%lu ident=%lu auth=%lu audio=%lu other=%lu}\n"
+        "USB timing: boot=%lums phy=%lums firstconn=%lums mount=%lums attempts=%lu\n\n"
         "USB log:\n",
         CONFIG_ADAPTER_NAME,
         (unsigned long)count, (unsigned long long)bytes, (unsigned long long)nonzero,
@@ -133,7 +134,10 @@ static esp_err_t status_handler(httpd_req_t *request) {
         (unsigned long)iap.last_latency_us, (unsigned long)iap.seq,
         (unsigned long)iap.tx_ack, (unsigned long)iap.tx_ident,
         (unsigned long)iap.tx_auth, (unsigned long)iap.tx_audio,
-        (unsigned long)iap.tx_other);
+        (unsigned long)iap.tx_other,
+        (unsigned long)usb.boot_ms, (unsigned long)usb.phy_ready_ms,
+        (unsigned long)usb.first_connect_ms, (unsigned long)usb.mount_ms,
+        (unsigned long)usb.connect_attempts);
     if (n > 0 && (size_t)n < RESPONSE_SZ)
         ipod_usb_read_iap_log(response + n, RESPONSE_SZ - (size_t)n);
     httpd_resp_set_type(request, "text/plain; charset=utf-8");

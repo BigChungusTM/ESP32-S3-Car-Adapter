@@ -30,6 +30,11 @@ uint32_t ipod_usb_rate(void);
 
 // Snapshot for the HTTP status page.
 typedef struct {
+    uint32_t boot_ms;         // task start (firmware boot reference)
+    uint32_t phy_ready_ms;    // PHY + stack initialised
+    uint32_t first_connect_ms;// first deliberate attach
+    uint32_t mount_ms;        // first SetConfiguration (0 = never)
+    uint32_t connect_attempts; // deliberate attaches so far
     bool usb_ready;        // PHY + stack initialised
     bool host_mounted;     // SetConfiguration received
     bool audio_streaming;  // host selected the audio alt setting

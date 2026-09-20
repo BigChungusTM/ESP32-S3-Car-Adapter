@@ -9,4 +9,14 @@ menu "Volvo iPod USB device"
             USB port (GPIO19/20); the USB-Serial/JTAG console goes quiet
             while enabled. Disable for AirPlay-only bench testing.
 
+    config IPOD_USB_ATTACH_DELAY_MS
+        int "Delay before first USB attach (ms)"
+        range 0 10000
+        default 1500
+        help
+            Hold the device logically disconnected while firmware boots,
+            then attach deliberately. Car hosts that scan once at their
+            own boot miss an immediately-present device; a delayed fresh
+            insertion is re-enumerated reliably. Try 500..3000.
+
 endmenu
