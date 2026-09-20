@@ -178,6 +178,7 @@ uint16_t const *tud_descriptor_string_cb(uint8_t index, uint16_t langid) {
 
 static bool usb_ready;
 static bool host_mounted;
+static bool ever_mounted;
 static bool audio_streaming;
 static uint32_t pcm_underruns;
 
@@ -206,6 +207,7 @@ static void iap_logf(const char *fmt, ...) {
 
 void tud_mount_cb(void) {
     host_mounted = true;
+    ever_mounted = true;
     iap_logf("USB mounted (SetConfiguration)");
     ESP_LOGI(TAG, "host mounted (SetConfiguration)");
 }
@@ -474,6 +476,32 @@ static void audio_pump(void) {
 // USB task + init
 //--------------------------------------------------------------------+
 
+// Re-attach until the host first configures us. Some car hosts scan once and
+// never rescan, so a board that boots before the head unit is missed forever;
+// a disconnect/reconnect cycle raises a fresh enumeration event. Stops after
+// the first mount (latch) or a bounded number of tries.
+static uint8_t reattach_tries;
+static int64_t reattach_at_us;
+
+static void reattach_poll(void) {
+    if (ever_mounted || reattach_tries >= 8) return;
+    int64_t now = esp_timer_get_time();
+    if (reattach_at_us == 0) {
+        reattach_at_us = now + 15000000;  // first retry 15 s after boot
+        return;
+    }
+    if (now < reattach_at_us) return;
+    if (!tud_mounted()) {
+        reattach_tries++;
+        iap_logf("USB re-attach try %u", reattach_tries);
+        ESP_LOGI(TAG, "USB re-attach try %u", reattach_tries);
+        tud_disconnect();
+        vTaskDelay(pdMS_TO_TICKS(500));
+        tud_connect();
+        reattach_at_us = now + 15000000;
+    }
+}
+
 static void tusb_task(void *arg) {
     (void) arg;
     TickType_t last = xTaskGetTickCount();
@@ -482,6 +510,7 @@ static void tusb_task(void *arg) {
         audio_pump();
         iap_tx_pump();  // backstop: flush any reports queued outside callbacks
         iap_watchdog();  // handshake stall diagnostic
+        reattach_poll();
         vTaskDelayUntil(&last, pdMS_TO_TICKS(10));
     }
 }

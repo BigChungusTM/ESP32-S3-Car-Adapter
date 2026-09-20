@@ -664,8 +664,11 @@ static void handle_audio(const rx_cmd_t *c) {
         put_u32(&r, 0);
         put_u32(&r, 0);
         tx_respond(c, LINGO_AUDIO, 0x04, r.b, r.n);
+    } else if (c->cmd == 0x00 && c->len >= 2) {
+        // AccAck{status, cmdID}: the car's verdict on our last audio command.
+        ipod_usb_log("AccAck status=%u cmd=0x%02x", c->p[0], c->p[1]);
     }
-    // AccAck/iPodAck and the rest: nothing to do.
+    // iPodAck and the rest: nothing to do.
 }
 
 //--------------------------------------------------------------------+
