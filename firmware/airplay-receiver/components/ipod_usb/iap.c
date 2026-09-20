@@ -54,6 +54,14 @@ typedef struct { uint8_t id; uint8_t len; uint8_t data[64]; } tx_report_t;
 static tx_report_t txq[TXQ_N];
 static uint8_t txq_head, txq_tail, txq_count;
 static uint32_t tx_packets;
+static int64_t last_rx_us;
+static uint32_t last_latency_us;
+typedef enum { ST_IDLE, ST_IDENTIFIED, ST_AUTH, ST_AUTH_OK, ST_READY } iap_state_t;
+static iap_state_t iap_state;
+static int cert_cur = -1, cert_max = -1;
+static uint32_t tx_ack, tx_ident, tx_auth, tx_audio, tx_other;
+static uint32_t pkt_seq;
+static bool stall_dumped;
 
 static bool txq_push(uint8_t id, const uint8_t *data, uint8_t len) {
     if (txq_count >= TXQ_N || len > 64) return false;
@@ -273,8 +281,17 @@ static void tx_send(uint8_t lingo, uint16_t cmd, bool use_trx, uint16_t trx,
     if (has_trx) put_u16(&c, trx);
     put_bytes(&c, payload, payload_len);
     trx_track(lingo, cmd);
-    ipod_usb_log(">> lingo=%02X cmd=%04X trx=%s len=%u",
-                 lingo, cmd, has_trx ? "y" : "n", payload_len);
+    last_latency_us = (uint32_t) (esp_timer_get_time() - last_rx_us);
+    if ((lingo == LINGO_GENERAL && cmd == 0x02) ||
+        (lingo == LINGO_EXTREM && cmd == 0x0001)) tx_ack++;
+    else if (lingo == LINGO_GENERAL && (cmd == 0x08 || cmd == 0x0A || cmd == 0x0C ||
+             cmd == 0x0E || cmd == 0x10 || cmd == 0x12)) tx_ident++;
+    else if (lingo == LINGO_GENERAL) tx_auth++;
+    else if (lingo == LINGO_AUDIO) tx_audio++;
+    else tx_other++;
+    ipod_usb_log(">> lingo=%02X cmd=%04X trx=%s len=%u lat=%luus",
+                 lingo, cmd, has_trx ? "y" : "n", payload_len,
+                 (unsigned long) last_latency_us);
     uint16_t n = pkt_encode(c.b, c.n, tx_pkt);
     tx_frame(tx_pkt, n);
 }
@@ -318,6 +335,57 @@ void iap_set_track(const char *artist, const char *title, const char *album) {
 }
 
 void iap_set_playing(bool p) { playing = p; }
+
+bool iap_audio_active(void) {
+    return playing && (esp_timer_get_time() - last_push_us < 3000000);
+}
+
+//--------------------------------------------------------------------+
+// Handshake state, latency, counters, watchdog
+//--------------------------------------------------------------------+
+
+static const char *state_name(iap_state_t s) {
+    switch (s) {
+    case ST_IDLE: return "IDLE";
+    case ST_IDENTIFIED: return "IDENTIFIED";
+    case ST_AUTH: return "AUTH_CERT";
+    case ST_AUTH_OK: return "AUTH_OK";
+    default: return "READY";
+    }
+}
+
+static const char *expected_next(void) {
+    switch (iap_state) {
+    case ST_IDLE: return "IdentifyDeviceLingoes/StartIDPS";
+    case ST_IDENTIFIED: return "auth sections/LingoVersion";
+    case ST_AUTH: return "cert section";
+    case ST_AUTH_OK: return "player queries";
+    default: return "player queries";
+    }
+}
+
+void iap_snapshot(iap_snapshot_t *out) {
+    snprintf(out->state, sizeof(out->state), "%s", state_name(iap_state));
+    out->cert_cur = cert_cur;
+    out->cert_max = cert_max;
+    out->last_latency_us = last_latency_us;
+    out->tx_ack = tx_ack;
+    out->tx_ident = tx_ident;
+    out->tx_auth = tx_auth;
+    out->tx_audio = tx_audio;
+    out->tx_other = tx_other;
+    out->seq = pkt_seq;
+}
+
+void iap_watchdog(void) {
+    if (iap_state == ST_IDLE || iap_state == ST_READY || stall_dumped) return;
+    if (last_rx_us == 0) return;
+    if (esp_timer_get_time() - last_rx_us < 2000000) return;
+    stall_dumped = true;
+    ipod_usb_log("*** IAP STALL *** state=%s cert=%d/%d lastlat=%luus expect=%s",
+                 state_name(iap_state), cert_cur, cert_max,
+                 (unsigned long) last_latency_us, expected_next());
+}
 
 void iap_note_pcm(uint32_t bytes) {
     pcm_total_bytes += bytes;
@@ -399,6 +467,7 @@ static void handle_general(const rx_cmd_t *c) {
         put_u16(&r, 65535);
         break;
     case 0x13: {  // IdentifyDeviceLingoes
+        iap_state = ST_IDENTIFIED;
         resp_cmd = 0x02;
         put_u8(&r, ACK_OK); put_u8(&r, 0x13);
         tx_respond(c, LINGO_GENERAL, resp_cmd, r.b, r.n);
@@ -412,7 +481,9 @@ static void handle_general(const rx_cmd_t *c) {
         return;
     }
     case 0x15: {  // RetDevAuthenticationInfo
+        iap_state = ST_AUTH;
         if (c->len >= 2 && c->p[0] >= 2) {
+            if (c->len >= 4) { cert_cur = c->p[2]; cert_max = c->p[3]; }
             uint8_t cur = c->len >= 3 ? c->p[2] : 0;
             uint8_t max = c->len >= 4 ? c->p[3] : 0;
             if (cur < max) {
@@ -437,6 +508,7 @@ static void handle_general(const rx_cmd_t *c) {
         return;
     }
     case 0x18:  // RetDevAuthenticationSignature
+        iap_state = ST_AUTH_OK;
         resp_cmd = 0x19;
         put_u8(&r, 0x00);  // passed
         break;
@@ -479,6 +551,7 @@ static void handle_general(const rx_cmd_t *c) {
         put_u8(&r, ACK_OK); put_u8(&r, 0x37);
         break;
     case 0x38:  // StartIDPS
+        iap_state = ST_IDENTIFIED;
         trx_counter = 0;
         resp_cmd = 0x02;
         put_u8(&r, ACK_OK); put_u8(&r, 0x38);
@@ -665,6 +738,7 @@ static void handle_extremote(const rx_cmd_t *c) {
         put_u32(&r, 0);
         break;
     case 0x001C:  // GetPlayStatus: LIVE
+        iap_state = ST_READY;
         resp = 0x001D;
         put_u32(&r, 0);  // length unknown
         put_u32(&r, track_pos_ms());
@@ -751,11 +825,16 @@ void iap_rx_report(uint8_t report_id, const uint8_t *data, uint16_t len) {
     uint8_t link = data[0];
     const uint8_t *chunk = data + 1;
     uint16_t chunk_len = len - 1;
-    if (link == LC_DONE || link == LC_MORE) frame_len = 0;
+    bool first = (link == LC_DONE || link == LC_MORE);
+    if (first) frame_len = 0;
     if (frame_len + chunk_len > FRAME_MAX) frame_len = 0;
     memcpy(frame_buf + frame_len, chunk, chunk_len);
     frame_len += chunk_len;
+    if (!first)
+        ipod_usb_log("frag acc=%u", frame_len);
     if (link == LC_DONE || link == LC_CONT) {
+        if (frame_len > (uint16_t) (chunk_len + 1))
+            ipod_usb_log("frag COMPLETE total=%u", frame_len);
         dispatch_frame(frame_buf, frame_len);
         frame_len = 0;
     }
@@ -788,6 +867,9 @@ static void dispatch_packets(const uint8_t *f, uint16_t n) {
             continue;
         }
         rx_packets++;
+        pkt_seq++;
+        last_rx_us = esp_timer_get_time();
+        stall_dumped = false;
         rx_cmd_t c;
         if (!parse_cmd(pkt + hdr, pay_len, &c)) {
             ipod_usb_log("unparsed cmd lingo=%02X", pkt[hdr]);

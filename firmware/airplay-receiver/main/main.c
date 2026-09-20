@@ -80,30 +80,6 @@ static bool audio_command(raop_event_t event, ...) {
     return true;
 }
 
-static esp_err_t usb_handler(httpd_req_t *request) {
-    char query[32] = {0};
-    httpd_req_get_url_query_str(request, query, sizeof(query));
-    char val[8] = {0};
-    if (httpd_query_key_value(query, "profile", val, sizeof(val)) == ESP_OK) {
-        usb_profile_t p = ipod_usb_profile();
-        if (!strcmp(val, "both")) p = USB_PROFILE_BOTH;
-        else if (!strcmp(val, "msc")) p = USB_PROFILE_MSC;
-        else if (!strcmp(val, "ipod")) p = USB_PROFILE_IPOD;
-        else {
-            httpd_resp_set_type(request, "text/plain; charset=utf-8");
-            return httpd_resp_sendstr(request, "use ?profile=both|msc|ipod\n");
-        }
-        ipod_usb_set_profile(p);
-        httpd_resp_set_type(request, "text/plain; charset=utf-8");
-        httpd_resp_sendstr(request, "profile saved, rebooting\n");
-        vTaskDelay(pdMS_TO_TICKS(500));
-        esp_restart();
-        return ESP_OK;
-    }
-    httpd_resp_set_type(request, "text/plain; charset=utf-8");
-    return httpd_resp_sendstr(request, "use ?profile=both|msc|ipod\n");
-}
-
 static esp_err_t reboot_handler(httpd_req_t *request) {
     httpd_resp_set_type(request, "text/plain; charset=utf-8");
     httpd_resp_sendstr(request, "rebooting\n");
@@ -136,21 +112,28 @@ static esp_err_t status_handler(httpd_req_t *request) {
     portEXIT_CRITICAL(&stats_lock);
     ipod_usb_status_t usb;
     ipod_usb_get_status(&usb);
+    iap_snapshot_t iap;
+    iap_snapshot(&iap);
     int n = snprintf(response, RESPONSE_SZ,
         "%s — receiver test\n\n"
         "Select this device in your iPhone's AirPlay output menu.\n\n"
         "Sessions: %lu\nPCM bytes: %llu\nNonzero PCM bytes: %llu\n"
         "PCM callbacks: %lu\nArtist: %s\nTitle: %s\nPSRAM bytes: %u\n\n"
-        "USB iPod: profile=%d ready=%d mounted=%d audio=%d suspended=%d rate=%lu tone=%d underruns=%lu msc=%lu iAP rx=%lu tx=%lu\n\n"
+        "USB iPod: ready=%d mounted=%d audio=%d suspended=%d rate=%lu tone=%d underruns=%lu iAP rx=%lu tx=%lu\n"
+        "iAP: state=%s cert=%d/%d lastlat=%luus seq=%lu TX{ack=%lu ident=%lu auth=%lu audio=%lu other=%lu}\n\n"
         "USB log:\n",
         CONFIG_ADAPTER_NAME,
         (unsigned long)count, (unsigned long long)bytes, (unsigned long long)nonzero,
         (unsigned long)callbacks, a, t, (unsigned)esp_psram_get_size(),
-        (int)usb.profile,
         usb.usb_ready, usb.host_mounted, usb.audio_streaming, usb.usb_suspended,
         (unsigned long)usb.usb_rate, usb.tone_on,
-        (unsigned long)usb.pcm_underruns, (unsigned long)usb.msc_ops,
-        (unsigned long)usb.iap_rx_packets, (unsigned long)usb.iap_tx_packets);
+        (unsigned long)usb.pcm_underruns,
+        (unsigned long)usb.iap_rx_packets, (unsigned long)usb.iap_tx_packets,
+        iap.state, iap.cert_cur, iap.cert_max,
+        (unsigned long)iap.last_latency_us, (unsigned long)iap.seq,
+        (unsigned long)iap.tx_ack, (unsigned long)iap.tx_ident,
+        (unsigned long)iap.tx_auth, (unsigned long)iap.tx_audio,
+        (unsigned long)iap.tx_other);
     if (n > 0 && (size_t)n < RESPONSE_SZ)
         ipod_usb_read_iap_log(response + n, RESPONSE_SZ - (size_t)n);
     httpd_resp_set_type(request, "text/plain; charset=utf-8");
@@ -169,8 +152,7 @@ static void wifi_event(void *arg, esp_event_base_t base, int32_t id, void *data)
 void app_main(void) {
     ESP_LOGI(TAG, "PSRAM detected: %u bytes", (unsigned)esp_psram_get_size());
     ESP_ERROR_CHECK(nvs_flash_init());
-    // USB first after NVS (profile lives there): the car/host enumerates us
-    // as soon as we're plugged in.
+    // USB first: the car/host enumerates us as soon as we're plugged in.
     // Note: enabling the OTG peripheral takes over GPIO19/20, so the
     // USB-Serial/JTAG console goes quiet from here on; use the HTTP status page.
     ipod_usb_init();
@@ -209,8 +191,6 @@ void app_main(void) {
     ESP_ERROR_CHECK(httpd_register_uri_handler(server, &status));
     httpd_uri_t tone = {.uri = "/tone", .method = HTTP_GET, .handler = tone_handler};
     ESP_ERROR_CHECK(httpd_register_uri_handler(server, &tone));
-    httpd_uri_t usb = {.uri = "/usb", .method = HTTP_GET, .handler = usb_handler};
-    ESP_ERROR_CHECK(httpd_register_uri_handler(server, &usb));
     httpd_uri_t reboot = {.uri = "/reboot", .method = HTTP_GET, .handler = reboot_handler};
     ESP_ERROR_CHECK(httpd_register_uri_handler(server, &reboot));
     ESP_LOGI(TAG, "READY ssid=%s ip=" IPSTR " AirPlay=%s", CONFIG_ADAPTER_SSID, IP2STR(&info.ip), CONFIG_ADAPTER_NAME);

@@ -36,6 +36,24 @@ void iap_set_serial(const char *serial);
 // bytes: decoded PCM bytes just pushed toward USB (position clock).
 void iap_note_pcm(uint32_t bytes);
 
+// True while an AirPlay source is actively producing audio.
+bool iap_audio_active(void);
+
+// Periodic stall watchdog: dumps handshake state if the car goes quiet
+// mid-handshake. Call from the USB task loop (~10 ms tick).
+void iap_watchdog(void);
+
+// Snapshot for the status page.
+typedef struct {
+    char state[16];
+    int cert_cur, cert_max;
+    uint32_t last_latency_us;
+    uint32_t tx_ack, tx_ident, tx_auth, tx_audio, tx_other;
+    uint32_t seq;
+} iap_snapshot_t;
+
+void iap_snapshot(iap_snapshot_t *out);
+
 // Counters for the status page.
 uint32_t iap_rx_packets(void);
 uint32_t iap_tx_packets(void);

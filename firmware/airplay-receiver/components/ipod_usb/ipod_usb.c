@@ -20,8 +20,6 @@
 #include "esp_err.h"
 #include "esp_heap_caps.h"
 #include "esp_mac.h"
-#include "nvs_flash.h"
-#include "nvs.h"
 #include "esp_private/usb_phy.h"
 
 #include "tusb.h"
@@ -29,7 +27,6 @@
 
 #include "ipod_usb.h"
 #include "iap.h"
-#include "msc_disk.h"
 
 static const char *TAG = "IPODUSB";
 
@@ -66,7 +63,7 @@ static const uint8_t hid_report_desc[] = {
 // Descriptors
 //--------------------------------------------------------------------+
 
-static const tusb_desc_device_t desc_device_template = {
+static const tusb_desc_device_t desc_device = {
     .bLength = sizeof(tusb_desc_device_t),
     .bDescriptorType = TUSB_DESC_DEVICE,
     .bcdUSB = 0x0200,
@@ -80,28 +77,14 @@ static const tusb_desc_device_t desc_device_template = {
     .iManufacturer = 0x01,
     .iProduct = 0x02,
     .iSerialNumber = 0x03,
-    .bNumConfigurations = 0x02,
+    .bNumConfigurations = 0x01,
 };
 
-// Config 1: plain USB storage (like a real iPod's first config). Some head
-// units probe storage before selecting the iPod config; without any storage
-// personality the Volvo rejects the device as unreadable.
-#define ITF_NUM_MSC         0
-#define EP_ADDR_MSC_OUT     0x01
-#define EP_ADDR_MSC_IN      0x81
-
-static const uint8_t desc_config_msc[] = {
-    9, TUSB_DESC_CONFIGURATION, U16_TO_U8S_LE(9 + 9 + 7 + 7),
-    1, 1, 5, (TUSB_DESC_CONFIG_ATT_SELF_POWERED | 0x80), 250,
-    9, TUSB_DESC_INTERFACE, ITF_NUM_MSC, 0, 2, TUSB_CLASS_MSC,
-    MSC_SUBCLASS_SCSI, MSC_PROTOCOL_BOT, 0,
-    7, TUSB_DESC_ENDPOINT, EP_ADDR_MSC_OUT, TUSB_XFER_BULK, U16_TO_U8S_LE(64), 0,
-    7, TUSB_DESC_ENDPOINT, EP_ADDR_MSC_IN, TUSB_XFER_BULK, U16_TO_U8S_LE(64), 0,
-};
-
-// UAC1 mic-direction topology: mic input terminal -> USB streaming output.
+// Single configuration: the iPod personality (UAC1 + HID iAP).
+// Served for descriptor index 0 AND 1 and selected by value 1 OR 2, so both
+// index-driven and value-hardcoded hosts reach it.
 static const uint8_t desc_config[] = {
-    // Config: 1 config, 3 interfaces, "iPod USB Interface", self-powered 500 mA.
+    // Config: 3 interfaces, "iPod USB Interface", self-powered 500 mA.
     // Bit 7 is mandatory per USB spec (the TUD_CONFIG_DESCRIPTOR helper ORs it).
     9, TUSB_DESC_CONFIGURATION, U16_TO_U8S_LE(9 + AC_TOTAL_LEN + 9 + (9 + 7 + 14 + 9 + 7) + (9 + 9 + 7)),
     ITF_COUNT, 2, 4, (TUSB_DESC_CONFIG_ATT_SELF_POWERED | 0x80), 250,
@@ -156,52 +139,17 @@ static const char *string_desc_arr[] = {
     "Apple Inc.",                 // 1: manufacturer
     "iPod",                       // 2: product
     serial_str,                   // 3: serial
-    "iPod USB Interface",         // 4: iPod config
-    "USB Storage",                // 5: storage config
+    "iPod USB Interface",         // 4: config
 };
 
 static uint16_t _desc_str[64];
-
-static tusb_desc_device_t desc_device;  // patched per profile at boot
-static uint8_t desc_ipod_single[sizeof(desc_config)];  // value-1 copy for IPOD profile
-
-static usb_profile_t active_profile = USB_PROFILE_BOTH;
-
-static usb_profile_t profile_load(void) {
-    nvs_handle_t h;
-    // Default to iPod-only: the car leads with storage probing and parks in
-    // USB mode if storage is offered; iPod presentation goes straight there.
-    uint8_t v = USB_PROFILE_IPOD;
-    if (nvs_open("volvo", NVS_READONLY, &h) == ESP_OK) {
-        if (nvs_get_u8(h, "usb_profile", &v) != ESP_OK || v > USB_PROFILE_IPOD)
-            v = USB_PROFILE_IPOD;
-        nvs_close(h);
-    }
-    return (usb_profile_t) v;
-}
-
-usb_profile_t ipod_usb_profile(void) { return active_profile; }
-
-void ipod_usb_set_profile(usb_profile_t profile) {
-    nvs_handle_t h;
-    if (nvs_open("volvo", NVS_READWRITE, &h) == ESP_OK) {
-        nvs_set_u8(h, "usb_profile", (uint8_t) profile);
-        nvs_commit(h);
-        nvs_close(h);
-    }
-}
 
 uint8_t const *tud_descriptor_device_cb(void) {
     return (uint8_t const *) &desc_device;
 }
 
 uint8_t const *tud_descriptor_configuration_cb(uint8_t index) {
-    if (active_profile == USB_PROFILE_MSC)
-        return index == 0 ? desc_config_msc : NULL;
-    if (active_profile == USB_PROFILE_IPOD)
-        return index == 0 ? desc_ipod_single : NULL;
-    if (index == 0) return desc_config_msc;
-    if (index == 1) return desc_config;
+    if (index == 0 || index == 1) return desc_config;
     iap_logf("config desc idx %u??", index);
     return NULL;
 }
@@ -417,82 +365,7 @@ void tud_hid_set_protocol_cb(uint8_t instance, uint8_t protocol) {
     ESP_LOGI(TAG, "HID protocol=%u", protocol);
 }
 
-//--------------------------------------------------------------------+
-// Mass storage callbacks (config 1): small FAT16 RAM disk so storage
-// probes succeed; music plays through the iPod config, not files here.
-//--------------------------------------------------------------------+
 
-static uint32_t msc_ops;
-
-uint32_t ipod_usb_msc_ops(void) { return msc_ops; }
-
-void tud_msc_inquiry_cb(uint8_t lun, uint8_t vendor_id[8],
-                        uint8_t product_id[16], uint8_t product_rev[4]) {
-    (void) lun;
-    const char vid[8] = {'A', 'p', 'p', 'l', 'e', ' ', ' ', ' '};
-    const char pid[16] = {'i', 'P', 'o', 'd', ' ', 'U', 'S', 'B',
-                          ' ', 'D', 'i', 's', 'k', ' ', ' ', ' '};
-    const char rev[4] = {'1', '.', '0', '0'};
-    memcpy(vendor_id, vid, 8);
-    memcpy(product_id, pid, 16);
-    memcpy(product_rev, rev, 4);
-}
-
-bool tud_msc_test_unit_ready_cb(uint8_t lun) {
-    (void) lun;
-    return true;
-}
-
-void tud_msc_capacity_cb(uint8_t lun, uint32_t *block_count, uint16_t *block_size) {
-    (void) lun;
-    *block_count = MSC_DISK_SECTORS;
-    *block_size = MSC_DISK_SECTOR;
-    msc_ops++;
-    iap_logf("MSC capacity");
-}
-
-bool tud_msc_is_writable_cb(uint8_t lun) {
-    (void) lun;
-    return true;
-}
-
-int32_t tud_msc_read10_cb(uint8_t lun, uint32_t lba, uint32_t offset,
-                          void *buffer, uint32_t bufsize) {
-    (void) lun;
-    if (offset != 0) return -1;
-    uint32_t n = bufsize / MSC_DISK_SECTOR;
-    for (uint32_t i = 0; i < n; i++)
-        msc_disk_read(lba + i, (uint8_t *) buffer + i * MSC_DISK_SECTOR);
-    msc_ops++;
-    if (lba < 256) iap_logf("MSC read lba=%lu n=%lu", (unsigned long) lba, (unsigned long) n);
-    return (int32_t) (n * MSC_DISK_SECTOR);
-}
-
-int32_t tud_msc_write10_cb(uint8_t lun, uint32_t lba, uint32_t offset,
-                           uint8_t *buffer, uint32_t bufsize) {
-    (void) lun;
-    if (offset != 0) return -1;
-    uint32_t n = bufsize / MSC_DISK_SECTOR;
-    for (uint32_t i = 0; i < n; i++)
-        msc_disk_write(lba + i, buffer + i * MSC_DISK_SECTOR);
-    return (int32_t) (n * MSC_DISK_SECTOR);
-}
-
-int32_t tud_msc_scsi_cb(uint8_t lun, uint8_t const scsi_cmd[16],
-                        void *buffer, uint16_t bufsize) {
-    (void) lun; (void) scsi_cmd; (void) buffer; (void) bufsize;
-    return -1;  // stall anything exotic
-}
-
-bool tud_msc_start_stop_cb(uint8_t lun, uint8_t power_condition,
-                           bool start, bool load_eject) {
-    (void) lun; (void) power_condition; (void) start; (void) load_eject;
-    return true;
-}
-
-uint8_t tud_msc_get_maxlun_cb(void) { return 1; }
-
-//--------------------------------------------------------------------+
 // PCM ring + 44.1 kHz -> 48 kHz linear resampler
 //--------------------------------------------------------------------+
 // AirPlay delivers 44100 Hz stereo s16. USB advertises 48000 Hz only, so the
@@ -546,7 +419,9 @@ static void produce_batch(int16_t *out, uint32_t rate) {
         uint32_t avail = ring_wr - ring_rd;
         if (avail < 441) {
             memset(out, 0, 441 * 2 * sizeof(int16_t));
-            pcm_underruns++;
+            // Count starvation only while a source is actually playing;
+            // an open stream with no AirPlay session is expected silence.
+            if (tone_on || iap_audio_active()) pcm_underruns++;
             ring_rd = ring_wr;
             return;
         }
@@ -563,7 +438,7 @@ static void produce_batch(int16_t *out, uint32_t rate) {
     uint32_t avail = ring_wr - ring_rd;
     if (avail < 443) {  // need 441 + lookahead; else silence
         memset(out, 0, 480 * 2 * sizeof(int16_t));
-        pcm_underruns++;
+        if (tone_on || iap_audio_active()) pcm_underruns++;
         ring_rd = ring_wr;  // resync: drop stale backlog
         resample_pos = 0;
         return;
@@ -606,24 +481,13 @@ static void tusb_task(void *arg) {
         tud_task();
         audio_pump();
         iap_tx_pump();  // backstop: flush any reports queued outside callbacks
+        iap_watchdog();  // handshake stall diagnostic
         vTaskDelayUntil(&last, pdMS_TO_TICKS(10));
     }
 }
 
 bool ipod_usb_init(void) {
 #ifdef CONFIG_IPOD_USB_ENABLE
-    active_profile = profile_load();
-    memcpy(&desc_device, &desc_device_template, sizeof(desc_device));
-    memcpy(desc_ipod_single, desc_config, sizeof(desc_config));
-    if (active_profile == USB_PROFILE_MSC) {
-        desc_device.bNumConfigurations = 1;
-    } else if (active_profile == USB_PROFILE_IPOD) {
-        desc_device.bNumConfigurations = 1;
-        desc_ipod_single[5] = 1;  // single config takes value 1
-    } else {
-        desc_device.bNumConfigurations = 2;
-    }
-    ESP_LOGI(TAG, "USB profile %d", (int) active_profile);
     uint8_t mac[6];
     if (esp_efuse_mac_get_default(mac) == ESP_OK) {
         snprintf(serial_str, sizeof(serial_str), "%02X%02X%02X%02X%02X%02X",
@@ -637,11 +501,6 @@ bool ipod_usb_init(void) {
         ESP_LOGE(TAG, "PSRAM ring alloc failed");
         return false;
     }
-    if (!msc_disk_init(CONFIG_ADAPTER_NAME, CONFIG_ADAPTER_SSID, CONFIG_ADAPTER_PASSWORD)) {
-        ESP_LOGE(TAG, "MSC disk init failed");
-        return false;
-    }
-
     // Internal PHY, OTG device mode on GPIO19/20 (shared with Serial/JTAG;
     // the USB console goes quiet once the car/host enumerates us).
     usb_phy_config_t phy_config = {
@@ -666,7 +525,7 @@ bool ipod_usb_init(void) {
         return false;
     }
     usb_ready = true;
-    ESP_LOGI(TAG, "iPod USB ready: 05AC:1261 UAC1 48k + HID iAP");
+    ESP_LOGI(TAG, "iPod USB ready: 05AC:1261 UAC1 44.1k/48k + HID iAP");
     return true;
 #else
     ESP_LOGI(TAG, "iPod USB disabled by Kconfig");
@@ -675,14 +534,12 @@ bool ipod_usb_init(void) {
 }
 
 void ipod_usb_get_status(ipod_usb_status_t *out) {
-    out->profile = active_profile;
     out->usb_ready = usb_ready;
     out->host_mounted = host_mounted;
     out->audio_streaming = audio_streaming;
     out->usb_suspended = usb_suspended;
     out->tone_on = tone_on;
     out->usb_rate = usb_rate;
-    out->msc_ops = msc_ops;
     out->pcm_underruns = pcm_underruns;
     out->iap_rx_packets = iap_rx_packets();
     out->iap_tx_packets = iap_tx_packets();

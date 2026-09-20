@@ -9,19 +9,9 @@
 extern "C" {
 #endif
 
-// USB personality for car compatibility trials (stored in NVS, reboot applies).
-typedef enum {
-    USB_PROFILE_BOTH = 0,  // config 1 = storage, config 2 = iPod (like real iPods)
-    USB_PROFILE_MSC = 1,   // storage only
-    USB_PROFILE_IPOD = 2,  // iPod only (single config, value 1)
-} usb_profile_t;
-
-usb_profile_t ipod_usb_profile(void);
-// Switch profile and reboot into it.
-void ipod_usb_set_profile(usb_profile_t profile);
-
-// Bring up the internal USB PHY + TinyUSB device stack. Safe to call once,
-// early in app_main. Returns true on success.
+// Bring up the internal USB PHY + TinyUSB device stack (iPod personality:
+// UAC1 audio source + HID iAP transport). Safe to call once, early in
+// app_main. Returns true on success.
 bool ipod_usb_init(void);
 
 // Push decoded 44.1 kHz stereo s16 PCM (from the AirPlay path) toward USB.
@@ -37,18 +27,15 @@ bool ipod_usb_tone(void);
 uint32_t ipod_usb_rate(void);
 
 // Total mass-storage commands serviced (config-1 probe activity).
-uint32_t ipod_usb_msc_ops(void);
 
 // Snapshot for the HTTP status page.
 typedef struct {
-    usb_profile_t profile;
     bool usb_ready;        // PHY + stack initialised
     bool host_mounted;     // SetConfiguration received
     bool audio_streaming;  // host selected the audio alt setting
     bool usb_suspended;
     bool tone_on;
     uint32_t usb_rate;
-    uint32_t msc_ops;
     uint32_t pcm_underruns;
     uint32_t iap_rx_packets;
     uint32_t iap_tx_packets;
