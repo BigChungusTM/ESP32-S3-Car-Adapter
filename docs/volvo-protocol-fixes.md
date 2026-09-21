@@ -138,3 +138,104 @@ is an evidence-based compatibility test, not a claim that the specification
 forbids counter zero. Tests cover eight legacy certificate sections with no
 transaction fields as well as the IDPS case. Nothing in this update adds real
 cryptographic verification or demonstrates successful car authentication.
+
+## Counter-one outcome and fresh-challenge experiment
+
+The subsequent car capture explicitly shows `challenge=zero20 counter=1` and
+the same AUTH_SIG stall after all eight certificate sections. Counter zero was
+therefore not the sole cause. The next local build uses `esp_fill_random` for
+the 20 challenge bytes, retaining counter 1 and the existing sequencing. This
+tests the all-zero challenge as a compatibility variable, not an established
+protocol violation. Cryptographic signature verification is still absent.
+
+Completed HID reports are now logged in full using 24-byte chunks that fit the
+96-byte log slots. In particular the end of the signature request, counter,
+checksum and padding are no longer hidden. Host tests inject a deterministic
+RNG and validate the exact challenge bytes, counter, checksum and padding in
+both legacy and transaction-bearing flows. The next car test should look for
+`challenge=fresh20 counter=1`, the complete 0x17 transfer, and an incoming 0x18
+or an explicit accessory error. If no response arrives, challenge contents
+alone did not resolve the issue; scheduling or transport differences remain.
+
+## Fresh-challenge car result
+
+The next capture still stops at AUTH_SIG, with 12 received commands and all
+eight certificate sections accepted. The user reports the dash switches to
+unreadable USB at the same time as the stall diagnostic appears.
+
+Manual transcription of the complete outgoing signature packet verifies:
+
+- HID report ID 4, 64 bytes including ID; link byte 0.
+- iAP sync 0x55, payload length 0x17 (23 bytes), General command 0x17.
+- Challenge: `6D 9E EB 25 89 09 25 47 21 17 A1 50 B7 BE 04 61 18 F4 62 C8`.
+- Retry counter 1, checksum 0x7F. Length + payload + checksum sums to zero
+  modulo 256. Remaining HID bytes are zero padding.
+- Certificate ACK completed at 4155 ms; challenge completed at 4156 ms.
+
+This rules out a malformed length/checksum in this captured request and shows
+that a nonzero challenge alone does not solve the failure. USB completion still
+does not establish that Volvo's iAP parser accepted the command. The watchdog
+only sets a log-suppression flag and writes a log after two seconds of receive
+inactivity; it does not detach USB, reset authentication or send an error.
+
+Two focused transport/scheduling comparisons remain: split the signature frame
+over smaller declared HID reports instead of report 4, or defer the challenge
+after completion of the certificate ACK. Test separately. The 1 ms completion
+gap is observed, not evidence of a violated timing requirement. Similarly, no
+evidence currently proves report 4 unsupported by this Volvo.
+
+## Next isolated test: fragmented signature challenge
+
+The next build keeps the fresh 20-byte challenge, retry counter 1, packet bytes,
+checksum and ACK/challenge ordering unchanged. Only General command 0x17 is
+restricted to the smaller HID report definitions: report 3 carries the first
+19 frame bytes with MORE set, followed by report 1 carrying the remaining bytes
+with CONTINUE set. Other commands retain normal smallest-fitting selection.
+
+Host tests require the final certificate exchange to produce ACK report 1 then
+signature report 3/report 1, and reassemble it into the same valid iAP command
+for both transaction-bearing IDPS and the Volvo's transaction-free legacy flow.
+This test can distinguish rejection of the single 64-byte report-4 transport;
+it does not change authentication semantics.
+
+The car result showed both fragments completing (report 3 at 4152 ms and report
+1 at 4154 ms), followed by the same AUTH_SIG timeout with no 0x18. Fragmenting
+the challenge therefore did not resolve the failure.
+
+## Next isolated test: defer challenge after certificate ACK
+
+The next build retains the fresh challenge, counter 1 and report-3/report-1
+fragmentation. On the final certificate section it queues only 0x16, waits until
+that HID queue has drained and at least 20 ms has elapsed, then sends 0x17. This
+models the separate periodic-handler scheduling used by Rockbox and gives the
+Volvo time to process certificate acceptance before receiving the challenge.
+Host tests verify that no challenge report is queued at 19.999 ms and that the
+same valid challenge appears at 20 ms, in both transaction modes.
+
+The car result showed the intended 20 ms separation (0x16 completed at 4172 ms;
+0x17 began at 4192 ms), but again produced no 0x18. The delay hypothesis and
+AirPlay autoplay are therefore ruled out: captures with zero and two AirPlay
+sessions both fail at the identical authentication transition.
+
+## Next isolated test: request accessory capabilities
+
+Upstream Rockbox sends General `GetAccessoryInfo` (0x27) with info type 0 after
+its successful certificate ACK, before the signature challenge is dispatched
+by its periodic handler. This implementation previously accepted/ignored 0x28
+but never made the request. The next build sends 0x16, then 0x27 type 0, drains
+those HID reports, and retains the 20 ms-deferred fragmented 0x17. Tests require
+that exact command order in legacy and IDPS transaction modes. This evaluates a
+missing state-machine step; it does not claim 0x27 is normatively required for
+authentication.
+
+The Volvo answered with `RetAccessoryInfo` (0x28) and capability mask
+`0x00000201`; bit 9 advertises `AccInfoMaxPayload`. The challenge is now held
+until that response arrives, then delayed 20 ms. A 500 ms fallback retains
+compatibility with accessories that do not answer 0x27. Additional information
+types stay postponed until authentication finishes, following Rockbox's warning
+that device-information requests during authentication can confuse accessories.
+
+The first Volvo run with this ordering returned 0x28 as expected but did not
+return 0x18. That run retained the earlier experimental report-3/report-1 split.
+The next isolated test restores the normal encoder choice: the complete 0x17
+frame fits in one 63-byte report-4 payload.

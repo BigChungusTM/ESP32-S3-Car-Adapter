@@ -12,6 +12,12 @@
 int64_t fake_us;
 int64_t esp_timer_get_time(void) { return fake_us; }
 
+// Deterministic RNG replacement verifies exact challenge serialization.
+void esp_fill_random(void *buffer, size_t length) {
+    assert(length == 20);
+    for (size_t i = 0; i < length; i++) ((uint8_t *)buffer)[i] = 0x80 + i;
+}
+
 // TX capture: reports as sent via tud_hid_report.
 static uint8_t cap_id[64];
 static uint8_t cap_data[64][64];
@@ -158,12 +164,24 @@ int main(void) {
         pkt_begin(); pkt_cmd(middle, sizeof(middle)); feed_frame(fbuf, fn);
         CHECK(decode_tx() == 1 && tx_cmds[0] == 2, "middle cert only ACK");
         pkt_begin(); pkt_cmd(final, sizeof(final)); feed_frame(fbuf, fn);
-        CHECK(decode_tx() == 2 && tx_cmds[0] == 0x16 && tx_cmds[1] == 0x17,
-              "final cert ACK then signature challenge; no DigitalAudio");
-        CHECK(tx_paylen[1] == 23 && tx_pay[1][0] == 0 && tx_pay[1][1] == 0x44,
+        CHECK(cap_n == 2 && cap_id[0] == 1 && cap_id[1] == 1,
+              "final cert sends ACK then AccessoryInfo request");
+        fake_us += 20000; iap_tx_pump();
+        CHECK(cap_n == 2, "signature challenge waits for AccessoryInfo response");
+        const uint8_t info[] = {0, 0x28, 0, 0x45, 0, 0, 0, 2, 1};
+        pkt_begin(); pkt_cmd(info, sizeof(info)); feed_frame(fbuf, fn);
+        fake_us += 19999; iap_tx_pump();
+        CHECK(cap_n == 2, "signature challenge remains deferred for 20ms after 0x28");
+        fake_us += 1; iap_tx_pump();
+        CHECK(cap_n == 3 && cap_id[0] == 1 && cap_id[1] == 1 && cap_id[2] == 4,
+              "signature sequence uses ACK/info report1 then one report4");
+        CHECK(decode_tx() == 3 && tx_cmds[0] == 0x16 && tx_cmds[1] == 0x27 &&
+              tx_cmds[2] == 0x17,
+              "final cert ACK then AccessoryInfo then signature; no DigitalAudio");
+        CHECK(tx_paylen[2] == 23 && tx_pay[2][0] == 0 && tx_pay[2][1] == 0x44,
               "signature response preserves final certificate transaction");
-        for (int i=2; i<22; i++) CHECK(tx_pay[1][i] == 0, "v2 challenge byte %d", i);
-        CHECK(tx_pay[1][22] == 1, "Rockbox-compatible retry counter 1");
+        for (int i=2; i<22; i++) CHECK(tx_pay[2][i] == 0x80 + i - 2, "v2 challenge byte %d", i);
+        CHECK(tx_pay[2][22] == 1, "Rockbox-compatible retry counter 1");
         iap_snapshot_t snap; iap_snapshot(&snap);
         CHECK(!strcmp(snap.state, "AUTH_SIG"), "wait for signature, not next certificate");
         pkt_begin(); pkt_cmd(final, sizeof(final)); feed_frame(fbuf, fn);
@@ -195,15 +213,32 @@ int main(void) {
             unsigned length = section == 7 ? 55 : sizeof(cert);
             memset(cert + 6, 0xa5, length - 6);
             pkt_begin(); pkt_cmd(cert, length); feed_frame(fbuf, fn);
+            if (section == 7) {
+                CHECK(cap_n == 2 && cap_id[0] == 1 && cap_id[1] == 1,
+                      "legacy final cert sends ACK then AccessoryInfo");
+                fake_us += 20000;
+                iap_tx_pump();
+                CHECK(cap_n == 2, "legacy signature waits for AccessoryInfo response");
+                const uint8_t info[] = {0, 0x28, 0, 0, 0, 2, 1};
+                pkt_begin(); pkt_cmd(info, sizeof(info)); feed_frame(fbuf, fn);
+                fake_us += 20000;
+                iap_tx_pump();
+            }
+            bool transport_ok = cap_n == 3 && cap_id[0] == 1 && cap_id[1] == 1 &&
+                                cap_id[2] == 4;
             int count = decode_tx();
             if (section < 7) {
                 CHECK(count == 1 && tx_cmds[0] == 2 && tx_paylen[0] == 2 &&
                       tx_pay[0][0] == 0 && tx_pay[0][1] == 0x15, "legacy section ACK");
             } else {
-                CHECK(count == 2 && tx_cmds[0] == 0x16 && tx_cmds[1] == 0x17,
+                CHECK(transport_ok, "legacy signature challenge uses one report4");
+                CHECK(count == 3 && tx_cmds[0] == 0x16 && tx_cmds[1] == 0x27 &&
+                      tx_cmds[2] == 0x17,
                       "legacy final certificate response order");
-                CHECK(tx_paylen[1] == 21 && tx_pay[1][20] == 1,
+                CHECK(tx_paylen[2] == 21 && tx_pay[2][20] == 1,
                       "legacy signature request without transaction bytes");
+                for (int i=0; i<20; i++) CHECK(tx_pay[2][i] == 0x80 + i,
+                                             "legacy challenge byte %d", i);
             }
         }
         iap_reset_protocol();

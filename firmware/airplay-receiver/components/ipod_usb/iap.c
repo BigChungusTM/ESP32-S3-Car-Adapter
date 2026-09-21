@@ -10,6 +10,7 @@
 #include "freertos/task.h"
 #include "esp_log.h"
 #include "esp_timer.h"
+#include "esp_random.h"
 #include "tusb.h"
 #include "class/hid/hid_device.h"
 
@@ -66,12 +67,22 @@ static bool stall_dumped;
 static uint8_t certificate[CERT_CAPACITY];
 static uint16_t cert_offsets[256], cert_lengths[256], cert_size, cert_next;
 static bool audio_requested;
+static bool signature_pending, signature_wait_info, signature_has_trx;
+static uint16_t signature_trx;
+static uint8_t signature_challenge[21];
+static int64_t signature_due_us;
+static int64_t signature_info_fallback_us;
+
+#define SIGNATURE_DEFER_US 20000
+#define SIGNATURE_INFO_FALLBACK_US 500000
 
 static void reset_handshake(void) {
     iap_state = ST_IDLE;
     cert_cur = cert_max = -1;
     cert_size = cert_next = 0;
     audio_requested = false;
+    signature_pending = false;
+    signature_wait_info = false;
     stall_dumped = false;
 }
 
@@ -86,12 +97,12 @@ static bool txq_push(uint8_t id, const uint8_t *data, uint8_t len) {
     return true;
 }
 
-// Split one iAP frame into HID reports, Go Encoder.Pick semantics.
-static void tx_frame(const uint8_t *frame, uint16_t len) {
+// Split one iAP frame into HID reports using the Go Encoder.Pick semantics.
+static void tx_frame(const uint8_t *frame, uint16_t len, unsigned max_def) {
     uint16_t offset = 0;
     while (len > 0) {
-        const report_def_t *def = &tx_defs[3];
-        for (unsigned i = 0; i < 4; i++) {
+        const report_def_t *def = &tx_defs[max_def];
+        for (unsigned i = 0; i <= max_def; i++) {
             if (tx_defs[i].max_payload >= len) { def = &tx_defs[i]; break; }
         }
         uint16_t chunk = len > def->max_payload ? def->max_payload : len;
@@ -116,8 +127,10 @@ static void tx_frame(const uint8_t *frame, uint16_t len) {
 }
 
 static void pump_metadata(void);
+static void pump_auth_signature(void);
 
 void iap_tx_pump(void) {
+    pump_auth_signature();
     pump_metadata();
     while (txq_count > 0) {
         tx_report_t *r = &txq[txq_head];
@@ -314,7 +327,7 @@ static void tx_send(uint8_t lingo, uint16_t cmd, bool use_trx, uint16_t trx,
                  lingo, cmd, has_trx ? "" : "absent/", trx, payload_len,
                  (unsigned long) last_latency_us);
     uint16_t n = pkt_encode(c.b, c.n, tx_pkt);
-    tx_frame(tx_pkt, n);
+    tx_frame(tx_pkt, n, 3);
 }
 
 static uint16_t next_trx(void) {
@@ -326,6 +339,22 @@ static uint16_t next_trx(void) {
 static void tx_respond(const rx_cmd_t *req, uint8_t lingo, uint16_t cmd,
                        const uint8_t *payload, uint16_t len) {
     tx_send(lingo, cmd, req->has_trx, req->trx, payload, len);
+}
+
+static void pump_auth_signature(void) {
+    if (!signature_pending || txq_count != 0) return;
+    int64_t now = esp_timer_get_time();
+    if (signature_wait_info) {
+        if (now < signature_info_fallback_us) return;
+        signature_wait_info = false;
+        signature_due_us = now;
+        ipod_usb_log("AccessoryInfo timeout: send 0x17 fallback");
+    }
+    if (now < signature_due_us) return;
+    signature_pending = false;
+    ipod_usb_log("auth signature defer elapsed: send 0x17");
+    tx_send(LINGO_GENERAL, 0x17, signature_has_trx, signature_trx,
+            signature_challenge, sizeof(signature_challenge));
 }
 
 static void tx_notify(uint8_t lingo, uint16_t cmd, const uint8_t *payload, uint16_t len) {
@@ -574,15 +603,26 @@ static void handle_general(const rx_cmd_t *c) {
             uint8_t supported = 0;
             tx_respond(c, LINGO_GENERAL, 0x16, &supported, 1);
             if (iap_state == ST_AUTH) {
+                // Rockbox requests capability info after accepting the
+                // certificate and before its deferred signature challenge.
+                const uint8_t info_type = 0;
+                tx_notify(LINGO_GENERAL, 0x27, &info_type, 1);
+                ipod_usb_log("auth sequence: request AccessoryInfo capabilities (0x27 type=0)");
                 // V2 layout: 20 challenge bytes followed by a retry counter.
                 // Rockbox upstream and the digital-audio fork use counter 1;
-                // the Go reference uses 0. Test that difference in isolation.
-                // Challenge remains deterministic: this emulator does not
-                // cryptographically verify the accessory's signature.
+                // the Go reference uses 0. A fresh challenge removes the
+                // all-zero input as a compatibility variable. This emulator
+                // still does not cryptographically verify the signature.
                 // Respond preserves the final certificate's transaction ID.
-                const uint8_t challenge[21] = {[20] = 1};
-                ipod_usb_log("auth signature request: v2 challenge=zero20 counter=1");
-                tx_respond(c, LINGO_GENERAL, 0x17, challenge, sizeof(challenge));
+                esp_fill_random(signature_challenge, 20);
+                signature_challenge[20] = 1;
+                signature_has_trx = c->has_trx;
+                signature_trx = c->trx;
+                signature_wait_info = true;
+                signature_due_us = 0;
+                signature_info_fallback_us = esp_timer_get_time() + SIGNATURE_INFO_FALLBACK_US;
+                signature_pending = true;
+                ipod_usb_log("auth signature scheduled: await 0x28 then defer=20ms (fallback=500ms)");
                 iap_state = ST_AUTH_SIG;
                 ipod_usb_log("cert complete sections=%u bytes=%u; await signature", cert_next, cert_size);
             }
@@ -625,7 +665,17 @@ static void handle_general(const rx_cmd_t *c) {
         resp_cmd = 0x25;
         put_u64(&r, 0);
         break;
-    case 0x28:  // RetAccessoryInfo: ignore
+    case 0x28:  // RetAccessoryInfo
+        if (c->len >= 5 && c->p[0] == 0) {
+            uint32_t caps = ((uint32_t)c->p[1] << 24) | ((uint32_t)c->p[2] << 16) |
+                            ((uint32_t)c->p[3] << 8) | c->p[4];
+            ipod_usb_log("AccessoryInfo capabilities=0x%08lX", (unsigned long)caps);
+            if (signature_pending && signature_wait_info) {
+                signature_wait_info = false;
+                signature_due_us = esp_timer_get_time() + SIGNATURE_DEFER_US;
+                ipod_usb_log("auth sequence: 0x28 received; schedule 0x17 in 20ms");
+            }
+        }
         respond = false;
         break;
     case 0x29:

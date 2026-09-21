@@ -383,10 +383,16 @@ void tud_hid_report_complete_cb(uint8_t instance, uint8_t const *report, uint16_
     (void) instance;
     // Includes report ID. Completion proves USB transfer, not iAP acceptance.
     char hex[24 * 3 + 1];
-    unsigned n = len > 24 ? 24 : len;
-    for (unsigned i = 0; i < n; i++) snprintf(hex + 3 * i, 4, "%02X ", report[i]);
-    hex[3 * n] = 0;
-    iap_logf("TX complete len=%u %s", len, hex);
+    iap_logf("TX complete len=%u", len);
+    // Short lines fit the 96-byte log slots; include counter/checksum/padding.
+    for (unsigned offset = 0; offset < len; offset += 24) {
+        unsigned n = len - offset;
+        if (n > 24) n = 24;
+        for (unsigned i = 0; i < n; i++)
+            snprintf(hex + 3 * i, 4, "%02X ", report[offset + i]);
+        hex[3 * n] = 0;
+        ipod_usb_log("TX bytes +%02u %s", offset, hex);
+    }
     iap_tx_pump();
 }
 
