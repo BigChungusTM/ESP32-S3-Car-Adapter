@@ -5,6 +5,7 @@
 #include <string.h>
 #include <stdint.h>
 #include <stdbool.h>
+#include <assert.h>
 
 #include "iap.h"
 
@@ -23,6 +24,15 @@ void ipod_usb_log(const char *fmt, ...) {
 }
 
 bool tud_hid_report(uint8_t report_id, void const *report, uint16_t len) {
+    const uint8_t descriptor_lengths[] = {0, 12, 14, 20, 63};
+    assert(report_id >= 1 && report_id <= 4);
+    assert(len == descriptor_lengths[report_id]);
+    const uint8_t *bytes = report;
+    if (bytes[0] == 0 && bytes[1] == 0x55 && bytes[2] != 0) {
+        unsigned end = 1 + 3 + bytes[2]; // link + sync/length/checksum + payload
+        assert(end <= len);
+        for (unsigned i = end; i < len; i++) assert(bytes[i] == 0);
+    }
     if (cap_n >= 64 || len > 64) return false;
     cap_id[cap_n] = report_id;
     memcpy(cap_data[cap_n], report, len);
@@ -152,7 +162,8 @@ int main(void) {
               "final cert ACK then signature challenge; no DigitalAudio");
         CHECK(tx_paylen[1] == 23 && tx_pay[1][0] == 0 && tx_pay[1][1] == 0x44,
               "signature response preserves final certificate transaction");
-        for (int i=2; i<23; i++) CHECK(tx_pay[1][i] == 0, "reference v2 challenge byte %d", i);
+        for (int i=2; i<22; i++) CHECK(tx_pay[1][i] == 0, "v2 challenge byte %d", i);
+        CHECK(tx_pay[1][22] == 1, "Rockbox-compatible retry counter 1");
         iap_snapshot_t snap; iap_snapshot(&snap);
         CHECK(!strcmp(snap.state, "AUTH_SIG"), "wait for signature, not next certificate");
         pkt_begin(); pkt_cmd(final, sizeof(final)); feed_frame(fbuf, fn);
@@ -174,6 +185,27 @@ int main(void) {
         pkt_begin(); pkt_cmd(bad, sizeof(bad)); feed_frame(fbuf, fn);
         CHECK(decode_tx() == 1 && tx_cmds[0] == 2 && tx_pay[0][0] == 2,
               "truncated v2 cert rejected without starting audio");
+        iap_reset_protocol();
+    }
+
+    // Volvo's captured legacy flow has no transaction IDs and eight sections.
+    {
+        for (unsigned section = 0; section < 8; section++) {
+            uint8_t cert[134] = {0, 0x15, 2, 0, section, 7};
+            unsigned length = section == 7 ? 55 : sizeof(cert);
+            memset(cert + 6, 0xa5, length - 6);
+            pkt_begin(); pkt_cmd(cert, length); feed_frame(fbuf, fn);
+            int count = decode_tx();
+            if (section < 7) {
+                CHECK(count == 1 && tx_cmds[0] == 2 && tx_paylen[0] == 2 &&
+                      tx_pay[0][0] == 0 && tx_pay[0][1] == 0x15, "legacy section ACK");
+            } else {
+                CHECK(count == 2 && tx_cmds[0] == 0x16 && tx_cmds[1] == 0x17,
+                      "legacy final certificate response order");
+                CHECK(tx_paylen[1] == 21 && tx_pay[1][20] == 1,
+                      "legacy signature request without transaction bytes");
+            }
+        }
         iap_reset_protocol();
     }
 

@@ -98,10 +98,15 @@ static void tx_frame(const uint8_t *frame, uint16_t len) {
         uint8_t link = LC_DONE;
         if (len > def->max_payload) link = (offset == 0) ? LC_MORE : (LC_CONT | LC_MORE);
         else if (offset > 0) link = LC_CONT;
-        uint8_t buf[64];
+        // HID report count is fixed by the descriptor. Match the reference
+        // encoder's zero padding even when the iAP frame itself is shorter.
+        uint8_t buf[64] = {0};
         buf[0] = link;
         memcpy(buf + 1, frame + offset, chunk);
-        if (!txq_push(def->id, buf, (uint8_t) (chunk + 1))) break;
+        if (!txq_push(def->id, buf, (uint8_t) (def->max_payload + 1))) {
+            ipod_usb_log("TX queue full: report=%u remaining=%u", def->id, len);
+            break;
+        }
         len -= chunk;
         offset += chunk;
     }
@@ -418,9 +423,9 @@ void iap_watchdog(void) {
     if (last_rx_us == 0) return;
     if (esp_timer_get_time() - last_rx_us < 2000000) return;
     stall_dumped = true;
-    ipod_usb_log("*** IAP STALL *** state=%s cert=%d/%d lastlat=%luus expect=%s",
+    ipod_usb_log("*** IAP STALL *** state=%s cert=%d/%d lastlat=%luus expect=%s queued=%u",
                  state_name(iap_state), cert_cur, cert_max,
-                 (unsigned long) last_latency_us, expected_next());
+                 (unsigned long) last_latency_us, expected_next(), txq_count);
 }
 
 void iap_note_pcm(uint32_t bytes) {
@@ -569,10 +574,14 @@ static void handle_general(const rx_cmd_t *c) {
             uint8_t supported = 0;
             tx_respond(c, LINGO_GENERAL, 0x16, &supported, 1);
             if (iap_state == ST_AUTH) {
-                // Go binary.Write(GetDevAuthenticationSignatureV2{Counter:0})
-                // is exactly [20 zero challenge bytes][one zero counter].
+                // V2 layout: 20 challenge bytes followed by a retry counter.
+                // Rockbox upstream and the digital-audio fork use counter 1;
+                // the Go reference uses 0. Test that difference in isolation.
+                // Challenge remains deterministic: this emulator does not
+                // cryptographically verify the accessory's signature.
                 // Respond preserves the final certificate's transaction ID.
-                const uint8_t challenge[21] = {0};
+                const uint8_t challenge[21] = {[20] = 1};
+                ipod_usb_log("auth signature request: v2 challenge=zero20 counter=1");
                 tx_respond(c, LINGO_GENERAL, 0x17, challenge, sizeof(challenge));
                 iap_state = ST_AUTH_SIG;
                 ipod_usb_log("cert complete sections=%u bytes=%u; await signature", cert_next, cert_size);

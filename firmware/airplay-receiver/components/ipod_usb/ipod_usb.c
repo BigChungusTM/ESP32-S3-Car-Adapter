@@ -380,7 +380,13 @@ void tud_hid_set_report_cb(uint8_t instance, uint8_t report_id,
 }
 
 void tud_hid_report_complete_cb(uint8_t instance, uint8_t const *report, uint16_t len) {
-    (void) instance; (void) report; (void) len;
+    (void) instance;
+    // Includes report ID. Completion proves USB transfer, not iAP acceptance.
+    char hex[24 * 3 + 1];
+    unsigned n = len > 24 ? 24 : len;
+    for (unsigned i = 0; i < n; i++) snprintf(hex + 3 * i, 4, "%02X ", report[i]);
+    hex[3 * n] = 0;
+    iap_logf("TX complete len=%u %s", len, hex);
     iap_tx_pump();
 }
 

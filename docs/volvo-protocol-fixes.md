@@ -83,3 +83,58 @@ ESP-IDF ESP32-S3 firmware builds. These tests do not exercise real USB timing.
 
 No board was available on a serial port during these checks. Nothing was flashed
 or pushed to GitHub as part of this change.
+
+## September 21 car capture: stalled at section 3 of 7
+
+The prior build was subsequently flashed and hash-verified. The supplied car
+capture shows one attach attempt, mount at 2961 ms, streaming alternate setting
+1 and 44.1 kHz. It receives certificate sections 0, 1, 2 and 3 (maximum index 7),
+then stalls. No signature request/response has occurred. Transactions are absent
+in this legacy identification flow, so `trx=absent/0000` is not evidence of the
+Rockbox transaction-echo bug. The displayed latency measures response enqueue
+time, not host receipt. Zero completed audio packets does not establish why
+authentication stopped.
+
+Source inspection found the Go HID encoder zero-pads to each declared report
+length, while our transmitter sent only the used bytes. The next build pads
+reports to 12/14/20/63 bytes (excluding report ID), logs actual HID completion
+bytes and includes queue depth in stall diagnostics. Host tests enforce report
+sizes and zero padding. This is a reference-fidelity correction and diagnostic
+experiment; it is not yet a confirmed fix for the car's failure.
+
+## Follow-up: full certificate, no signature response
+
+The padded build reached section 7/7 (945 bytes). USB completion logs show 0x16
+and 0x17 delivered, but no 0x18 before the vehicle reported unreadable. The user
+confirmed this was a complete failed cycle, not merely the two-second watchdog.
+
+Apple's public [protocol description in US7293122B1](https://patents.google.com/patent/US7293122B1/en)
+describes accessory challenge/signature/status exchanges, with restricted
+commands enabled after successful authentication. It is historical explanatory
+material, not a complete normative specification for this firmware. Apple's
+[MFi programme](https://mfi.apple.com/en/how-it-works) provides the detailed
+specifications to licensees; no authenticated copy of the applicable legacy
+firmware specification was obtained in this investigation.
+
+Direction matters: 0x14–0x19 here authenticate the Volvo accessory to our
+emulated iPod. No received command in this capture requests proof of the S3's
+Apple-device identity. Missing Apple-device credentials are therefore not an
+established explanation for this stall.
+
+Independent implementation comparison found a specific mismatch:
+
+| Source | V2 challenge | Trailing retry counter |
+| --- | --- | --- |
+| oandrew/ipod General handler | 20 zeros | 0 |
+| Rockbox upstream iap-core.c, AUST_CERTDONE | 20 RX-buffer bytes | 1 |
+| Rockbox ipod5g-mfi-digital-audio fork, same state | 20 RX-buffer bytes | 1 |
+
+Source: [Rockbox core](https://github.com/Rockbox/rockbox/blob/master/apps/iap/iap-core.c),
+[fork core](https://github.com/jaredbsanchez-png/rockbox/blob/ipod5g-mfi-digital-audio/apps/iap/iap-core.c).
+The next local build changes only the request's trailing counter from 0 to 1
+(plus its resulting checksum and diagnostic log). Challenge bytes, transaction
+handling and audio sequencing stay the same to isolate this discrepancy. This
+is an evidence-based compatibility test, not a claim that the specification
+forbids counter zero. Tests cover eight legacy certificate sections with no
+transaction fields as well as the IDPS case. Nothing in this update adds real
+cryptographic verification or demonstrates successful car authentication.
