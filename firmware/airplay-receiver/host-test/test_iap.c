@@ -166,9 +166,7 @@ int main(void) {
         pkt_begin(); pkt_cmd(final, sizeof(final)); feed_frame(fbuf, fn);
         CHECK(cap_n == 1 && cap_id[0] == 1,
               "final cert sends only authentication-info ACK");
-        fake_us += 19999; iap_tx_pump();
-        CHECK(cap_n == 1, "signature challenge remains deferred for 20ms");
-        fake_us += 1; iap_tx_pump();
+        iap_tx_pump();
         CHECK(cap_n == 2 && cap_id[0] == 1 && cap_id[1] == 4,
               "signature sequence uses ACK report1 then one report4");
         CHECK(decode_tx() == 2 && tx_cmds[0] == 0x16 && tx_cmds[1] == 0x17,
@@ -176,7 +174,7 @@ int main(void) {
         CHECK(tx_paylen[1] == 23 && tx_pay[1][0] == 0 && tx_pay[1][1] == 0x44,
               "signature response preserves final certificate transaction");
         for (int i=2; i<22; i++) CHECK(tx_pay[1][i] == 0x80 + i - 2, "v2 challenge byte %d", i);
-        CHECK(tx_pay[1][22] == 1, "Rockbox-compatible retry counter 1");
+        CHECK(tx_pay[1][22] == 0, "Auth 2.x first-request counter 0");
         iap_snapshot_t snap; iap_snapshot(&snap);
         CHECK(!strcmp(snap.state, "AUTH_SIG"), "wait for signature, not next certificate");
         pkt_begin(); pkt_cmd(final, sizeof(final)); feed_frame(fbuf, fn);
@@ -211,7 +209,6 @@ int main(void) {
             if (section == 7) {
                 CHECK(cap_n == 1 && cap_id[0] == 1,
                       "legacy final cert sends only authentication-info ACK");
-                fake_us += 20000;
                 iap_tx_pump();
             }
             bool transport_ok = cap_n == 2 && cap_id[0] == 1 && cap_id[1] == 4;
@@ -223,7 +220,7 @@ int main(void) {
                 CHECK(transport_ok, "legacy signature challenge uses one report4");
                 CHECK(count == 2 && tx_cmds[0] == 0x16 && tx_cmds[1] == 0x17,
                       "legacy final certificate response order");
-                CHECK(tx_paylen[1] == 21 && tx_pay[1][20] == 1,
+                CHECK(tx_paylen[1] == 21 && tx_pay[1][20] == 0,
                       "legacy signature request without transaction bytes");
                 for (int i=0; i<20; i++) CHECK(tx_pay[1][i] == 0x80 + i,
                                              "legacy challenge byte %d", i);
@@ -234,9 +231,8 @@ int main(void) {
         CHECK(cap_n == 0, "legacy auth fallback waits 150ms after challenge");
         fake_us += 1;
         iap_tx_pump();
-        CHECK(decode_tx() == 2 && tx_cmds[0] == 0x19 && tx_paylen[0] == 1 &&
-              tx_pay[0][0] == 0 && tx_cmds[1] == 0x0a0002,
-              "legacy auth timeout reports passed then starts DigitalAudio");
+        CHECK(decode_tx() == 1 && tx_cmds[0] == 0x0a0002,
+              "legacy auth timeout starts DigitalAudio without fabricating auth status");
         iap_reset_protocol();
     }
 

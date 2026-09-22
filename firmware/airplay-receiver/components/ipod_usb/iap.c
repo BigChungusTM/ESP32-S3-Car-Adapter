@@ -73,7 +73,7 @@ static uint8_t signature_challenge[21];
 static int64_t signature_due_us;
 static int64_t auth_compat_due_us;
 
-#define SIGNATURE_DEFER_US 20000
+#define SIGNATURE_DEFER_US 0
 #define AUTH_COMPAT_FALLBACK_US 150000
 
 static void reset_handshake(void) {
@@ -360,13 +360,11 @@ static void pump_auth_compat(void) {
     if (iap_state != ST_AUTH_SIG || audio_requested || auth_compat_due_us == 0 ||
         txq_count != 0 || esp_timer_get_time() < auth_compat_due_us) return;
     auth_compat_due_us = 0;
-    // Complete the same state transition a real 0x18 response would cause.
-    // Without AuthenticationStatus the accessory can accept DigitalAudio
-    // commands while its UI continues to regard the iPod as unauthenticated.
-    uint8_t passed = 0;
-    tx_send(LINGO_GENERAL, 0x19, signature_has_trx, signature_trx, &passed, 1);
-    iap_state = ST_AUTH_OK;
-    ipod_usb_log("auth compatibility fallback: send passed 0x19; start DigitalAudio");
+    // 0x19 is a response to a genuine 0x18 signature.  Sending it without
+    // receiving 0x18 makes the Volvo abandon Digital Audio capability
+    // negotiation.  Preserve the compatibility path that the head unit has
+    // already accepted: proceed directly to the audio lingo.
+    ipod_usb_log("auth compatibility fallback: no 0x18; start DigitalAudio directly");
     start_digital_audio();
 }
 
@@ -617,18 +615,18 @@ static void handle_general(const rx_cmd_t *c) {
             tx_respond(c, LINGO_GENERAL, 0x16, &supported, 1);
             if (iap_state == ST_AUTH) {
                 // V2 layout: 20 challenge bytes followed by a retry counter.
-                // Rockbox upstream and the digital-audio fork use counter 1;
-                // the Go reference uses 0. A fresh challenge removes the
-                // all-zero input as a compatibility variable. This emulator
-                // still does not cryptographically verify the signature.
+                // Auth 2.x is exactly 20 challenge bytes plus a command retry
+                // counter. oandrew/ipod serializes GetDevAuthenticationSignatureV2
+                // with counter 0 for the first request. This emulator does not
+                // need to cryptographically verify the returned signature.
                 // Respond preserves the final certificate's transaction ID.
                 esp_fill_random(signature_challenge, 20);
-                signature_challenge[20] = 1;
+                signature_challenge[20] = 0;
                 signature_has_trx = c->has_trx;
                 signature_trx = c->trx;
                 signature_due_us = esp_timer_get_time() + SIGNATURE_DEFER_US;
                 signature_pending = true;
-                ipod_usb_log("auth signature scheduled: direct 0x17 in 20ms (fallback=150ms)");
+                ipod_usb_log("auth signature scheduled: V2 challenge20 counter=0 after 0x16");
                 iap_state = ST_AUTH_SIG;
                 ipod_usb_log("cert complete sections=%u bytes=%u; await signature", cert_next, cert_size);
             }
