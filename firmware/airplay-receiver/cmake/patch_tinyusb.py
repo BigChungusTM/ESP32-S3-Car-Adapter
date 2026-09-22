@@ -50,4 +50,24 @@ text = text.replace(old, '''  uint16_t copied = tu_fifo_read_n(&audio->ep_in_ff,
 old = 'audiod_tx_xfer_isr(rhport, audio, (uint16_t) xferred_bytes);'
 assert text.count(old) == 1
 text = text.replace(old, 'audiod_tx_xfer_isr(rhport, audio, result == XFER_RESULT_SUCCESS ? (uint16_t) xferred_bytes : 0);')
+# ESP32-S3 DWC2 does not complete the zero-length transfer TinyUSB normally
+# uses to start an isochronous IN endpoint. Arm the first real, silent packet
+# immediately; its completion starts the normal audiod_tx_xfer_isr chain.
+old = '''  #if !CFG_TUD_EDPT_DEDICATED_HWFIFO
+            TU_VERIFY(usbd_edpt_xfer(rhport, audio->ep_in, audio->lin_buf_in, 0, false));
+  #else
+            // Send everything in ISO EP FIFO
+            TU_VERIFY(usbd_edpt_xfer_fifo(rhport, audio->ep_in, &audio->ep_in_ff, 0, false));
+  #endif'''
+assert text.count(old) == 1
+new = '''  #if !CFG_TUD_EDPT_DEDICATED_HWFIFO
+            extern uint16_t ipod_usb_packet_bytes_isr(void);
+            uint16_t first_packet_bytes = tu_min16(ipod_usb_packet_bytes_isr(), audio->ep_in_sz);
+            memset(audio->lin_buf_in, 0, first_packet_bytes);
+            TU_VERIFY(usbd_edpt_xfer(rhport, audio->ep_in, audio->lin_buf_in, first_packet_bytes, false));
+  #else
+            // Send everything in ISO EP FIFO
+            TU_VERIFY(usbd_edpt_xfer_fifo(rhport, audio->ep_in, &audio->ep_in_ff, 0, false));
+  #endif'''
+text = text.replace(old, new)
 (output/'audio_device.c').write_text(text)

@@ -72,9 +72,11 @@ static uint16_t signature_trx;
 static uint8_t signature_challenge[21];
 static int64_t signature_due_us;
 static int64_t signature_info_fallback_us;
+static int64_t auth_compat_due_us;
 
-#define SIGNATURE_DEFER_US 20000
+#define SIGNATURE_DEFER_US 100000
 #define SIGNATURE_INFO_FALLBACK_US 500000
+#define AUTH_COMPAT_FALLBACK_US 500000
 
 static void reset_handshake(void) {
     iap_state = ST_IDLE;
@@ -83,6 +85,7 @@ static void reset_handshake(void) {
     audio_requested = false;
     signature_pending = false;
     signature_wait_info = false;
+    auth_compat_due_us = 0;
     stall_dumped = false;
 }
 
@@ -128,9 +131,11 @@ static void tx_frame(const uint8_t *frame, uint16_t len, unsigned max_def) {
 
 static void pump_metadata(void);
 static void pump_auth_signature(void);
+static void pump_auth_compat(void);
 
 void iap_tx_pump(void) {
     pump_auth_signature();
+    pump_auth_compat();
     pump_metadata();
     while (txq_count > 0) {
         tx_report_t *r = &txq[txq_head];
@@ -341,6 +346,8 @@ static void tx_respond(const rx_cmd_t *req, uint8_t lingo, uint16_t cmd,
     tx_send(lingo, cmd, req->has_trx, req->trx, payload, len);
 }
 
+static void start_digital_audio(void);
+
 static void pump_auth_signature(void) {
     if (!signature_pending || txq_count != 0) return;
     int64_t now = esp_timer_get_time();
@@ -355,6 +362,15 @@ static void pump_auth_signature(void) {
     ipod_usb_log("auth signature defer elapsed: send 0x17");
     tx_send(LINGO_GENERAL, 0x17, signature_has_trx, signature_trx,
             signature_challenge, sizeof(signature_challenge));
+    auth_compat_due_us = now + AUTH_COMPAT_FALLBACK_US;
+}
+
+static void pump_auth_compat(void) {
+    if (iap_state != ST_AUTH_SIG || audio_requested || auth_compat_due_us == 0 ||
+        txq_count != 0 || esp_timer_get_time() < auth_compat_due_us) return;
+    auth_compat_due_us = 0;
+    ipod_usb_log("auth compatibility fallback: no 0x18 after 500ms; start DigitalAudio");
+    start_digital_audio();
 }
 
 static void tx_notify(uint8_t lingo, uint16_t cmd, const uint8_t *payload, uint16_t len) {
@@ -622,7 +638,7 @@ static void handle_general(const rx_cmd_t *c) {
                 signature_due_us = 0;
                 signature_info_fallback_us = esp_timer_get_time() + SIGNATURE_INFO_FALLBACK_US;
                 signature_pending = true;
-                ipod_usb_log("auth signature scheduled: await 0x28 then defer=20ms (fallback=500ms)");
+                ipod_usb_log("auth signature scheduled: await 0x28 then defer=100ms (fallback=500ms)");
                 iap_state = ST_AUTH_SIG;
                 ipod_usb_log("cert complete sections=%u bytes=%u; await signature", cert_next, cert_size);
             }
@@ -642,6 +658,7 @@ static void handle_general(const rx_cmd_t *c) {
             return;
         }
         // Match reference acceptance; no certificate/signature verification.
+        auth_compat_due_us = 0;
         uint8_t passed = 0;
         tx_respond(c, LINGO_GENERAL, 0x19, &passed, 1);
         if (!audio_requested) { iap_state = ST_AUTH_OK; start_digital_audio(); }
@@ -673,7 +690,7 @@ static void handle_general(const rx_cmd_t *c) {
             if (signature_pending && signature_wait_info) {
                 signature_wait_info = false;
                 signature_due_us = esp_timer_get_time() + SIGNATURE_DEFER_US;
-                ipod_usb_log("auth sequence: 0x28 received; schedule 0x17 in 20ms");
+                ipod_usb_log("auth sequence: 0x28 received; schedule 0x17 in 100ms");
             }
         }
         respond = false;

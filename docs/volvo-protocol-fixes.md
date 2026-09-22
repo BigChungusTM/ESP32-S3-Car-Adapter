@@ -239,3 +239,50 @@ The first Volvo run with this ordering returned 0x28 as expected but did not
 return 0x18. That run retained the earlier experimental report-3/report-1 split.
 The next isolated test restores the normal encoder choice: the complete 0x17
 frame fits in one 63-byte report-4 payload.
+
+That combination also produced no 0x18. The outgoing report was complete and
+valid, so both report-4 and report-3/report-1 transports have now been tested.
+The next build changes the post-0x28 delay from 20 ms to 100 ms, matching the
+periodic authentication tick in both upstream Rockbox and the working Rockpod
+fork. The Auth 2.0 response window remains open; the two-second stall message is
+diagnostic and does not reset or detach the protocol.
+
+The 100 ms car run again produced a complete report-4 challenge and no 0x18,
+then the head unit declared the source unreadable. Timing and both valid HID
+transport forms are therefore exhausted as isolated causes. Earlier captures
+showed the Volvo accepting Digital Audio sample-rate and attribute commands
+while authentication was still in progress, and it already selects the UAC1
+streaming interface at 44.1 kHz before 0x18. The next compatibility experiment
+keeps the full authentication request but, if no 0x18 arrives within 500 ms,
+starts exactly one Digital Audio negotiation. A late 0x18 is still accepted and
+acknowledged. This deliberately tests whether the Volvo's missing signature
+reply is fatal to media operation; it is not a claim of cryptographic success.
+
+The Volvo accepted that fallback: it returned sample-rate capabilities, ACKed
+`TrackNewAudioAttributes(44100)` with status zero, and the state reached READY.
+Authentication signature absence is therefore not fatal on this head unit.
+
+The same run exposed the next independent fault. The host selected audio alt 1
+and 44.1 kHz, but no isochronous transfers completed. TinyUSB normally starts
+an Audio IN endpoint with a zero-length transfer and schedules real packets
+from its completion callback. On this S3 DWC2 path the initial ZLP never
+completes, leaving the endpoint permanently unstarted. The local TinyUSB patch
+now arms the endpoint with the first correctly sized silent packet instead;
+subsequent completions retain the existing 44/45-frame fractional pacing.
+## UAC1 isochronous endpoint classification
+
+The initial AudioStreaming descriptor advertised endpoint `0x81` with
+`bmAttributes=0x01` (isochronous, no synchronization). TinyUSB's UAC1 parser
+uses the synchronization bits to distinguish audio data from feedback and did
+not classify that endpoint as data. The Volvo could select alternate setting 1
+and negotiate 44.1 kHz while TinyUSB never armed an IN transfer, producing the
+diagnostic `USB completed: packets=0`.
+
+The endpoint now advertises the standard asynchronous audio-data value `0x05`.
+This matches TinyUSB's own UAC1 source descriptors and allows endpoint `0x81`
+to enter the transmit path.
+
+The first Volvo test with this descriptor confirmed continuous isochronous
+delivery: 36,339 completed packets, 6,410,200 bytes, and 1,602,550 stereo
+frames. AirPlay PCM and metadata were active at the same time, iAP remained in
+`READY`, and the Volvo had acknowledged `TrackNewAudioAttributes` successfully.

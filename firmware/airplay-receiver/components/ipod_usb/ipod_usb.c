@@ -118,8 +118,11 @@ static const uint8_t desc_config[] = {
     14, TUSB_DESC_CS_INTERFACE, AUDIO10_CS_AS_INTERFACE_FORMAT_TYPE,
     AUDIO10_FORMAT_TYPE_I, IPOD_USB_CHANNELS, IPOD_USB_BYTES_PER_SAMPLE, 16,
     2, 0x44, 0xAC, 0x00, 0x80, 0xBB, 0x00,
-    // Iso IN endpoint, 192 B, 1 ms
-    9, TUSB_DESC_ENDPOINT, EP_ADDR_AUDIO_IN, TUSB_XFER_ISOCHRONOUS,
+    // Iso IN audio-data endpoint, asynchronous, 192 B, 1 ms.  The UAC1
+    // synchronization bits are significant: TinyUSB treats "no sync" as a
+    // feedback endpoint and consequently never arms it for audio data.
+    9, TUSB_DESC_ENDPOINT, EP_ADDR_AUDIO_IN,
+    (TUSB_XFER_ISOCHRONOUS | TUSB_ISO_EP_ATT_ASYNCHRONOUS),
     U16_TO_U8S_LE(IPOD_USB_EP_IN_SIZE), 1, 0, 0,
     // EP general: sampling-frequency control present
     7, TUSB_DESC_CS_ENDPOINT, AUDIO10_CS_EP_SUBTYPE_GENERAL, 0x01, 0, U16_TO_U8S_LE(0),

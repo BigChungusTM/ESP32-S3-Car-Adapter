@@ -170,8 +170,8 @@ int main(void) {
         CHECK(cap_n == 2, "signature challenge waits for AccessoryInfo response");
         const uint8_t info[] = {0, 0x28, 0, 0x45, 0, 0, 0, 2, 1};
         pkt_begin(); pkt_cmd(info, sizeof(info)); feed_frame(fbuf, fn);
-        fake_us += 19999; iap_tx_pump();
-        CHECK(cap_n == 2, "signature challenge remains deferred for 20ms after 0x28");
+        fake_us += 99999; iap_tx_pump();
+        CHECK(cap_n == 2, "signature challenge remains deferred for 100ms after 0x28");
         fake_us += 1; iap_tx_pump();
         CHECK(cap_n == 3 && cap_id[0] == 1 && cap_id[1] == 1 && cap_id[2] == 4,
               "signature sequence uses ACK/info report1 then one report4");
@@ -216,12 +216,12 @@ int main(void) {
             if (section == 7) {
                 CHECK(cap_n == 2 && cap_id[0] == 1 && cap_id[1] == 1,
                       "legacy final cert sends ACK then AccessoryInfo");
-                fake_us += 20000;
+                fake_us += 100000;
                 iap_tx_pump();
                 CHECK(cap_n == 2, "legacy signature waits for AccessoryInfo response");
                 const uint8_t info[] = {0, 0x28, 0, 0, 0, 2, 1};
                 pkt_begin(); pkt_cmd(info, sizeof(info)); feed_frame(fbuf, fn);
-                fake_us += 20000;
+                fake_us += 100000;
                 iap_tx_pump();
             }
             bool transport_ok = cap_n == 3 && cap_id[0] == 1 && cap_id[1] == 1 &&
@@ -241,6 +241,13 @@ int main(void) {
                                              "legacy challenge byte %d", i);
             }
         }
+        fake_us += 499999;
+        iap_tx_pump();
+        CHECK(cap_n == 0, "legacy auth fallback waits 500ms after challenge");
+        fake_us += 1;
+        iap_tx_pump();
+        CHECK(decode_tx() == 1 && tx_cmds[0] == 0x0a0002,
+              "legacy auth timeout starts one DigitalAudio negotiation");
         iap_reset_protocol();
     }
 
