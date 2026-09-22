@@ -11,6 +11,8 @@
 #include "esp_log.h"
 #include "esp_timer.h"
 #include "esp_random.h"
+#include "esp_crc.h"
+#include "nvs.h"
 #include "tusb.h"
 #include "class/hid/hid_device.h"
 
@@ -76,6 +78,9 @@ static int64_t auth_compat_due_us;
 static uint8_t probe_profile;
 static int8_t probe_success_profile = -1;
 static uint32_t probe_attempts;
+static uint32_t accessory_fingerprint;
+static uint32_t failed_learned_fingerprint;
+static bool learned_profile;
 
 typedef struct { uint8_t counter; bool force_trx; bool split_transport; } auth_probe_profile_t;
 static const auth_probe_profile_t auth_probe_profiles[] = {
@@ -84,6 +89,40 @@ static const auth_probe_profile_t auth_probe_profiles[] = {
     {0, false, true }, {1, false, true },
 };
 #define AUTH_PROBE_COUNT ((uint8_t)(sizeof(auth_probe_profiles) / sizeof(auth_probe_profiles[0])))
+
+static void profile_key(char key[12], uint32_t fingerprint) {
+    snprintf(key, 12, "a%08lx", (unsigned long) fingerprint);
+}
+
+static void load_learned_profile(void) {
+    accessory_fingerprint = esp_crc32_le(0, certificate, cert_size);
+    learned_profile = false;
+    if (accessory_fingerprint == failed_learned_fingerprint) return;
+    nvs_handle_t nvs;
+    if (nvs_open("iap_profiles", NVS_READONLY, &nvs) != ESP_OK) return;
+    char key[12]; uint8_t saved = 0xff;
+    profile_key(key, accessory_fingerprint);
+    if (nvs_get_u8(nvs, key, &saved) == ESP_OK && saved < AUTH_PROBE_COUNT) {
+        probe_profile = saved;
+        learned_profile = true;
+        ipod_usb_log("learned profile=%u loaded for accessory=%08lX",
+                     probe_profile + 1, (unsigned long) accessory_fingerprint);
+    }
+    nvs_close(nvs);
+}
+
+static void save_learned_profile(void) {
+    if (!accessory_fingerprint) return;
+    nvs_handle_t nvs;
+    if (nvs_open("iap_profiles", NVS_READWRITE, &nvs) != ESP_OK) return;
+    char key[12]; profile_key(key, accessory_fingerprint);
+    if (nvs_set_u8(nvs, key, probe_profile) == ESP_OK && nvs_commit(nvs) == ESP_OK) {
+        learned_profile = true;
+        ipod_usb_log("learned profile=%u saved for accessory=%08lX",
+                     probe_profile + 1, (unsigned long) accessory_fingerprint);
+    }
+    nvs_close(nvs);
+}
 
 #define SIGNATURE_DEFER_US 0
 #define SIGNATURE_INFO_FALLBACK_US 2000000
@@ -400,8 +439,10 @@ static void pump_auth_compat(void) {
     // receiving 0x18 makes the Volvo abandon Digital Audio capability
     // negotiation.  Preserve the compatibility path that the head unit has
     // already accepted: proceed directly to the audio lingo.
-    ipod_usb_log("auth compatibility fallback: no 0x18; start DigitalAudio directly");
-    start_digital_audio();
+    learned_profile = false;
+    if (accessory_fingerprint) failed_learned_fingerprint = accessory_fingerprint;
+    ipod_usb_log("auth probe timeout: profile=%u failed; cycle USB", probe_profile + 1);
+    ipod_usb_request_probe_next();
 }
 
 static void tx_notify(uint8_t lingo, uint16_t cmd, const uint8_t *payload, uint16_t len) {
@@ -495,6 +536,8 @@ void iap_snapshot(iap_snapshot_t *out) {
     out->probe_profile = probe_profile;
     out->probe_success_profile = probe_success_profile;
     out->probe_attempts = probe_attempts;
+    out->accessory_fingerprint = accessory_fingerprint;
+    out->learned_profile = learned_profile;
 }
 
 void iap_probe_advance(void) {
@@ -663,6 +706,7 @@ static void handle_general(const rx_cmd_t *c) {
             uint8_t supported = 0;
             tx_respond(c, LINGO_GENERAL, 0x16, &supported, 1);
             if (iap_state == ST_AUTH) {
+                load_learned_profile();
                 // V2 layout: 20 challenge bytes followed by a retry counter.
                 // MFi R36 non-IDPS flow requests AccessoryInfo between 0x16
                 // and 0x17. Auth 2.x is exactly 20 challenge bytes followed
@@ -706,6 +750,8 @@ static void handle_general(const rx_cmd_t *c) {
         }
         // Match reference acceptance; no certificate/signature verification.
         probe_success_profile = (int8_t) probe_profile;
+        failed_learned_fingerprint = 0;
+        save_learned_profile();
         ipod_usb_log("*** AUTH PROBE SUCCESS profile=%u signature_bytes=%u ***",
                      probe_profile + 1, c->len);
         auth_compat_due_us = 0;

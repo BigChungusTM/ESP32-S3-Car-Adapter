@@ -57,6 +57,8 @@ typedef struct {
     uint8_t probe_profile;
     int8_t probe_success_profile;
     uint32_t probe_attempts;
+    uint32_t accessory_fingerprint;
+    bool learned_profile;
 } iap_snapshot_t;
 
 void iap_snapshot(iap_snapshot_t *out);

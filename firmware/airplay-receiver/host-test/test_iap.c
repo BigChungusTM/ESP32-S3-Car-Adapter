@@ -28,6 +28,8 @@ void ipod_usb_log(const char *fmt, ...) {
     // quiet in tests (verified through TX decoding instead)
     (void) fmt;
 }
+static unsigned probe_reconnects;
+void ipod_usb_request_probe_next(void) { probe_reconnects++; }
 
 bool tud_hid_report(uint8_t report_id, void const *report, uint16_t len) {
     const uint8_t descriptor_lengths[] = {0, 12, 14, 20, 63};
@@ -238,8 +240,8 @@ int main(void) {
         CHECK(cap_n == 0, "legacy Auth 2.0 fallback waits two seconds");
         fake_us += 1;
         iap_tx_pump();
-        CHECK(decode_tx() == 1 && tx_cmds[0] == 0x0a0002,
-              "legacy auth timeout starts DigitalAudio without fabricating auth status");
+        CHECK(decode_tx() == 0 && probe_reconnects == 1,
+              "legacy auth timeout requests USB-only profile reconnect");
         iap_reset_protocol();
     }
 
