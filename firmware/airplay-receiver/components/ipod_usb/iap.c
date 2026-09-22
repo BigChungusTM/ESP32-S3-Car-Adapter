@@ -67,14 +67,16 @@ static bool stall_dumped;
 static uint8_t certificate[CERT_CAPACITY];
 static uint16_t cert_offsets[256], cert_lengths[256], cert_size, cert_next;
 static bool audio_requested;
-static bool signature_pending, signature_has_trx;
+static bool signature_pending, signature_wait_info, signature_has_trx;
 static uint16_t signature_trx;
 static uint8_t signature_challenge[21];
 static int64_t signature_due_us;
+static int64_t signature_info_fallback_us;
 static int64_t auth_compat_due_us;
 
 #define SIGNATURE_DEFER_US 0
-#define AUTH_COMPAT_FALLBACK_US 150000
+#define SIGNATURE_INFO_FALLBACK_US 2000000
+#define AUTH_COMPAT_FALLBACK_US 75000000
 
 static void reset_handshake(void) {
     iap_state = ST_IDLE;
@@ -82,6 +84,7 @@ static void reset_handshake(void) {
     cert_size = cert_next = 0;
     audio_requested = false;
     signature_pending = false;
+    signature_wait_info = false;
     auth_compat_due_us = 0;
     stall_dumped = false;
 }
@@ -348,6 +351,12 @@ static void start_digital_audio(void);
 static void pump_auth_signature(void) {
     if (!signature_pending || txq_count != 0) return;
     int64_t now = esp_timer_get_time();
+    if (signature_wait_info) {
+        if (now < signature_info_fallback_us) return;
+        signature_wait_info = false;
+        signature_due_us = now;
+        ipod_usb_log("AccessoryInfo timeout: continue Auth 2.0 signature flow");
+    }
     if (now < signature_due_us) return;
     signature_pending = false;
     ipod_usb_log("auth signature defer elapsed: send 0x17");
@@ -615,18 +624,21 @@ static void handle_general(const rx_cmd_t *c) {
             tx_respond(c, LINGO_GENERAL, 0x16, &supported, 1);
             if (iap_state == ST_AUTH) {
                 // V2 layout: 20 challenge bytes followed by a retry counter.
-                // Auth 2.x is exactly 20 challenge bytes plus a command retry
-                // counter. oandrew/ipod serializes GetDevAuthenticationSignatureV2
-                // with counter 0 for the first request. This emulator does not
-                // need to cryptographically verify the returned signature.
+                // MFi R36 non-IDPS flow requests AccessoryInfo between 0x16
+                // and 0x17. Auth 2.x is exactly 20 challenge bytes followed
+                // by the retry counter; Rockbox's first request uses 1.
+                const uint8_t info_type = 0;
+                tx_notify(LINGO_GENERAL, 0x27, &info_type, 1);
                 // Respond preserves the final certificate's transaction ID.
                 esp_fill_random(signature_challenge, 20);
-                signature_challenge[20] = 0;
+                signature_challenge[20] = 1;
                 signature_has_trx = c->has_trx;
                 signature_trx = c->trx;
-                signature_due_us = esp_timer_get_time() + SIGNATURE_DEFER_US;
+                signature_wait_info = true;
+                signature_due_us = 0;
+                signature_info_fallback_us = esp_timer_get_time() + SIGNATURE_INFO_FALLBACK_US;
                 signature_pending = true;
-                ipod_usb_log("auth signature scheduled: V2 challenge20 counter=0 after 0x16");
+                ipod_usb_log("auth signature scheduled: non-IDPS 0x27 then V2 counter=1; timeout=75s");
                 iap_state = ST_AUTH_SIG;
                 ipod_usb_log("cert complete sections=%u bytes=%u; await signature", cert_next, cert_size);
             }
@@ -675,6 +687,11 @@ static void handle_general(const rx_cmd_t *c) {
             uint32_t caps = ((uint32_t)c->p[1] << 24) | ((uint32_t)c->p[2] << 16) |
                             ((uint32_t)c->p[3] << 8) | c->p[4];
             ipod_usb_log("AccessoryInfo capabilities=0x%08lX", (unsigned long)caps);
+            if (signature_pending && signature_wait_info) {
+                signature_wait_info = false;
+                signature_due_us = esp_timer_get_time() + SIGNATURE_DEFER_US;
+                ipod_usb_log("auth sequence: 0x28 received; send V2 0x17 next");
+            }
         }
         respond = false;
         break;

@@ -164,17 +164,20 @@ int main(void) {
         pkt_begin(); pkt_cmd(middle, sizeof(middle)); feed_frame(fbuf, fn);
         CHECK(decode_tx() == 1 && tx_cmds[0] == 2, "middle cert only ACK");
         pkt_begin(); pkt_cmd(final, sizeof(final)); feed_frame(fbuf, fn);
-        CHECK(cap_n == 1 && cap_id[0] == 1,
-              "final cert sends only authentication-info ACK");
+        CHECK(cap_n == 2 && cap_id[0] == 1 && cap_id[1] == 1,
+              "final cert sends auth ACK then non-IDPS AccessoryInfo");
+        const uint8_t info[] = {0, 0x28, 0, 0x45, 0, 0, 0, 2, 1};
+        pkt_begin(); pkt_cmd(info, sizeof(info)); feed_frame(fbuf, fn);
         iap_tx_pump();
-        CHECK(cap_n == 2 && cap_id[0] == 1 && cap_id[1] == 4,
-              "signature sequence uses ACK report1 then one report4");
-        CHECK(decode_tx() == 2 && tx_cmds[0] == 0x16 && tx_cmds[1] == 0x17,
-              "final cert ACK then direct signature; no speculative AccessoryInfo");
-        CHECK(tx_paylen[1] == 23 && tx_pay[1][0] == 0 && tx_pay[1][1] == 0x44,
+        CHECK(cap_n == 3 && cap_id[0] == 1 && cap_id[1] == 1 && cap_id[2] == 4,
+              "signature sequence uses two report1 packets then one report4");
+        CHECK(decode_tx() == 3 && tx_cmds[0] == 0x16 && tx_cmds[1] == 0x27 &&
+              tx_cmds[2] == 0x17,
+              "R36 non-IDPS authentication command order");
+        CHECK(tx_paylen[2] == 23 && tx_pay[2][0] == 0 && tx_pay[2][1] == 0x44,
               "signature response preserves final certificate transaction");
-        for (int i=2; i<22; i++) CHECK(tx_pay[1][i] == 0x80 + i - 2, "v2 challenge byte %d", i);
-        CHECK(tx_pay[1][22] == 0, "Auth 2.x first-request counter 0");
+        for (int i=2; i<22; i++) CHECK(tx_pay[2][i] == 0x80 + i - 2, "v2 challenge byte %d", i);
+        CHECK(tx_pay[2][22] == 1, "Auth 2.x first-request retry counter 1");
         iap_snapshot_t snap; iap_snapshot(&snap);
         CHECK(!strcmp(snap.state, "AUTH_SIG"), "wait for signature, not next certificate");
         pkt_begin(); pkt_cmd(final, sizeof(final)); feed_frame(fbuf, fn);
@@ -207,28 +210,32 @@ int main(void) {
             memset(cert + 6, 0xa5, length - 6);
             pkt_begin(); pkt_cmd(cert, length); feed_frame(fbuf, fn);
             if (section == 7) {
-                CHECK(cap_n == 1 && cap_id[0] == 1,
-                      "legacy final cert sends only authentication-info ACK");
+                CHECK(cap_n == 2 && cap_id[0] == 1 && cap_id[1] == 1,
+                      "legacy final cert sends auth ACK then AccessoryInfo");
+                const uint8_t info[] = {0, 0x28, 0, 0, 0, 2, 1};
+                pkt_begin(); pkt_cmd(info, sizeof(info)); feed_frame(fbuf, fn);
                 iap_tx_pump();
             }
-            bool transport_ok = cap_n == 2 && cap_id[0] == 1 && cap_id[1] == 4;
+            bool transport_ok = cap_n == 3 && cap_id[0] == 1 && cap_id[1] == 1 &&
+                                cap_id[2] == 4;
             int count = decode_tx();
             if (section < 7) {
                 CHECK(count == 1 && tx_cmds[0] == 2 && tx_paylen[0] == 2 &&
                       tx_pay[0][0] == 0 && tx_pay[0][1] == 0x15, "legacy section ACK");
             } else {
                 CHECK(transport_ok, "legacy signature challenge uses one report4");
-                CHECK(count == 2 && tx_cmds[0] == 0x16 && tx_cmds[1] == 0x17,
+                CHECK(count == 3 && tx_cmds[0] == 0x16 && tx_cmds[1] == 0x27 &&
+                      tx_cmds[2] == 0x17,
                       "legacy final certificate response order");
-                CHECK(tx_paylen[1] == 21 && tx_pay[1][20] == 0,
+                CHECK(tx_paylen[2] == 21 && tx_pay[2][20] == 1,
                       "legacy signature request without transaction bytes");
-                for (int i=0; i<20; i++) CHECK(tx_pay[1][i] == 0x80 + i,
+                for (int i=0; i<20; i++) CHECK(tx_pay[2][i] == 0x80 + i,
                                              "legacy challenge byte %d", i);
             }
         }
-        fake_us += 149999;
+        fake_us += 74999999;
         iap_tx_pump();
-        CHECK(cap_n == 0, "legacy auth fallback waits 150ms after challenge");
+        CHECK(cap_n == 0, "legacy Auth 2.0 fallback waits 75 seconds");
         fake_us += 1;
         iap_tx_pump();
         CHECK(decode_tx() == 1 && tx_cmds[0] == 0x0a0002,
