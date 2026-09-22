@@ -177,7 +177,7 @@ int main(void) {
         CHECK(tx_paylen[2] == 23 && tx_pay[2][0] == 0 && tx_pay[2][1] == 0x44,
               "signature response preserves final certificate transaction");
         for (int i=2; i<22; i++) CHECK(tx_pay[2][i] == 0x80 + i - 2, "v2 challenge byte %d", i);
-        CHECK(tx_pay[2][22] == 1, "Auth 2.x first-request retry counter 1");
+        CHECK(tx_pay[2][22] == 0, "oandrew Auth 2.x initial counter 0");
         iap_snapshot_t snap; iap_snapshot(&snap);
         CHECK(!strcmp(snap.state, "AUTH_SIG"), "wait for signature, not next certificate");
         pkt_begin(); pkt_cmd(final, sizeof(final)); feed_frame(fbuf, fn);
@@ -227,15 +227,15 @@ int main(void) {
                 CHECK(count == 3 && tx_cmds[0] == 0x16 && tx_cmds[1] == 0x27 &&
                       tx_cmds[2] == 0x17,
                       "legacy final certificate response order");
-                CHECK(tx_paylen[2] == 21 && tx_pay[2][20] == 1,
+                CHECK(tx_paylen[2] == 21 && tx_pay[2][20] == 0,
                       "legacy signature request without transaction bytes");
                 for (int i=0; i<20; i++) CHECK(tx_pay[2][i] == 0x80 + i,
                                              "legacy challenge byte %d", i);
             }
         }
-        fake_us += 74999999;
+        fake_us += 1999999;
         iap_tx_pump();
-        CHECK(cap_n == 0, "legacy Auth 2.0 fallback waits 75 seconds");
+        CHECK(cap_n == 0, "legacy Auth 2.0 fallback waits two seconds");
         fake_us += 1;
         iap_tx_pump();
         CHECK(decode_tx() == 1 && tx_cmds[0] == 0x0a0002,

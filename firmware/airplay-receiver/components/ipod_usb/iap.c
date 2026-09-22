@@ -76,7 +76,7 @@ static int64_t auth_compat_due_us;
 
 #define SIGNATURE_DEFER_US 0
 #define SIGNATURE_INFO_FALLBACK_US 2000000
-#define AUTH_COMPAT_FALLBACK_US 75000000
+#define AUTH_COMPAT_FALLBACK_US 2000000
 
 static void reset_handshake(void) {
     iap_state = ST_IDLE;
@@ -626,19 +626,20 @@ static void handle_general(const rx_cmd_t *c) {
                 // V2 layout: 20 challenge bytes followed by a retry counter.
                 // MFi R36 non-IDPS flow requests AccessoryInfo between 0x16
                 // and 0x17. Auth 2.x is exactly 20 challenge bytes followed
-                // by the retry counter; Rockbox's first request uses 1.
+                // by the retry counter. Test the oandrew serializer's initial
+                // value 0 with the complete non-IDPS sequence.
                 const uint8_t info_type = 0;
                 tx_notify(LINGO_GENERAL, 0x27, &info_type, 1);
                 // Respond preserves the final certificate's transaction ID.
                 esp_fill_random(signature_challenge, 20);
-                signature_challenge[20] = 1;
+                signature_challenge[20] = 0;
                 signature_has_trx = c->has_trx;
                 signature_trx = c->trx;
                 signature_wait_info = true;
                 signature_due_us = 0;
                 signature_info_fallback_us = esp_timer_get_time() + SIGNATURE_INFO_FALLBACK_US;
                 signature_pending = true;
-                ipod_usb_log("auth signature scheduled: non-IDPS 0x27 then V2 counter=1; timeout=75s");
+                ipod_usb_log("auth signature scheduled: non-IDPS 0x27 then V2 counter=0; timeout=2s");
                 iap_state = ST_AUTH_SIG;
                 ipod_usb_log("cert complete sections=%u bytes=%u; await signature", cert_next, cert_size);
             }
