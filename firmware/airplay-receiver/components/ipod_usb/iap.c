@@ -73,6 +73,17 @@ static uint8_t signature_challenge[21];
 static int64_t signature_due_us;
 static int64_t signature_info_fallback_us;
 static int64_t auth_compat_due_us;
+static uint8_t probe_profile;
+static int8_t probe_success_profile = -1;
+static uint32_t probe_attempts;
+
+typedef struct { uint8_t counter; bool force_trx; bool split_transport; } auth_probe_profile_t;
+static const auth_probe_profile_t auth_probe_profiles[] = {
+    {0, false, false}, {1, false, false},
+    {0, true,  false}, {1, true,  false},
+    {0, false, true }, {1, false, true },
+};
+#define AUTH_PROBE_COUNT ((uint8_t)(sizeof(auth_probe_profiles) / sizeof(auth_probe_profiles[0])))
 
 #define SIGNATURE_DEFER_US 0
 #define SIGNATURE_INFO_FALLBACK_US 2000000
@@ -359,9 +370,25 @@ static void pump_auth_signature(void) {
     }
     if (now < signature_due_us) return;
     signature_pending = false;
-    ipod_usb_log("auth signature defer elapsed: send 0x17");
-    tx_send(LINGO_GENERAL, 0x17, signature_has_trx, signature_trx,
-            signature_challenge, sizeof(signature_challenge));
+    const auth_probe_profile_t *p = &auth_probe_profiles[probe_profile];
+    ipod_usb_log("auth signature defer elapsed: send 0x17 profile=%u", probe_profile + 1);
+    if (p->split_transport || p->force_trx) {
+        cmd_buf_t c = { .n = 0 };
+        put_u8(&c, LINGO_GENERAL); put_u8(&c, 0x17);
+        if (signature_has_trx) put_u16(&c, signature_trx);
+        put_bytes(&c, signature_challenge, sizeof(signature_challenge));
+        trx_track(LINGO_GENERAL, 0x17);
+        last_latency_us = (uint32_t) (esp_timer_get_time() - last_rx_us);
+        uint16_t n = pkt_encode(c.b, c.n, tx_pkt);
+        tx_frame(tx_pkt, n, p->split_transport ? 2 : 3);
+        tx_auth++;
+        ipod_usb_log(">> probe transport=%s trx=%s%04X len=21",
+                     p->split_transport ? "split" : "report4",
+                     signature_has_trx ? "" : "absent/", signature_trx);
+    } else {
+        tx_send(LINGO_GENERAL, 0x17, signature_has_trx, signature_trx,
+                signature_challenge, sizeof(signature_challenge));
+    }
     auth_compat_due_us = now + AUTH_COMPAT_FALLBACK_US;
 }
 
@@ -465,6 +492,19 @@ void iap_snapshot(iap_snapshot_t *out) {
     out->tx_audio = tx_audio;
     out->tx_other = tx_other;
     out->seq = pkt_seq;
+    out->probe_profile = probe_profile;
+    out->probe_success_profile = probe_success_profile;
+    out->probe_attempts = probe_attempts;
+}
+
+void iap_probe_advance(void) {
+    if (probe_success_profile >= 0) {
+        ipod_usb_log("probe advance ignored: winning profile=%u latched",
+                     (unsigned) probe_success_profile + 1);
+        return;
+    }
+    probe_profile = (uint8_t) ((probe_profile + 1) % AUTH_PROBE_COUNT);
+    ipod_usb_log("probe advanced to profile=%u/%u", probe_profile + 1, AUTH_PROBE_COUNT);
 }
 
 void iap_watchdog(void) {
@@ -632,14 +672,20 @@ static void handle_general(const rx_cmd_t *c) {
                 tx_notify(LINGO_GENERAL, 0x27, &info_type, 1);
                 // Respond preserves the final certificate's transaction ID.
                 esp_fill_random(signature_challenge, 20);
-                signature_challenge[20] = 0;
-                signature_has_trx = c->has_trx;
-                signature_trx = c->trx;
+                const auth_probe_profile_t *p = &auth_probe_profiles[probe_profile];
+                signature_challenge[20] = p->counter;
+                signature_has_trx = p->force_trx ? true : c->has_trx;
+                signature_trx = p->force_trx ? 0 : c->trx;
+                probe_attempts++;
                 signature_wait_info = true;
                 signature_due_us = 0;
                 signature_info_fallback_us = esp_timer_get_time() + SIGNATURE_INFO_FALLBACK_US;
                 signature_pending = true;
-                ipod_usb_log("auth signature scheduled: non-IDPS 0x27 then V2 counter=0; timeout=2s");
+                ipod_usb_log("AUTH PROBE %u/%u counter=%u trx=%s transport=%s attempt=%lu",
+                             probe_profile + 1, AUTH_PROBE_COUNT, p->counter,
+                             p->force_trx ? "0000" : "native",
+                             p->split_transport ? "split" : "report4",
+                             (unsigned long) probe_attempts);
                 iap_state = ST_AUTH_SIG;
                 ipod_usb_log("cert complete sections=%u bytes=%u; await signature", cert_next, cert_size);
             }
@@ -659,6 +705,9 @@ static void handle_general(const rx_cmd_t *c) {
             return;
         }
         // Match reference acceptance; no certificate/signature verification.
+        probe_success_profile = (int8_t) probe_profile;
+        ipod_usb_log("*** AUTH PROBE SUCCESS profile=%u signature_bytes=%u ***",
+                     probe_profile + 1, c->len);
         auth_compat_due_us = 0;
         uint8_t passed = 0;
         tx_respond(c, LINGO_GENERAL, 0x19, &passed, 1);

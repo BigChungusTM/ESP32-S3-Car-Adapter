@@ -24,6 +24,7 @@ void ipod_usb_push_pcm(const int16_t *samples, size_t frames);
 // Proves the USB audio path independently of wireless streaming.
 void ipod_usb_set_tone(bool on);
 bool ipod_usb_tone(void);
+void ipod_usb_request_probe_next(void);
 
 // Active USB audio rate in Hz (44100 default, host-switchable to 48000).
 uint32_t ipod_usb_rate(void);

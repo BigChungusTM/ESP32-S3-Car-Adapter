@@ -100,6 +100,13 @@ static esp_err_t tone_handler(httpd_req_t *request) {
     return httpd_resp_sendstr(request, ipod_usb_tone() ? "tone on\n" : "tone off\n");
 }
 
+static esp_err_t probe_next_handler(httpd_req_t *request) {
+    ipod_usb_request_probe_next();
+    httpd_resp_set_type(request, "text/plain; charset=utf-8");
+    return httpd_resp_sendstr(request,
+        "USB-only reconnect requested; refresh status after the Volvo reconnects.\n");
+}
+
 static esp_err_t status_handler(httpd_req_t *request) {
     // NOTE: heap, not stack: the default httpd worker stack is 4 KB and a
     // multi-KB stack buffer here overflowed it (connection resets).
@@ -123,6 +130,7 @@ static esp_err_t status_handler(httpd_req_t *request) {
         "PCM callbacks: %lu\nArtist: %s\nTitle: %s\nPSRAM bytes: %u\n\n"
         "USB iPod: ready=%d mounted=%d audio=%d suspended=%d rate=%lu tone=%d underruns=%lu iAP rx=%lu tx=%lu\n"
         "iAP: state=%s cert=%d/%d lastlat=%luus seq=%lu TX{ack=%lu ident=%lu auth=%lu audio=%lu other=%lu}\n"
+        "Auth probe: profile=%u/6 attempts=%lu success=%d  next: /probe-next\n"
         "USB timing: boot=%lums phy=%lums firstconn=%lums mount=%lums attempts=%lu\n\n"
         "Audio: received=%llu buffered=%lu dropped=%llu frames\n"
         "USB completed: packets=%lu bytes=%llu frames=%llu FIFO-silence=%lu bytes\n\n"
@@ -139,6 +147,8 @@ static esp_err_t status_handler(httpd_req_t *request) {
         (unsigned long)iap.tx_ack, (unsigned long)iap.tx_ident,
         (unsigned long)iap.tx_auth, (unsigned long)iap.tx_audio,
         (unsigned long)iap.tx_other,
+        (unsigned) iap.probe_profile + 1, (unsigned long) iap.probe_attempts,
+        iap.probe_success_profile < 0 ? 0 : iap.probe_success_profile + 1,
         (unsigned long)usb.boot_ms, (unsigned long)usb.phy_ready_ms,
         (unsigned long)usb.first_connect_ms, (unsigned long)usb.mount_ms,
         (unsigned long)usb.connect_attempts,
@@ -215,6 +225,8 @@ void app_main(void) {
     ESP_ERROR_CHECK(httpd_register_uri_handler(server, &status));
     httpd_uri_t tone = {.uri = "/tone", .method = HTTP_GET, .handler = tone_handler};
     ESP_ERROR_CHECK(httpd_register_uri_handler(server, &tone));
+    httpd_uri_t probe_next = {.uri = "/probe-next", .method = HTTP_GET, .handler = probe_next_handler};
+    ESP_ERROR_CHECK(httpd_register_uri_handler(server, &probe_next));
     httpd_uri_t reboot = {.uri = "/reboot", .method = HTTP_GET, .handler = reboot_handler};
     ESP_ERROR_CHECK(httpd_register_uri_handler(server, &reboot));
     ESP_LOGI(TAG, "READY ssid=%s ip=" IPSTR " AirPlay=%s", CONFIG_ADAPTER_SSID, IP2STR(&info.ip), CONFIG_ADAPTER_NAME);

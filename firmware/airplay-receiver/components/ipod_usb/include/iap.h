@@ -25,6 +25,7 @@ void iap_rx_report(uint8_t report_id, const uint8_t *data, uint16_t len);
 // and the HID report-complete callback.
 void iap_tx_pump(void);
 void iap_reset_protocol(void);
+void iap_probe_advance(void);
 
 // Returns true while there are queued outbound reports.
 bool iap_tx_pending(void);
@@ -53,6 +54,9 @@ typedef struct {
     uint32_t last_latency_us;
     uint32_t tx_ack, tx_ident, tx_auth, tx_audio, tx_other;
     uint32_t seq;
+    uint8_t probe_profile;
+    int8_t probe_success_profile;
+    uint32_t probe_attempts;
 } iap_snapshot_t;
 
 void iap_snapshot(iap_snapshot_t *out);

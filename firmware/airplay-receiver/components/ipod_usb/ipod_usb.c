@@ -575,6 +575,11 @@ static const uint32_t retry_schedule_ms[] = {3000, 3000, 4000, 5000, 15000, 1500
 static uint8_t retry_idx;
 
 static bool stack_ready;
+static volatile bool probe_reconnect_requested;
+
+void ipod_usb_request_probe_next(void) {
+    probe_reconnect_requested = true;
+}
 
 static void usb_stack_start(void) {
     usb_phy_config_t phy_config = {
@@ -647,6 +652,21 @@ static void tusb_task(void *arg) {
     while (true) {
         if (!stack_ready) {
             vTaskDelayUntil(&last, pdMS_TO_TICKS(1));
+            continue;
+        }
+        if (probe_reconnect_requested) {
+            probe_reconnect_requested = false;
+            iap_logf("USB probe reconnect: detach");
+            tud_disconnect();
+            host_mounted = false;
+            audio_streaming = false;
+            audio_reset();
+            vTaskDelay(pdMS_TO_TICKS(1500));
+            iap_probe_advance();
+            iap_reset_protocol();
+            retry_idx = sizeof(retry_schedule_ms) / sizeof(retry_schedule_ms[0]);
+            do_attach("probe-next");
+            last = xTaskGetTickCount();
             continue;
         }
         tud_task_ext(0, false);
