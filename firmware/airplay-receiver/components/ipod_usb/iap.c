@@ -89,6 +89,7 @@ static const auth_probe_profile_t auth_probe_profiles[] = {
     {0, false, true }, {1, false, true },
 };
 #define AUTH_PROBE_COUNT ((uint8_t)(sizeof(auth_probe_profiles) / sizeof(auth_probe_profiles[0])))
+#define AUTH_PROBE_MAX_ATTEMPTS (AUTH_PROBE_COUNT * 2)
 
 static void profile_key(char key[12], uint32_t fingerprint) {
     snprintf(key, 12, "a%08lx", (unsigned long) fingerprint);
@@ -441,6 +442,12 @@ static void pump_auth_compat(void) {
     // already accepted: proceed directly to the audio lingo.
     learned_profile = false;
     if (accessory_fingerprint) failed_learned_fingerprint = accessory_fingerprint;
+    if (probe_attempts >= AUTH_PROBE_MAX_ATTEMPTS) {
+        ipod_usb_log("*** AUTH PROBE EXHAUSTED attempts=%lu; stop cycling, use DigitalAudio fallback ***",
+                     (unsigned long) probe_attempts);
+        start_digital_audio();
+        return;
+    }
     ipod_usb_log("auth probe timeout: profile=%u failed; cycle USB", probe_profile + 1);
     ipod_usb_request_probe_next();
 }
