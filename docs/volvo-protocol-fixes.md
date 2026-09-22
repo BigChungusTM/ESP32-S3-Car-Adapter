@@ -286,3 +286,27 @@ The first Volvo test with this descriptor confirmed continuous isochronous
 delivery: 36,339 completed packets, 6,410,200 bytes, and 1,602,550 stereo
 frames. AirPlay PCM and metadata were active at the same time, iAP remained in
 `READY`, and the Volvo had acknowledged `TrackNewAudioAttributes` successfully.
+
+The car nevertheless remained on `USB unreadable` and produced no audible
+audio. The compatibility path had skipped General Lingo command `0x19`
+(`AckDevAuthenticationStatus`) when the accessory omitted `0x18`. The normal
+path sends passed status before entering Digital Audio. The fallback now does
+the same before `GetAccSampleRateCaps`, so the accessory receives the state
+transition even though its signature response is absent.
+## Modern Land Rover comparison: iAP2 probe
+
+A modern Land Rover mounted the same USB configuration but did not select the
+audio alternate setting. Its only payload was:
+
+```
+00 FF 55 02 00 EE 10 00 00
+```
+
+After removing the HID link byte and report padding, `FF 55 02 00 EE 10` is
+the iAP2 Detect iAP2 Support/SYN probe. An iAP2-capable Apple device echoes
+this sequence and then performs `FF 5A` link-parameter negotiation. The current
+iAP1 parser instead resynchronised on `55`, interpreted `EE` as a General Lingo
+command, and returned an iAP1 ACK. This capture establishes that the Land Rover
+needs a separate iAP2 transport/profile; it is not evidence of a fault in the
+Volvo iAP1 path. Do not add the echo to the Volvo profile without implementing
+the subsequent iAP2 link state machine.

@@ -67,16 +67,14 @@ static bool stall_dumped;
 static uint8_t certificate[CERT_CAPACITY];
 static uint16_t cert_offsets[256], cert_lengths[256], cert_size, cert_next;
 static bool audio_requested;
-static bool signature_pending, signature_wait_info, signature_has_trx;
+static bool signature_pending, signature_has_trx;
 static uint16_t signature_trx;
 static uint8_t signature_challenge[21];
 static int64_t signature_due_us;
-static int64_t signature_info_fallback_us;
 static int64_t auth_compat_due_us;
 
-#define SIGNATURE_DEFER_US 100000
-#define SIGNATURE_INFO_FALLBACK_US 500000
-#define AUTH_COMPAT_FALLBACK_US 500000
+#define SIGNATURE_DEFER_US 20000
+#define AUTH_COMPAT_FALLBACK_US 150000
 
 static void reset_handshake(void) {
     iap_state = ST_IDLE;
@@ -84,7 +82,6 @@ static void reset_handshake(void) {
     cert_size = cert_next = 0;
     audio_requested = false;
     signature_pending = false;
-    signature_wait_info = false;
     auth_compat_due_us = 0;
     stall_dumped = false;
 }
@@ -351,12 +348,6 @@ static void start_digital_audio(void);
 static void pump_auth_signature(void) {
     if (!signature_pending || txq_count != 0) return;
     int64_t now = esp_timer_get_time();
-    if (signature_wait_info) {
-        if (now < signature_info_fallback_us) return;
-        signature_wait_info = false;
-        signature_due_us = now;
-        ipod_usb_log("AccessoryInfo timeout: send 0x17 fallback");
-    }
     if (now < signature_due_us) return;
     signature_pending = false;
     ipod_usb_log("auth signature defer elapsed: send 0x17");
@@ -369,7 +360,13 @@ static void pump_auth_compat(void) {
     if (iap_state != ST_AUTH_SIG || audio_requested || auth_compat_due_us == 0 ||
         txq_count != 0 || esp_timer_get_time() < auth_compat_due_us) return;
     auth_compat_due_us = 0;
-    ipod_usb_log("auth compatibility fallback: no 0x18 after 500ms; start DigitalAudio");
+    // Complete the same state transition a real 0x18 response would cause.
+    // Without AuthenticationStatus the accessory can accept DigitalAudio
+    // commands while its UI continues to regard the iPod as unauthenticated.
+    uint8_t passed = 0;
+    tx_send(LINGO_GENERAL, 0x19, signature_has_trx, signature_trx, &passed, 1);
+    iap_state = ST_AUTH_OK;
+    ipod_usb_log("auth compatibility fallback: send passed 0x19; start DigitalAudio");
     start_digital_audio();
 }
 
@@ -619,11 +616,6 @@ static void handle_general(const rx_cmd_t *c) {
             uint8_t supported = 0;
             tx_respond(c, LINGO_GENERAL, 0x16, &supported, 1);
             if (iap_state == ST_AUTH) {
-                // Rockbox requests capability info after accepting the
-                // certificate and before its deferred signature challenge.
-                const uint8_t info_type = 0;
-                tx_notify(LINGO_GENERAL, 0x27, &info_type, 1);
-                ipod_usb_log("auth sequence: request AccessoryInfo capabilities (0x27 type=0)");
                 // V2 layout: 20 challenge bytes followed by a retry counter.
                 // Rockbox upstream and the digital-audio fork use counter 1;
                 // the Go reference uses 0. A fresh challenge removes the
@@ -634,11 +626,9 @@ static void handle_general(const rx_cmd_t *c) {
                 signature_challenge[20] = 1;
                 signature_has_trx = c->has_trx;
                 signature_trx = c->trx;
-                signature_wait_info = true;
-                signature_due_us = 0;
-                signature_info_fallback_us = esp_timer_get_time() + SIGNATURE_INFO_FALLBACK_US;
+                signature_due_us = esp_timer_get_time() + SIGNATURE_DEFER_US;
                 signature_pending = true;
-                ipod_usb_log("auth signature scheduled: await 0x28 then defer=100ms (fallback=500ms)");
+                ipod_usb_log("auth signature scheduled: direct 0x17 in 20ms (fallback=150ms)");
                 iap_state = ST_AUTH_SIG;
                 ipod_usb_log("cert complete sections=%u bytes=%u; await signature", cert_next, cert_size);
             }
@@ -687,11 +677,6 @@ static void handle_general(const rx_cmd_t *c) {
             uint32_t caps = ((uint32_t)c->p[1] << 24) | ((uint32_t)c->p[2] << 16) |
                             ((uint32_t)c->p[3] << 8) | c->p[4];
             ipod_usb_log("AccessoryInfo capabilities=0x%08lX", (unsigned long)caps);
-            if (signature_pending && signature_wait_info) {
-                signature_wait_info = false;
-                signature_due_us = esp_timer_get_time() + SIGNATURE_DEFER_US;
-                ipod_usb_log("auth sequence: 0x28 received; schedule 0x17 in 100ms");
-            }
         }
         respond = false;
         break;
@@ -855,6 +840,11 @@ static void handle_extremote(const rx_cmd_t *c) {
     uint16_t resp = 0;
     bool respond = true;
 
+    if (audio_requested) {
+        ipod_usb_log("post-audio ExtendedInterface cmd=0x%04X len=%u state=%s",
+                     c->cmd, c->len, state_name(iap_state));
+    }
+
     switch (c->cmd) {
     case 0x0001:  // ACK to one of our sends
         respond = false;
@@ -913,9 +903,9 @@ static void handle_extremote(const rx_cmd_t *c) {
         portENTER_CRITICAL(&media_lock);
         switch (c->p[0]) {
         case 1: name = "AirPlay"; break;
-        case 2: name = np_artist; break;
-        case 3: name = np_album; break;
-        case 5: name = np_title[0] ? np_title : "AirPlay"; break;
+        case 2: name = np_artist[0] ? np_artist : "Volvo AirPlay"; break;
+        case 3: name = np_album[0] ? np_album : "AirPlay"; break;
+        case 5: name = np_title[0] ? np_title : "Track 1"; break;
         }
         resp = 0x001B;
         put_u32(&r, 0);
@@ -938,19 +928,19 @@ static void handle_extremote(const rx_cmd_t *c) {
     case 0x0020:
         resp = 0x0021;
         portENTER_CRITICAL(&media_lock);
-        put_cstr(&r, np_title);
+        put_cstr(&r, np_title[0] ? np_title : "Track 1");
         portEXIT_CRITICAL(&media_lock);
         break;
     case 0x0022:
         resp = 0x0023;
         portENTER_CRITICAL(&media_lock);
-        put_cstr(&r, np_artist);
+        put_cstr(&r, np_artist[0] ? np_artist : "Volvo AirPlay");
         portEXIT_CRITICAL(&media_lock);
         break;
     case 0x0024:
         resp = 0x0025;
         portENTER_CRITICAL(&media_lock);
-        put_cstr(&r, np_album);
+        put_cstr(&r, np_album[0] ? np_album : "AirPlay");
         portEXIT_CRITICAL(&media_lock);
         break;
     case 0x0026:  // SetPlayStatusChangeNotification (+short form)
